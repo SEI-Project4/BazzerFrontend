@@ -1,24 +1,19 @@
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
-
 const imageMaxSize = 2132600 // bytes = 2MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
-
-
 export default class Testing extends Component {
-
     state = {
         allImages: []
     }
-
     verifyFile = (files) => {
         if (files && files.length > 0) {
             const currentFile = files[0]
             const currentFileType = currentFile.type
             const currentFileSize = currentFile.size
             if (currentFileSize > imageMaxSize) {
-                alert("This file is not allowed. " + Math.ceil((currentFileSize/1024)/1024) + " MB is too large")
+                alert("This file is not allowed. " + Math.ceil((currentFileSize / 1024) / 1024) + " MB is too large")
                 return false
             }
             if (!acceptedFileTypesArray.includes(currentFileType)) {
@@ -42,10 +37,8 @@ export default class Testing extends Component {
                 myFileItemReader.addEventListener("load", () => {
                     console.log(myFileItemReader.result)
                     const myResult = myFileItemReader.result
-
                     var joined = this.state.allImages.concat(myResult);
                     this.setState({ allImages: joined })
-
                 }, false)
                 myFileItemReader.readAsDataURL(currentFile)
             }
@@ -53,19 +46,10 @@ export default class Testing extends Component {
     }
     render() {
         return (
-
             <div>
-                {this.state.allImages.length === 3 ?
+                {this.state.allImages.length <= 2 ?
                     <div>
-                        {this.state.allImages.map((img) => {
-                            return <img width="300px" height="250px" src={img} />
-                        })}
-                        {console.log("ssssss")}
-                        {console.log(this.state.allImages)}
-                        {console.log("image 64")}
-                    </div>
-                    : <div>
-                        <Dropzone onDrop={this.handleOnDrop} accept={acceptedFileTypesArray} multiple={true} maxSize={imageMaxSize}>
+                        <Dropzone onDrop={this.handleOnDrop} accept={acceptedFileTypesArray} multiple={false} maxSize={imageMaxSize}>
                             {({ getRootProps, getInputProps }) => (
                                 <section>
                                     <div {...getRootProps()}>
@@ -75,7 +59,13 @@ export default class Testing extends Component {
                                 </section>
                             )}
                         </Dropzone>
-                    </div>}
+                    </div> : null}
+                {this.state.allImages.map((img) => {
+                    return <img width="300px" height="250px" src={img} />
+                })}
+                {console.log("ssssss")}
+                {console.log(this.state.allImages)}
+                {console.log("image 64")}
             </div>
         )
     }

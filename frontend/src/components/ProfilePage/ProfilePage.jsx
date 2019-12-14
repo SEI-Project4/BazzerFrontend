@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Row, Col, Button, Container, Tabs, Tab, Image,Badge } from 'react-bootstrap'
+import { Row, Col, Button, Container, Tabs, Tab, Image, OverlayTrigger, Popover, Form } from 'react-bootstrap'
 import './ProfilePage.css'
 import { IoMdAddCircle } from 'react-icons/io';
-
+import { Item, Rating, Label } from 'semantic-ui-react'
 
 
 export default class ProfilePage extends Component {
@@ -14,26 +14,40 @@ export default class ProfilePage extends Component {
             <div>
                 <br />
                 <Container style={{ marginBottom: '-20px' }}>
-                    <Button style={{ width: '250px', marginLeft: '-15px', marginRight: '5px' }} inline-block variant="dark">My Following & Followers</Button>
-                    <Button style={{ margin: '0 5px', width: '150px' }} inline-block variant="dark">Watch Later</Button>
-                    <Button style={{ margin: '0 5px'}} inline-block variant="success"><IoMdAddCircle style={{marginRight:'5px'}}/>Rate User</Button>
+                    <div style={{ marginLeft: '-15px' }}>
+                        <Button style={{ width: '250px', marginRight: '5px' }} inline-block variant="dark">My Following & Followers</Button>
+                        <Button style={{ marginLeft: '5px', marginRight: '10px', width: '150px' }} inline-block variant="dark">My Watch list</Button>
+                        <OverlayTrigger trigger="click" placement="bottom" overlay={<Popover id="popover-basic">
+                            <Popover.Title as="h3">Give a Rating</Popover.Title>
+                            <Popover.Content>
+                                <Form>
+                                    <Rating icon='star' maxRating={5} clearable />
+                                    <Form.Control style={{ margin: '5px auto' }} placeholder="Say something?" />
+                                    <Button size="sm" variant="primary" type="submit">
+                                        Submit </Button>
+                                </Form>
+                            </Popover.Content>
+                        </Popover>}>
+                            <Button inline-block variant="success"><IoMdAddCircle style={{ marginRight: '5px' }} />Rate User</Button>
+                        </OverlayTrigger>
+                    </div>
                 </Container>
                 <br />
                 <Container style={{ border: 'solid 2px black', backgroundColor: 'white' }}>
                     <Row style={{ marginTop: '5%' }}>
-                        <Col sm={4}><Image style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src="https://i.imgur.com/0hWpxv0.png" thumbnail />
+                        <Col sm={4}><Image  style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src="https://i.imgur.com/0hWpxv0.png" thumbnail />
                             <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>Ali hdd</h4></Col>
                         <Col sm={1}></Col>
                         <Col sm={6}>
                             <Row>
-                            <Container style={{ border: '1px gray solid', width: '100%', borderRadius: '5px', backgroundColor:'#f8f7f6'}}>
+                                <Container style={{ border: '1px gray solid', width: '100%', borderRadius: '5px', backgroundColor: '#f8f7f6' }}>
                                     <br />
                                     <h5>Ali Hamidaddin</h5>
                                     <h5>Jeddah</h5>
                                     <div>
-                                    <h5 style={{display:'inline-block'}}>Rating: 3.8</h5>
+                                        <h5 style={{ display: 'inline-block' }}>Rating: 3.8</h5>
                                     </div>
-                                    
+
                                     <h5>Member since: 3/12/2019</h5>
                                     <h5>Ali.hd1997@hotmail.com</h5>
                                     <h5>0545306262</h5>
@@ -42,42 +56,75 @@ export default class ProfilePage extends Component {
                                 </Container>
                             </Row>
                             <Row>
-                            <br />
+                                <br />
                                 <Button style={{ margin: '15px auto', width: '150px' }} block variant="primary">Follow</Button>
                                 <br />
                                 <Button style={{ margin: '15px auto', width: '150px' }} block variant="warning">Message</Button>
-                                <Button style={{ margin: '15px auto', width: '150px' }} block variant="warning">My Messages</Button>  
+                                <Button style={{ margin: '15px auto', width: '150px' }} block variant="warning">My Messages</Button>
                             </Row>
                         </Col>
+                        <Col sm={1}></Col>
                     </Row>
                     <br />
                     <Container>
-                    <h4>Description:</h4>
-                    <p>is nullam lacinia deserunt ipsum veritatis, quaerat vivamus ullam! Qui hymenaeos curabitur excepteur voluptates, ducimus, condimentum gravida natus. Ea? Nisl corrupti? Sapien totam vehicula laborum quibusdam anim officia autem eaque varius quod repudiandae? Sociosqu penatibus similique, venenatis ipsum sequi! Ullam dolore totam blandit fames primis! Sit distinctio, </p>
+                        <h4>Description:</h4>
+                        <p>is nullam lacinia deserunt ipsum veritatis, quaerat vivamus ullam! Qui hymenaeos curabitur excepteur voluptates, ducimus, condimentum gravida natus. Ea? Nisl corrupti? Sapien totam vehicula laborum quibusdam anim officia autem eaque varius quod repudiandae? Sociosqu penatibus similique, venenatis ipsum sequi! Ullam dolore totam blandit fames primis! Sit distinctio, </p>
                     </Container>
                     <br /><br />
                     <Tabs defaultActiveKey="posts" id="uncontrolled-tab-example">
-                        <Tab eventKey="posts" title="My Posts">
+                        <Tab eventKey="posts" title="Posts">
                             <br />
                             <h1>Posts</h1>
                         </Tab>
-                        <Tab eventKey="orders" title="My Previous Orders ">
+                        <Tab eventKey="orders" title="Previous Orders">
                             <br />
                             <h1>Past Order</h1>
+                            <Item.Group>
+                                <Item>
+                                    <Item.Image size='tiny' src='/images/wireframe/image.png' />
+
+                                    <Item.Content>
+                                        <Item.Header as='a'>Header</Item.Header>
+                                        <Item.Meta>Description</Item.Meta>
+                                        <Item.Description>
+                                            <Image src='/images/wireframe/short-paragraph.png' />
+                                        </Item.Description>
+                                        <Item.Extra>Additional Details</Item.Extra>
+                                    </Item.Content>
+                                </Item>
+
+                                <Item>
+                                    <Item.Image size='tiny' src='/images/wireframe/image.png' />
+
+                                    <Item.Content>
+                                        <Item.Header as='a'>Header</Item.Header>
+                                        <Item.Meta>Description</Item.Meta>
+                                        <Item.Description>
+                                            <Image src='/images/wireframe/short-paragraph.png' />
+                                        </Item.Description>
+                                        <Item.Extra>Additional Details</Item.Extra>
+                                    </Item.Content>
+                                </Item>
+                            </Item.Group>
+                        </Tab>
+                        <Tab eventKey="ratings" title="Ratings">
+                            <br />
+                            <h1>Ratings and comments</h1>
                         </Tab>
                     </Tabs>
                     <br /><br /><br /><br /><br /><br /><br /><br /><br />
                 </Container>
                 <br />
                 <Button style={{ width: '150px', margin: '0 auto' }} block variant="info">Edit Profile</Button>
+                
                 <br />
                 <Container>
-                <Row>
-                    <Col>
-                        <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} inline-block variant="success">Verify User</Button>
-                    </Col>
-                    <Col><Button style={{ float: 'right', width: '150px', marginRight: '30%' }} inline-block variant="danger">Delete User</Button></Col>
-                </Row>
+                    <Row>
+                        <Col>
+                            <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} inline-block variant="success">Verify User</Button>
+                        </Col>
+                        <Col><Button style={{ float: 'right', width: '150px', marginRight: '30%' }} inline-block variant="danger">Delete User</Button></Col>
+                    </Row>
                 </Container>
                 <br /><br />
                 <br /><br /><br />

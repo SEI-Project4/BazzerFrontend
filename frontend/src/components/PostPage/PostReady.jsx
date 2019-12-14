@@ -9,11 +9,11 @@ export default class PostReady extends Component {
             <div>
                 <br />
                 <Container>
-                   <Row>
-                    <Col><Button floated='left' color='red'>Delete Post</Button></Col>
-                    <Col><Button floated='right'  color='orange'>Close Post</Button></Col>   
+                    <Row>
+                        <Col><Button floated='left' color='red'>Delete Post</Button></Col>
+                        <Col><Button floated='right' color='orange'>Close Post</Button></Col>
                     </Row>
-                    <br/><br/> 
+                    <br /><br />
                 </Container>
                 <Container>
                     <h3><a style={{ textDecoration: 'none', color: 'black' }} href="">By: Ali hd</a></h3>
@@ -51,34 +51,39 @@ export default class PostReady extends Component {
                         <Col lg={9} md={8} sm={12}>
                             <Container>
                                 <h1>Post title</h1>
-                                <br/>
+                                <br />
+                                <Divider horizontal>
+                                    <Header as='h4'>
+                                        <Icon name='tag' />
+                                        Description </Header>
+                                </Divider>
                                 <h3>Description:</h3>
-                                <br/>
+                                <br />
                                 <h4>Location: </h4>
-                                <br/>
+                                <br />
                                 <h4>Created on: </h4>
                                 <Button circular icon='settings' />
                             </Container>
                         </Col>
                         <Col lg={3} md={4} sm={12}>
-                            <Container style={{ margin: '0 auto', textAlign:'center' }}>
-                            <div class="ui vertical buttons">
-                                <Button style={{ margin: '15px auto', width: '150px', color:'black', display:'block' }} color='yellow'>Message Seller</Button>
-                                <Button style={{ margin: '15px auto', width: '150px',}} color='grey'>Watch later</Button>
-                            </div>
+                            <Container style={{ margin: '0 auto', textAlign: 'center' }}>
+                                <div class="ui vertical buttons">
+                                    <Button style={{ margin: '15px auto', width: '150px', color: 'black', display: 'block' }} color='yellow'>Message Seller</Button>
+                                    <Button style={{ margin: '15px auto', width: '150px', }} color='grey'>Watch later</Button>
+                                </div>
                             </Container>
                         </Col>
                     </Row>
                 </Container>
                 <Container>
-                    <br/><br/>
-                <Segment style={{width:'300px', margin:'0 auto', textAlign:'center', backgroundColor:'#a39ea0'}}><h3><strong>Current Bid: 200SAR</strong></h3>
+                    <br /><br />
+                    <Segment style={{ width: '300px', margin: '0 auto', textAlign: 'center', backgroundColor: '#a39ea0' }}><h3><strong>Current Bid: 200SAR</strong></h3>
 
-                <h4 style={{display:'inline-block', fontWeight:'600', marginRight:'5px'}}>Add a bid</h4><Input style={{width:'100px', margin:'10px auto'}}></Input>
-                <br/><br/>
-                <Button primary>Submit</Button>
-                </Segment>
-                <br/><br/>
+                        <h4 style={{ display: 'inline-block', fontWeight: '600', marginRight: '5px' }}>Add a bid</h4><Input style={{ width: '100px', margin: '10px auto' }}></Input>
+                        <br /><br />
+                        <Button primary>Submit</Button>
+                    </Segment>
+                    <br /><br />
                 </Container>
 
                 <Container>
@@ -150,7 +155,7 @@ export default class PostReady extends Component {
                         </Form>
                     </Comment.Group>
                 </Container>
-            <br/>
+                <br />
             </div>
         )
     }

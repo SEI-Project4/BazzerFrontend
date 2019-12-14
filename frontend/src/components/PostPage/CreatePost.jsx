@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Container} from 'react-bootstrap'
 import {Button,Checkbox,Form,Input,Radio,Select,TextArea} from 'semantic-ui-react'
-import './ProfilePage.css'
+import './PostStyle.css'
 import Dropzone from 'react-dropzone'
 
 const imageMaxSize = 2132600 // bytes = 2MB
@@ -14,7 +14,7 @@ const options = [
     { text: 'Al-Naseem', value: 'Al-Naseem' },
   ]
 
-export default class ProfilePage extends Component {
+export default class CreatePost extends Component {
 
     state = {
         allImages: []

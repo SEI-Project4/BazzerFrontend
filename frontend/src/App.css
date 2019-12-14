@@ -40,3 +40,28 @@
 .body{
   background-color: rgb(189, 189, 194);
 }
+@media only screen and (min-width: 700px){
+  #nav-brandd{
+    width: 180px;
+  }
+}
+@media only screen and (max-width: 650px){
+  #nav-brandd{
+    margin-right: 0px
+  }
+  #nav-signupp{
+   margin-left: -5px; 
+   margin-right: 0px;
+   padding: 5px;
+  }
+  #nav-signinn{
+    padding: 5px;
+  }
+}
+
+
+@media only screen and (min-width: 992px){
+  #menuu-navv{
+    width: 80vw;
+  }
+}

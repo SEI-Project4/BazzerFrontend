@@ -44,9 +44,9 @@ export default class ProfilePage extends Component {
                                     <br />
                                     <h5>Ali Hamidaddin</h5>
                                     <h5>Jeddah</h5>
-                                    <div>
-                                        <h5 style={{ display: 'inline-block' }}>Rating: 3.8</h5>
-                                    </div>
+                                    
+                                        <h5 >Rating: 3.8</h5>
+                                    
 
                                     <h5>Member since: 3/12/2019</h5>
                                     <h5>Ali.hd1997@hotmail.com</h5>
@@ -73,15 +73,11 @@ export default class ProfilePage extends Component {
                     <br /><br />
                     <Tabs defaultActiveKey="posts" id="uncontrolled-tab-example">
                         <Tab eventKey="posts" title="Posts">
-                            <br />
-                            <h1>Posts</h1>
-                        </Tab>
-                        <Tab eventKey="orders" title="Previous Orders">
-                            <br />
-                            <h1>Past Order</h1>
+                        <br />
+                            
                             <Item.Group>
                                 <Item>
-                                    <Item.Image size='tiny' src='/images/wireframe/image.png' />
+                                    <Item.Image size='tiny' src='https://i.imgur.com/8Uirvpc.jpg' />
 
                                     <Item.Content>
                                         <Item.Header as='a'>Header</Item.Header>
@@ -94,7 +90,25 @@ export default class ProfilePage extends Component {
                                 </Item>
 
                                 <Item>
-                                    <Item.Image size='tiny' src='/images/wireframe/image.png' />
+                                    <Item.Image size='tiny' src='https://a.imge.to/2019/12/14/vfFIKx.png' />
+
+                                    <Item.Content>
+                                        <Item.Header as='a'>Macbook</Item.Header>
+                                        <Item.Meta>this is a bad product i dont want it</Item.Meta>
+                                        <Item.Description>
+                                            <Image src='' />
+                                        </Item.Description>
+                                        <Item.Extra>price 400$</Item.Extra>
+                                    </Item.Content>
+                                </Item>
+                            </Item.Group>
+                        </Tab>
+                        <Tab eventKey="orders" title="Previous Orders">
+                            <br />
+                            
+                            <Item.Group>
+                                <Item>
+                                    <Item.Image size='tiny' src='https://i.imgur.com/8Uirvpc.jpg' />
 
                                     <Item.Content>
                                         <Item.Header as='a'>Header</Item.Header>
@@ -103,6 +117,19 @@ export default class ProfilePage extends Component {
                                             <Image src='/images/wireframe/short-paragraph.png' />
                                         </Item.Description>
                                         <Item.Extra>Additional Details</Item.Extra>
+                                    </Item.Content>
+                                </Item>
+
+                                <Item>
+                                    <Item.Image size='tiny' src='https://a.imge.to/2019/12/14/vfFIKx.png' />
+
+                                    <Item.Content>
+                                        <Item.Header as='a'>Macbook</Item.Header>
+                                        <Item.Meta>this is a bad product i dont want it</Item.Meta>
+                                        <Item.Description>
+                                            <Image src='' />
+                                        </Item.Description>
+                                        <Item.Extra>price 400$</Item.Extra>
                                     </Item.Content>
                                 </Item>
                             </Item.Group>

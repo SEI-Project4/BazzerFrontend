@@ -1,0 +1,58 @@
+#Footer2030{
+    margin-top: 50px;
+    margin-left: 23%;
+}
+
+
+
+@media only screen and (min-width: 750px){
+    .footer-info-row{
+        margin-left: 5%;
+        margin-right: 5%;
+        font-size: 13px;
+        font-weight: bolder;
+        text-align: center;
+      }
+      .footer-info-col{
+        width: 130px;
+      }
+      .footer-spacer{
+        margin-left: -50px;
+        margin-right: -50px;
+      }
+      .Footer2030img{
+        width: 215px;
+        height: 141px;
+      }
+      .Footerlogoimg{
+        width: 205px;
+        height: 151px;
+      }
+
+}
+@media only screen and (max-width: 749px){
+    .footer-info-row{
+      margin-left: 5%;
+      margin-right: 5%;
+      font-size: 9px;
+      font-weight: bolder;
+      text-align: center;
+    }
+    .footer-info-col{
+      width: 90px;
+    }
+  }
+  
+  @media only screen and (max-width: 649px){
+    .footer-spacer{
+      margin-left: -50px;
+      margin-right: -50px;
+    }
+  }
+
+  .Footer-div{
+    background-color: rgb(245, 247, 247);
+    margin-bottom: 0;
+  }
+
+  

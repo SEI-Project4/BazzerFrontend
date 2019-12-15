@@ -3,6 +3,7 @@ import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
 import NavBar from '../NavBar/NavBar'
+import Footer from '../Footer/Footer'
 
 export default class HomePage extends Component {
     render() {
@@ -33,7 +34,8 @@ export default class HomePage extends Component {
                 <div class="column">
                
                     <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://a.imge.to/2019/12/14/vfFIKx.png' wrapped ui={false} />
+                        
+                        <img style={{maxHeight:'250px'}} src="https://a.imge.to/2019/12/14/vfFIKx.png"/>
                         <Card.Content>
                             <Card.Header>MacBook</Card.Header>
                             
@@ -56,7 +58,7 @@ export default class HomePage extends Component {
                     <div class="column">
                 
                     <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                        <img style={{height:'250px'}} src='https://i.imgur.com/8Uirvpc.jpg' />
                         <Card.Content>
                             <Card.Header>MacBook</Card.Header>
                             
@@ -262,6 +264,8 @@ export default class HomePage extends Component {
                     </div>
                     
                 </div>
+                <br/><br/><br/><br/><br/><br/><br/><br/>
+                <Footer/>
             </div>
         )
     }

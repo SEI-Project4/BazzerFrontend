@@ -1,14 +1,30 @@
 import React, { Component } from 'react'
+import jwt from 'jsonwebtoken'
 import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
 import Footer from '../Footer/Footer'
 
 export default class HomePage extends Component {
+    state={
+        token:"",
+    }
+
+    componentDidMount(){
+        if (localStorage.usertoken==true) {
+            console.log('user token');
+            
+                  var decoded = jwt.verify(localStorage.usertoken, 'secret')
+                  console.log(decoded.user);
+                  this.setState({ token: decoded })
+                } else { }
+    }
     render() {
+        
         return (
             <div>
                 <Container>
+                <br/>
                     <Segment basic textAlign='center'>
                         <Input
                             action={{ color: 'blue', content: 'Search' }}

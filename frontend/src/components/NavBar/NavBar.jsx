@@ -8,6 +8,13 @@ export default class NavBar extends Component {
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
+    logout = () => {
+        localStorage.removeItem("usertoken");
+        window.location.reload()
+      }
+
+    
+
     render() {
         const { activeItem } = this.state
 
@@ -65,7 +72,7 @@ export default class NavBar extends Component {
                                             <Dropdown.Item href="/profile">Profile</Dropdown.Item>
                                             <Dropdown.Item>Inbox</Dropdown.Item>
                                             <Dropdown.Item>Request verification</Dropdown.Item>
-                                            <Dropdown.Item>Log-out</Dropdown.Item>
+                                            <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                     </Menu.Item>: <Menu.Item style={{ marginRight: '-15px' }}>

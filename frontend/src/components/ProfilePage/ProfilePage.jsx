@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import jwt from 'jsonwebtoken'
 import { Row, Col, Button, Container, Tabs, Tab, OverlayTrigger, Popover, Form, Modal, Card } from 'react-bootstrap'
 import './ProfilePage.css'
 import { Item, Rating, Icon, Image } from 'semantic-ui-react'
@@ -10,19 +11,56 @@ const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
 
 export default class ProfilePage extends Component {
-
-    state = {
+    state={
+        token:"",
         setshow: false,
-        profileimg: 'https://i.imgur.com/0hWpxv0.png',
+        profileimg: null,
+        firstname: null,
+        lastname:null,
+        description:null,
+        city:null,
     }
+    componentDidMount(){
+        
+        if (localStorage.usertoken) {
+            console.log('user token');
+            
+                  var decoded = jwt.verify(localStorage.usertoken, 'secret')
+                  console.log("decoded dot user")
+                  console.log(decoded.user);
+                  this.setState({ token: decoded, })
+                  axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.user._id}`).then(res=>{
+                      this.setState({
+                        firstname:res.data.result.firstname, lastname:res.data.result.lastname, description:res.data.result.description, profileimg:res.data.result.profileimg, city:res.data.result.city
+                      })
+                      console.log("shahsbahs")
+                      console.log(res)
+                  })
+                  .catch(err=>console.log(err))
+                } else { }
+    }
+
+    // componentDidMount(){
+    //     if (localStorage.usertoken) {
+    //         console.log('user token');
+            
+    //               var decoded = jwt.verify(localStorage.usertoken, 'secret')
+    //               console.log(decoded.user);
+    //               this.setState({ token: decoded })
+    //               axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.statetoken._id}`).then(res=>{
+
+    //               }).catch(err=>console.log(err))
+    //             } else { }
+    // }
+
     onChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         })
+        console.log(this.state)
     }
     submit = (e) => {
-        e.preventDefault()
-        axios.put('https://sei-bazaar-backend.herokuapp.com/users/:token', this.state)
+        axios.put(`https://sei-bazaar-backend.herokuapp.com/users/${this.state.token}`, this.state.profileimg)
             .then(res =>{
                 
                 console.log(res)})

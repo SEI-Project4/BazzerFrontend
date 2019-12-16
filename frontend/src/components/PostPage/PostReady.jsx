@@ -68,8 +68,8 @@ export default class PostReady extends Component {
                         <Col lg={3} md={4} sm={12}>
                             <Container style={{ margin: '0 auto', textAlign: 'center' }}>
                                 <div class="ui vertical buttons">
-                                    <Button style={{ margin: '15px auto', width: '150px', color: 'black', display: 'block' }} color='yellow'>Message Seller</Button>
-                                    <Button style={{ margin: '15px auto', width: '150px', }} color='grey'>Watch later</Button>
+                                    <Button style={{ margin: '15px auto', width: '160px', color: 'black', display: 'block' }} color='yellow'><Icon name="envelope"></Icon>Message Seller</Button>
+                                    <Button style={{ margin: '15px auto', width: '160px', }} color='grey'><Icon name="plus circle"></Icon>Watch later</Button>
                                 </div>
                             </Container>
                         </Col>
@@ -93,65 +93,45 @@ export default class PostReady extends Component {
       </Header></Divider>
                     <Comment.Group>
                         <Comment>
-                            <Comment.Avatar src='/images/avatar/small/matt.jpg' />
+                            <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
                             <Comment.Content>
-                                <Comment.Author as='a'>Matt</Comment.Author>
+                                <Comment.Author>Joe Henderson</Comment.Author>
                                 <Comment.Metadata>
-                                    <div>Today at 5:42PM</div>
-                                </Comment.Metadata>
-                                <Comment.Text>How artistic!</Comment.Text>
-                                <Comment.Actions>
-                                    <Comment.Action>Reply</Comment.Action>
-                                </Comment.Actions>
-                            </Comment.Content>
-                        </Comment>
-                        <Comment>
-                            <Comment.Avatar src='/images/avatar/small/elliot.jpg' />
-                            <Comment.Content>
-                                <Comment.Author as='a'>Elliot Fu</Comment.Author>
-                                <Comment.Metadata>
-                                    <div>Yesterday at 12:30AM</div>
+                                    <div>1 day ago</div>
                                 </Comment.Metadata>
                                 <Comment.Text>
-                                    <p>This has been very useful for my research. Thanks as well!</p>
+                                    <p>
+                                        The hours, minutes and seconds stand as visible reminders that your
+                                        effort put them all there.
+          </p>
+                                    <p>
+                                        Preserve until your next run, when the watch lets you see how
+                                        Impermanent your efforts are.
+          </p>
                                 </Comment.Text>
                                 <Comment.Actions>
                                     <Comment.Action>Reply</Comment.Action>
                                 </Comment.Actions>
                             </Comment.Content>
-                            <Comment.Group>
-                                <Comment>
-                                    <Comment.Avatar src='/images/avatar/small/jenny.jpg' />
-                                    <Comment.Content>
-                                        <Comment.Author as='a'>Jenny Hess</Comment.Author>
-                                        <Comment.Metadata>
-                                            <div>Just now</div>
-                                        </Comment.Metadata>
-                                        <Comment.Text>Elliot you are always so right :)</Comment.Text>
-                                        <Comment.Actions>
-                                            <Comment.Action>Reply</Comment.Action>
-                                        </Comment.Actions>
-                                    </Comment.Content>
-                                </Comment>
-                            </Comment.Group>
                         </Comment>
 
                         <Comment>
-                            <Comment.Avatar src='/images/avatar/small/joe.jpg' />
+                            <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/christian.jpg' />
                             <Comment.Content>
-                                <Comment.Author as='a'>Joe Henderson</Comment.Author>
+                                <Comment.Author>Christian Rocha</Comment.Author>
                                 <Comment.Metadata>
-                                    <div>5 days ago</div>
+                                    <div>2 days ago</div>
                                 </Comment.Metadata>
-                                <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
+                                <Comment.Text>I re-tweeted this.</Comment.Text>
                                 <Comment.Actions>
                                     <Comment.Action>Reply</Comment.Action>
                                 </Comment.Actions>
                             </Comment.Content>
                         </Comment>
+
                         <Form reply>
                             <Form.TextArea />
-                            <Button content='Add Reply' labelPosition='left' icon='edit' primary />
+                            <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                         </Form>
                     </Comment.Group>
                 </Container>

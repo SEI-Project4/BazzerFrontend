@@ -144,7 +144,7 @@ export default class CreatePost extends Component {
         <Form.Field control={Button}>Submit</Form.Field>
       </Form>
                 </Container>
-                
+                <br/><br/><br/><br/><br/><br/><br/><br/>
             </div>
         )
     }

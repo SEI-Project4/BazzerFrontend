@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
-import NavBar from '../NavBar/NavBar'
 import Footer from '../Footer/Footer'
 
 export default class HomePage extends Component {
     render() {
         return (
             <div>
-                <NavBar/>
                 <Container>
                     <Segment basic textAlign='center'>
                         <Input
@@ -26,6 +24,7 @@ export default class HomePage extends Component {
                             content='Sell Anything'
                             icon='add'
                             labelPosition='left'
+                            href="/create"
                         />
                     </Segment>
                 </Container>
@@ -265,7 +264,6 @@ export default class HomePage extends Component {
                     
                 </div>
                 <br/><br/><br/><br/><br/><br/><br/><br/>
-                <Footer/>
             </div>
         )
     }

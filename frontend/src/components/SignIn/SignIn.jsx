@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { Container, Icon } from 'semantic-ui-react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import SweetAlert from 'sweetalert2-react';
 import axios from 'axios'
 import './SignIn.css'
@@ -9,6 +10,7 @@ export default class SignIn extends Component {
     state = {
         error: false,
         success: false,
+        errorlogin: false,
     }
     onChange = (e) => {
         this.setState({
@@ -18,15 +20,21 @@ export default class SignIn extends Component {
     submit = (e) => {
         e.preventDefault()
         axios.post('https://sei-bazaar-backend.herokuapp.com/users/login', this.state)
-            .then(res =>{
-                if(res.data.token){
-                    // this.setState({
-                    //     success: true
-                    // })
+            .then(res => {
+                if (res.data.msg == "Password or email is NOT correct") {
+                    this.setState({
+                        errorlogin: true
+                    })
+                } else {
+                    this.setState({
+                        success: true
+                    })
                     console.log(res.data.token)
+                    localStorage.setItem('usertoken', res.data.token)
                 }
-                console.log(res)})
-        
+                console.log(res)
+            })
+
             .catch(err => console.log(err))
     }
 
@@ -36,15 +44,41 @@ export default class SignIn extends Component {
         console.log(this.state.phone)
     }
     render() {
+
         return (
             <div>
-                <br/><br/><br/>
+                <Modal
+                    size="sm"
+                    show={this.state.success}
+                    aria-labelledby="example-modal-sizes-title-sm"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title style={{textAlign:'center'}} id="example-modal-sizes-title-sm">
+                        <h1><Icon name="rocket"></Icon></h1>
+                        <br />
+
+                            Great you have signed-in successfully!
+          </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <Button href="/home" style={{margin:'0 auto'}} block variant="success" >
+                            Confirm </Button>
+                    </Modal.Body>
+                </Modal>
+                <br /><br /><br />
                 <Container id="container-signn">
-                <br/>
-                    <Form onSubmit={this.submit} style={{width:'80%', margin:'0 auto'}} method="post">
-                    <br/>
-                        <h1 style={{textAlign:'center'}}><Icon name="user"></Icon>Login</h1>
-                        <br/><br/>
+
+                    <br />
+                    <Form onSubmit={this.submit} style={{ width: '80%', margin: '0 auto' }} method="post">
+                        <br />
+                        <h1 style={{ textAlign: 'center' }}><Icon name="user"></Icon>Login</h1>
+                        <br />
+
+                        <br /><br />
+                        {this.state.errorlogin == true ? <Alert variant="danger" onClose={() => this.setState({ errorlogin: false })} dismissible>
+                            <h6>Password or Email is not correct</h6>
+                        </Alert> : null}
                         <Form.Group controlId="formBasicEmail">
                             <Form.Label>Email address</Form.Label>
                             <Form.Control name="email" type="email" placeholder="Enter email" onChange={this.onChange} />
@@ -60,13 +94,14 @@ export default class SignIn extends Component {
                         <Form.Group controlId="formBasicCheckbox">
                             <Form.Check type="checkbox" label="Check me out" />
                         </Form.Group>
-                        <Button variant="primary" type="submit">
+                        <Button style={{ marginRight: '10px' }} variant="primary" type="submit">
                             Sign-in
   </Button>
+                        <Form.Label>  Dont have an account? <a href="/register">Register</a></Form.Label>
                     </Form>
-                    <br/><br/>
+                    <br /><br />
                 </Container>
-                <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }

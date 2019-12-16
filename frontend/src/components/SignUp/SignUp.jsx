@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Icon } from 'semantic-ui-react'
-import { Form, Button, Col } from 'react-bootstrap'
-import SweetAlert from 'sweetalert2-react';
+import { Form, Button, Col, Modal } from 'react-bootstrap'
 import axios from 'axios'
 import './SignUp.css'
 
@@ -9,11 +8,35 @@ export default class SignUp extends Component {
     state = {
         error: false,
         success: false,
+        allusers:[],
+        erroruser:false,
     }
     onChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         })
+        this.state.allusers.map((data)=>{
+            if(this.state.username==data.username){
+                this.setState({
+                    erroruser:true
+                })
+            }else{
+                this.setState({
+                    erroruser:false
+                })
+            }
+        })
+        console.log(this.state.username)
+    }
+    componentDidMount(){
+        axios.get('https://sei-bazaar-backend.herokuapp.com/users/')
+        .then(res=>{
+            this.setState({
+                allusers:res.data.result
+            })
+            console.log(this.state.allusers)
+        })
+        .catch(err=>console.log(err))
     }
     submit = (e) => {
         e.preventDefault()
@@ -24,7 +47,7 @@ export default class SignUp extends Component {
                         success: true
                     })
                 }
-                console.log(res)})
+                })
         
             .catch(err => console.log(err))
     }
@@ -32,16 +55,25 @@ export default class SignUp extends Component {
 
         return (
             <div>
-                <SweetAlert
-                style={{backgroundColor:'black'}}
+                <Modal
+                    size="sm"
                     show={this.state.success}
-                    title="Great!"
-                    text="You have signed up successfully"
-                    onConfirm={() => {
-                        this.setState({ success: false })
-                        this.props.history.push('/home')
-                    }}
-                />
+                    aria-labelledby="example-modal-sizes-title-sm"
+                    centered
+                >
+                    <Modal.Header>
+                        <Modal.Title style={{textAlign:'center'}} id="example-modal-sizes-title-sm">
+                        <h1><Icon name="rocket"></Icon></h1>
+                        <br />
+
+                            Great you have signed-up successfully!
+          </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <Button href="/home" style={{margin:'0 auto'}} block variant="success" >
+                            Confirm </Button>
+                    </Modal.Body>
+                </Modal>
                 <br /><br /><br />
                 <Container id="container-signupp">
                     <br />
@@ -53,6 +85,8 @@ export default class SignUp extends Component {
                         <Form.Group controlId="formGridUsername">
                             <Form.Label>Username</Form.Label>
                             <Form.Control isInvalid={this.state.error} type="name" name="username" placeholder="Enter Username" onChange={this.onChange} />
+                            {this.state.erroruser ? <Form.Text style={{color:'red'}}>error username alreay exists</Form.Text>:<Form.Text style={{color:'green'}}>username available</Form.Text>}
+                            
                             <Form.Control.Feedback type="invalid">
                                 {"Please enter a valid & unique username"}
                             </Form.Control.Feedback>
@@ -89,9 +123,9 @@ export default class SignUp extends Component {
                             <Form.Check type="checkbox" label="Check me out" />
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">
-                            Sign-up
-  </Button>
+                        <Button style={{marginRight:'10px'}} variant="primary" type="submit">
+                            Sign-up </Button>
+  <Form.Label>  Already have an account? <a href="/login">Login</a></Form.Label>
                     </Form>
                     <br /><br />
                 </Container>

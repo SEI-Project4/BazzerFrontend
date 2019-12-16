@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import {Container} from 'react-bootstrap'
-import {Button,Checkbox,Form,Input,Radio,Select,TextArea} from 'semantic-ui-react'
+import jwt from 'jsonwebtoken'
+import axios from 'axios'
+import { Container } from 'react-bootstrap'
+import { Button, Checkbox, Form, Input, Radio, Select, TextArea } from 'semantic-ui-react'
 import './PostStyle.css'
 import Dropzone from 'react-dropzone'
 
@@ -9,143 +11,235 @@ const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
 
 const options = [
-    { text: 'Abhur', value: 'Abhur' },
-    { text: 'Al-Andalus', value: 'Al-Andalus' },
-    { text: 'Al-Naseem', value: 'Al-Naseem' },
-  ]
+  { text: 'Jeddah', value: 'Jeddah' },
+  { text: 'Makkah', value: 'Makkah' },
+  { text: 'Abha', value: 'Abha' },
+]
 
 export default class CreatePost extends Component {
+  state = {
+    postimages: [],
+    city: '',
+    price: '',
+    startingbid: '',
+    city: '',
+    value: 0,
+    check: false,
+    token: localStorage.usertoken,
+    title: '',
+    session: true,
+  }
 
-    state = {
-        allImages: []
-    }
-    handleChange = (e, { value }) => this.setState({ value })
-    verifyFile = (files) => {
-        if (files && files.length > 0) {
-            const currentFile = files[0]
-            const currentFileType = currentFile.type
-            const currentFileSize = currentFile.size
-            if (currentFileSize > imageMaxSize) {
-                alert("This file is not allowed. " + Math.ceil((currentFileSize / 1024) / 1024) + " MB is too large")
-                return false
-            }
-            if (!acceptedFileTypesArray.includes(currentFileType)) {
-                alert("This file is not allowed. Only images are allowed.")
-                return false
-            }
-            return true
-        }
-    }
-    handleOnDrop = (files, rejectedFiles) => {
-        console.log(files)
-        if (rejectedFiles && rejectedFiles.length > 0) {
-            this.verifyFile(rejectedFiles)
-        }
-        if (files && files.length > 0) {
-            const isVerified = this.verifyFile(files)
-            if (isVerified) {
-                // imageBase64Data 
-                const currentFile = files[0]
-                const myFileItemReader = new FileReader()
-                myFileItemReader.addEventListener("load", () => {
-                    console.log(myFileItemReader.result)
-                    const myResult = myFileItemReader.result
-                    var joined = this.state.allImages.concat(myResult);
-                    this.setState({ allImages: joined })
-                }, false)
-                myFileItemReader.readAsDataURL(currentFile)
-            }
-        }
-    }
+  componentDidMount = () => {
 
-    render() {
+    let self = this;
 
-        const { value } = this.state
-        return (
-            <div>
-                <br />
-                <Container style={{ border: 'dashed 2px black', backgroundColor: 'white', width:'430px',borderRadius:'20px', padding:'0'}}>
-                <div style={{borderRadius:'40px'}}>
-                {this.state.allImages.length <= 4 ?
-                    <div>
-                        <Dropzone onDrop={this.handleOnDrop} accept={acceptedFileTypesArray} multiple={false} maxSize={imageMaxSize}>
-                            {({ getRootProps, getInputProps }) => (
-                                <section>
-                                    <div style={{textAlign:'center'}} {...getRootProps()}>
-                                        <input {...getInputProps()} />
-                                        <br/><br/><br/><br/><br/><br/><br/>
-                                        <h1 >Drag 'n' drop your images here, or Click to browse</h1>
-                                        <br/>
-                                        <h5>Maximum 5 images each no bigger than 2MB</h5>
-                                        <br/><br/><br/><br/><br/><br/>
-                                    </div>
-                                </section>
-                            )}
-                        </Dropzone>
-                    </div> : null}
-                {this.state.allImages.map((img) => {
-                    return <img style={{display:'block', margin:'15px auto'}} width="300px" height="250px" src={img} />
-                })}
-                {console.log("ssssss")}
-                {console.log(this.state.allImages)}
-                {console.log("image 64")}
+    if (localStorage.usertoken) {
+      jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
+        if (err) {
+          self.setState({ session: false })
+          alert("Your session has expired please login again")
+        } else {
+          var decoded = jwt.verify(localStorage.usertoken, 'secret')
+          console.log("decoded dot user")
+          console.log(decoded.user);
+          this.setState({ token: decoded, session: true })
+        }
+      });
+    }
+  }
+
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+  check = (e) => {
+    if (this.state.check == false) {
+      this.setState({ check: true })
+    } else { this.setState({ check: false }) }
+  }
+  changeLocation = (e, { value }) => {
+    this.setState({
+      city: value
+    })
+    console.log(this.state.city)
+  }
+
+  submit = (e) => {
+    e.preventDefault()
+    if (this.state.session == false) {
+      alert("Your session has expired please login again")
+    } else if (this.state.value == 0) {
+      alert("please choose a price or starting bid")
+    } else if (this.state.value == 1 && this.state.price == '') {
+      alert("please set a price")
+    } else if (this.state.value == 2 && this.state.startingbid == '') {
+      alert("please set a starting bid")
+    }
+    // else if(this.state.postimages.length<1){
+    //   alert("you need to provide atleast 1 image")
+    // }
+    else if (this.state.check == false) {
+      alert("please accept the terms and conditions")
+    } else if (this.state.title == '') {
+      alert("you need to state a title")
+    } else {
+      axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/`,{headers:{Authorization:`Bearer ${localStorage.usertoken}`}}, this.state)
+        .then(res => {
+          if (res.data.msg == "created successfully") {
+            alert("You post have been created, please wait for admin approval")
+            this.setState({
+              success: true
+            })
+          }
+        })
+
+        .catch(err => console.log(err))
+    }
+  }
+  handleChange = (e, { value }) => {
+    this.setState({ value })
+    console.log(this.state)
+  }
+  verifyFile = (files) => {
+    if (files && files.length > 0) {
+      const currentFile = files[0]
+      const currentFileType = currentFile.type
+      const currentFileSize = currentFile.size
+      if (currentFileSize > imageMaxSize) {
+        alert("This file is not allowed. " + Math.ceil((currentFileSize / 1024) / 1024) + " MB is too large")
+        return false
+      }
+      if (!acceptedFileTypesArray.includes(currentFileType)) {
+        alert("This file is not allowed. Only images are allowed.")
+        return false
+      }
+      return true
+    }
+  }
+  handleOnDrop = (files, rejectedFiles) => {
+    console.log(files)
+    if (rejectedFiles && rejectedFiles.length > 0) {
+      this.verifyFile(rejectedFiles)
+    }
+    if (files && files.length > 0) {
+      const isVerified = this.verifyFile(files)
+      if (isVerified) {
+        // imageBase64Data 
+        const currentFile = files[0]
+        const myFileItemReader = new FileReader()
+        myFileItemReader.addEventListener("load", () => {
+          console.log(myFileItemReader.result)
+          const myResult = myFileItemReader.result
+          var joined = this.state.postimages.concat(myResult);
+          this.setState({ postimages: joined })
+        }, false)
+        myFileItemReader.readAsDataURL(currentFile)
+      }
+    }
+  }
+
+  render() {
+
+    const { value } = this.state
+    return (
+      <div>
+        <br />
+        {this.state.postimages.length <= 4 ?
+          <Container style={{ border: 'dashed 2px black', backgroundColor: 'white', width: '430px', borderRadius: '10px', padding: '0' }}>
+            <div style={{ borderRadius: '10px' }}>
+
+              <div>
+                <Dropzone onDrop={this.handleOnDrop} accept={acceptedFileTypesArray} multiple={false} maxSize={imageMaxSize}>
+                  {({ getRootProps, getInputProps }) => (
+                    <section>
+                      <div style={{ textAlign: 'center' }} {...getRootProps()}>
+                        <input {...getInputProps()} />
+                        <br /><br /><br /><br /><br /><br /><br />
+                        <h1 >Drag 'n' drop your images here, or Click to browse</h1>
+                        <br />
+                        <h5>Maximum 5 images each no bigger than 2MB</h5>
+                        <br /><br /><br /><br /><br /><br />
+                      </div>
+                    </section>
+                  )}
+                </Dropzone>
+              </div>
             </div>
-                </Container>
-
-                <Container>
-                <br/><br/><br/>
-                <Form>
-        <Form.Group>
-          <Form.Field width={6}
-            control={Input}
-            label='Title'
-            placeholder='Enter post title'
-          />
-          <Form.Field width={6}/>
-          <Form.Field width={4}
-            control={Select}
-            label='Location'
-            options={options}
-            placeholder='Choose the closest location'
-          />
-        </Form.Group>
-        <Form.Group inline>
-          <label>Choose an option</label>
-          <Form.Field
-            control={Radio}
-            label='Set a price'
-            value='1'
-            checked={value === '1'}
-            onChange={this.handleChange}
-          />
-          <Form.Field
-            control={Radio}
-            label='Start a bid'
-            value='2'
-            checked={value === '2'}
-            onChange={this.handleChange}
-          />
-          {this.state.value == 1 ? <div>
-            <Input focus placeholder='Enter a price...' />
-          </div>:null}
-          {this.state.value == 2 ? <div>
-            <Input focus placeholder='Enter a starting bid...' />
-          </div>:null}
-        </Form.Group>
-        <Form.Field style={{ minHeight: 200 }}
-          control={TextArea}
-          label='Description'
-          placeholder='Give your post a description..'
-        />
-        <Form.Field
-          control={Checkbox}
-          label='I agree to the Terms and Conditions'
-        />
-        <Form.Field control={Button}>Submit</Form.Field>
-      </Form>
-                </Container>
-                <br/><br/><br/><br/><br/><br/><br/><br/>
-            </div>
-        )
-    }
+          </Container> : null}
+        <br />
+        <div className="ui three column doubling stackable grid center aligned container">
+          {this.state.postimages.map((img) => {
+            return <img style={{ display: 'block', margin: '15px auto' }} width="300px" height="250px" src={img} />
+          })}
+        </div>
+        <Container>
+          <br /><br /><br />
+          <Form onSubmit={this.submit} method="POST">
+            <Form.Group>
+              <Form.Field width={6}
+                control={Input}
+                label='Title'
+                placeholder='Enter post title'
+                onChange={this.onChange}
+                type="name" name="title"
+              />
+              <Form.Field width={6} />
+              <Form.Field width={4}
+                control={Select}
+                label='Location'
+                options={options}
+                placeholder='Choose the closest location'
+                onChange={this.changeLocation}
+                type="name" name="city"
+              />
+            </Form.Group>
+            <Form.Group inline>
+              <label>Choose an option</label>
+              <Form.Field
+                control={Radio}
+                label='Set a price'
+                value='1'
+                checked={value === '1'}
+                onChange={this.handleChange}
+              />
+              <Form.Field
+                control={Radio}
+                label='Start a bid'
+                value='2'
+                checked={value === '2'}
+                onChange={this.handleChange}
+              />
+              {this.state.value == 1 ? <div>
+                <Input focus placeholder='Enter a price...'
+                  onChange={this.onChange}
+                  type="number" name="price" />
+              </div> : null}
+              {this.state.value == 2 ? <div>
+                <Input focus placeholder='Enter a starting bid...'
+                  onChange={this.onChange}
+                  type="number" name="startingbid" />
+              </div> : null}
+            </Form.Group>
+            <Form.Field style={{ minHeight: 200 }}
+              control={TextArea}
+              label='Description'
+              placeholder='Give your post a description..'
+              onChange={this.onChange}
+              type="name" name="description"
+            />
+            <Form.Field
+              control={Checkbox}
+              label='I agree to the Terms and Conditions'
+              onChange={this.check}
+            />
+            <Form.Field type="submit" control={Button}>Submit</Form.Field>
+          </Form>
+        </Container>
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+    )
+  }
 }

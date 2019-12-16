@@ -1,21 +1,85 @@
 import React, { Component } from 'react'
+import jwt from 'jsonwebtoken'
 import './HomePage.css'
-import { Button, Divider, Input, Segment, Card, Icon, Image } from 'semantic-ui-react'
+import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
 import Footer from '../Footer/Footer'
 
+const locations = [
+    {key:1,text: 'Jeddah',value: 'Jeddah'},{key:2,text: 'Riyadh',value: 'Riyadh'},{key:3,text: 'Dammam',value: 'Dammam'},{key:4, text: 'South SA',value: 'South SA'}
+]
+const filterCity = (e, {value}) => {
+    console.log(value)
+  }
+
+
 export default class HomePage extends Component {
+    state = {
+        token: "",
+        advanced:false,
+    }
+
+    componentDidMount() {
+        if (localStorage.usertoken == true) {
+            console.log('user token');
+
+            var decoded = jwt.verify(localStorage.usertoken, 'secret')
+            console.log(decoded.user);
+            this.setState({ token: decoded })
+        } else { }
+    }
+
+    checkbox=()=>{
+        if(this.state.advanced==false){
+            this.setState({advanced:true})
+        }else{this.setState({advanced:false})}
+    }
+    searchOnChange=(e)=>{
+        console.log(e.target.value)
+    }
     render() {
+
         return (
             <div>
                 <Container>
+                    <br />
                     <Segment basic textAlign='center'>
+                    {this.state.advanced?
+                        <div>
+                        <Dropdown
+                        style={{marginBottom:'12px', marginRight:'10px'}}
+                            placeholder='City'
+                            // fluid
+                            multiple
+                            search
+                            selection
+                            options={locations}
+                            onChange={filterCity.bind(this)}
+                        />
+                        <Dropdown
+                            placeholder='Categorie'
+                            // fluid
+                            multiple
+                            search
+                            selection
+                            options={locations}
+                            onChange={filterCity.bind(this)}
+                        />
+                        <br/>
+                        </div>
+                    :null}
                         <Input
+                            
                             action={{ color: 'blue', content: 'Search' }}
                             icon='search'
                             iconPosition='left'
                             placeholder='Search for something'
+                            type='name'
+                            name='search'
+                            onChange={this.searchOnChange}
                         />
+                        {/* <br/><div style={{marginBottom:'10px'}}></div> */}
+                        <Checkbox style={{marginLeft:'10px'}} onClick={this.checkbox} label="Advanced" />
 
                         <Divider horizontal>Or</Divider>
 
@@ -28,242 +92,242 @@ export default class HomePage extends Component {
                         />
                     </Segment>
                 </Container>
-                <br/><br/>
+                <br /><br />
                 <div className="ui four column doubling stackable grid center aligned container">
-                <div class="column">
-               
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        
-                        <img style={{maxHeight:'250px'}} src="https://a.imge.to/2019/12/14/vfFIKx.png"/>
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+                    <div class="column">
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+
+                            <img style={{ maxHeight: '250px' }} src="https://a.imge.to/2019/12/14/vfFIKx.png" />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-                
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <img style={{height:'250px'}} src='https://i.imgur.com/8Uirvpc.jpg' />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <img style={{ height: '250px' }} src='https://i.imgur.com/8Uirvpc.jpg' />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-               
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-                
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://a.imge.to/2019/12/14/vfFIKx.png' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://a.imge.to/2019/12/14/vfFIKx.png' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-               
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-                
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-               
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-                
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-               
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
                     <div class="column">
-                
-                    <Card style={{margin:'0 auto'}}  class="ui segment">
-                        <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>MacBook</Card.Header>
-                            
-                            <Card.Description>
-                                This is a 2018 model item, light usag..
+
+                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>MacBook</Card.Header>
+
+                                <Card.Description>
+                                    This is a 2018 model item, light usag..
 </Card.Description>
-<Card.Meta style={{fontWeight:'bold', marginTop:'20px', textAlign:'center'}}>
-                                <span>Current bid 400$</span>
-                            </Card.Meta>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <a>
-                                <Icon name='user' />
-                                Ali hdd
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                    <span>Current bid 400$</span>
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a>
+                                    <Icon name='user' />
+                                    Ali hdd
       </a>
-                        </Card.Content>
-                    </Card>
-                    
+                            </Card.Content>
+                        </Card>
+
                     </div>
-                    
+
                 </div>
-                <br/><br/><br/><br/><br/><br/><br/><br/>
+                <br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }

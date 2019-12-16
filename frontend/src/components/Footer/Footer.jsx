@@ -18,7 +18,7 @@ const Footer = () => {
             <div className="col-md-4 col-sm-4"></div>
             <div className="col-md-4 col-sm-4"></div>
             </Row>
-            <Row className="footer-info-row" style={{marginLeft:'5%',marginRight:'5%'}}>
+            <Row className="footer-info-row" style={{marginLeft:'5%',marginRight:'5%', marginBottom:'-10px'}}>
             <Col><p className="footer-info-col">Terms of Use</p></Col>
             <Col className="footer-spacer"><p>|</p></Col>
             <Col><p className="footer-info-col">Privacy Policy</p></Col>

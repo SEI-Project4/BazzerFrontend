@@ -70,8 +70,8 @@ export default class SignUp extends Component {
           </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                    <Button href="/home" style={{margin:'0 auto'}} block variant="success" >
-                            Confirm </Button>
+                    <Button href="/login" style={{margin:'0 auto'}} block variant="success" >
+                            Proceed </Button>
                     </Modal.Body>
                 </Modal>
                 <br /><br /><br />

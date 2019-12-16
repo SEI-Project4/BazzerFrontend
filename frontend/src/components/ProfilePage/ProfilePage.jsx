@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import jwt from 'jsonwebtoken'
-import { Row, Col, Button, Container, Tabs, Tab, OverlayTrigger, Popover, Form, Modal, Card } from 'react-bootstrap'
+import { Row, Col, Button, Container, Tabs, Tab, OverlayTrigger, Popover, Form, Modal, Card, Loader } from 'react-bootstrap'
 import './ProfilePage.css'
 import { Item, Rating, Icon, Image } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
@@ -19,25 +19,38 @@ export default class ProfilePage extends Component {
         lastname:null,
         description:null,
         city:null,
+        guest:false,
     }
-    componentDidMount(){
-        
-        if (localStorage.usertoken) {
-            console.log('user token');
-            
-                  var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                  console.log("decoded dot user")
-                  console.log(decoded.user);
-                  this.setState({ token: decoded, })
-                  axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.user._id}`).then(res=>{
-                      this.setState({
-                        firstname:res.data.result.firstname, lastname:res.data.result.lastname, description:res.data.result.description, profileimg:res.data.result.profileimg, city:res.data.result.city
-                      })
-                      console.log("shahsbahs")
-                      console.log(res)
-                  })
-                  .catch(err=>console.log(err))
-                } else { }
+    componentDidMount=()=>{
+
+        let self=this;
+
+        if (localStorage.usertoken) {  
+            jwt.verify(localStorage.usertoken, 'secret', function(err, decoded) {
+                if (err) {        
+                  alert("Your session has expired please login again")
+                  self.setState({guest:true})
+                }else{
+                    var decoded = jwt.verify(localStorage.usertoken, 'secret')
+                    console.log("decoded dot user")
+                    console.log(decoded.user);
+                    self.setState({ token: decoded, })
+                    axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.user._id}`).then(res=>{
+                        self.setState({
+                          firstname:res.data.result.firstname, lastname:res.data.result.lastname, description:res.data.result.description, profileimg:res.data.result.profileimg, city:res.data.result.city
+                        })
+                        console.log("shahsbahs")
+                        console.log(res)
+                    })
+                    .catch(err=>console.log(err))
+                }
+              });
+
+                } else {this.setState({guest:true}) }
+    }
+    componentDidUpdate=()=>{
+        console.log("state:=")
+        console.log(this.state)
     }
 
     // componentDidMount(){

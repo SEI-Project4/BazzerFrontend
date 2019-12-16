@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Container, Icon } from 'semantic-ui-react'
+import { Container, Icon,Loader } from 'semantic-ui-react'
 import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import SweetAlert from 'sweetalert2-react';
 import axios from 'axios'
@@ -63,7 +63,7 @@ export default class SignIn extends Component {
                     </Modal.Header>
                     <Modal.Body>
                     <Button href="/home" style={{margin:'0 auto'}} block variant="success" >
-                            Confirm </Button>
+                    Continue to home </Button>
                     </Modal.Body>
                 </Modal>
                 <br /><br /><br />
@@ -79,6 +79,9 @@ export default class SignIn extends Component {
                         {this.state.errorlogin == true ? <Alert variant="danger" onClose={() => this.setState({ errorlogin: false })} dismissible>
                             <h6>Password or Email is not correct</h6>
                         </Alert> : null}
+                        {/* {this.state.success==true?
+                        <Loader active inline='centered' />
+                    :null} */}
                         <Form.Group controlId="formBasicEmail">
                             <Form.Label>Email address</Form.Label>
                             <Form.Control name="email" type="email" placeholder="Enter email" onChange={this.onChange} />

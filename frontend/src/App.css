@@ -38,7 +38,7 @@
 }
 
 .body{
-  background-color: rgb(189, 189, 194);
+  background-color: rgba(184, 166, 138, 0.39);
 }
 @media only screen and (min-width: 700px){
   #nav-brandd{
@@ -59,6 +59,10 @@
   }
 }
 
+/* #menuu-navv{
+  border: rgba(128, 128, 128, 0.459) 1px solid;
+  border-radius: 5px;
+} */
 
 @media only screen and (min-width: 992px){
   #menuu-navv{

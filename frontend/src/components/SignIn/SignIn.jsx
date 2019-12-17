@@ -19,12 +19,13 @@ export default class SignIn extends Component {
     }
     submit = (e) => {
         e.preventDefault()
-        axios.post('https://sei-bazaar-backend.herokuapp.com/users/login', this.state)
+        axios.post('https://sei-bazaar-backend.herokuapp.com/auth/login', this.state)
             .then(res => {
-                if (res.data.msg == "Password or email is NOT correct") {
+                if (res.message == "Password or email is NOT correct") {
                     this.setState({
                         errorlogin: true
                     })
+                    
                 } else {
                     this.setState({
                         success: true
@@ -35,7 +36,9 @@ export default class SignIn extends Component {
                 console.log(res)
             })
 
-            .catch(err => console.log(err))
+            .catch(err => {this.setState({
+                errorlogin: true
+            })})
     }
 
     handlesubmit(e) {

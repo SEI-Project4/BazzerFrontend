@@ -43,7 +43,7 @@ export default class CreatePost extends Component {
           var decoded = jwt.verify(localStorage.usertoken, 'secret')
           console.log("decoded dot user")
           console.log(decoded.user);
-          this.setState({ token: decoded, session: true })
+          self.setState({ token: decoded, session: true })
         }
       });
     }
@@ -86,13 +86,15 @@ export default class CreatePost extends Component {
     } else if (this.state.title == '') {
       alert("you need to state a title")
     } else {
-      axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/`,{headers:{Authorization:`Bearer ${localStorage.usertoken}`}}, this.state)
+      axios.post(`https://sei-bazaar-backend.herokuapp.com/posts`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }, this.state)
         .then(res => {
           if (res.data.msg == "created successfully") {
             alert("You post have been created, please wait for admin approval")
             this.setState({
               success: true
             })
+          }else{
+            console.log(this.state)
           }
         })
 
@@ -223,6 +225,13 @@ export default class CreatePost extends Component {
                   type="number" name="startingbid" />
               </div> : null}
             </Form.Group>
+            <Form.Field width={3}
+              control={Input}
+              label='Quantity'
+              placeholder='set a quantity..'
+              onChange={this.onChange}
+              type="number" name="quantity"
+            />
             <Form.Field style={{ minHeight: 200 }}
               control={TextArea}
               label='Description'
@@ -230,6 +239,7 @@ export default class CreatePost extends Component {
               onChange={this.onChange}
               type="name" name="description"
             />
+            
             <Form.Field
               control={Checkbox}
               label='I agree to the Terms and Conditions'

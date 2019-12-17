@@ -46,6 +46,14 @@ export default class SignUp extends Component {
                     this.setState({
                         success: true
                     })
+                }else if(res.data.msg == "email used !!! change the email"){
+                    this.setState({
+                        erroremail:true
+                    })
+                }else{
+                    this.setState({
+                        erroruser:true
+                    })
                 }
                 })
         
@@ -85,7 +93,7 @@ export default class SignUp extends Component {
                         <Form.Group controlId="formGridUsername">
                             <Form.Label>Username</Form.Label>
                             <Form.Control isInvalid={this.state.error} type="name" name="username" placeholder="Enter Username" onChange={this.onChange} />
-                            {this.state.erroruser ? <Form.Text style={{color:'red'}}>error username alreay exists</Form.Text>:<Form.Text style={{color:'green'}}>username available</Form.Text>}
+                            {this.state.erroruser ? <Form.Text style={{color:'red'}}>error username already exists</Form.Text>:null}
                             
                             <Form.Control.Feedback type="invalid">
                                 {"Please enter a valid & unique username"}
@@ -95,6 +103,7 @@ export default class SignUp extends Component {
                         <Form.Group controlId="formGridEmail">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" placeholder="Enter email" name="email" onChange={this.onChange} />
+                            {this.state.erroremail ? <Form.Text style={{color:'red'}}>error email already exists</Form.Text>:null}
                         </Form.Group>
 
                         <Form.Group controlId="formGridPassword">

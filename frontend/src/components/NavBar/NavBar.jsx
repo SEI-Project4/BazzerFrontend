@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import { Menu, Icon, Button, Dropdown } from 'semantic-ui-react'
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import jwt from 'jsonwebtoken'
+import axios from 'axios'
 
 
 export default class NavBar extends Component {
     state = {
         session: false,
         token: '',
+        user:'',
     }
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -26,16 +28,19 @@ export default class NavBar extends Component {
                 self.setState({ session: false })
             } else {
                 var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                console.log("decoded dot user navbar")
-                console.log(decoded.user);
-                self.setState({ token: decoded.user, session: true })
+                self.setState({ session: true })
+                console.log("response get user")
+                axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+                    .then(res => {
+                        self.setState({ user: res.data.result })
+                        console.log(res.data.result)
+                    }).catch(err => console.log(err))
             }
         });
-
     }
-    componentDidUpdate=()=>{
-        console.log("navbar state:=")
-        console.log(this.state)
+    componentDidUpdate = () => {
+        // console.log("navbar state:=")
+        // console.log(this.state)
     }
 
 
@@ -58,33 +63,12 @@ export default class NavBar extends Component {
                                     active={activeItem === 'home'}
                                     onClick={this.handleItemClick}
                                 />
-                                <Menu.Item style={{ marginBottom: '2px' }}
-                                    name='locations'
-                                >
-                                    <Dropdown id="dropdown-categ"
-                                        onClick={this.handleItemClick}
-                                        active={activeItem === 'locations'}
-                                        text='Locations'
-                                        floating
-                                        labeled
-                                        search
-                                    >
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href="/locations">Qassim</Dropdown.Item>
-                                            <Dropdown.Item>Riyadh</Dropdown.Item>
-                                            <Dropdown.Item>Tabuk</Dropdown.Item>
-                                            <Dropdown.Item>Madinah</Dropdown.Item>
-                                            <Dropdown.Item>Makkah</Dropdown.Item>
-                                            <Dropdown.Item>Jawf</Dropdown.Item>
-                                            <Dropdown.Item>Ha'il</Dropdown.Item>
-                                            <Dropdown.Item>Bahah</Dropdown.Item>
-                                            <Dropdown.Item>Jizan</Dropdown.Item>
-                                            <Dropdown.Item>'Asir</Dropdown.Item>
-                                            <Dropdown.Item>Najran</Dropdown.Item>
-                                            <Dropdown.Item>Eastern Province</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Menu.Item>
+                                 <Menu.Item style={{ marginBottom: '2px' }}
+                                    href="/create"
+                                    name='create'
+                                    active={activeItem === 'create'}
+                                    onClick={this.handleItemClick}
+                                />
                                 <Menu.Item
                                     name='categories'
                                     style={{ marginBottom: '2px' }}
@@ -117,8 +101,8 @@ export default class NavBar extends Component {
                                                 className='icon'
                                             >
                                                 <Dropdown.Menu>
-                                                    <Dropdown.Header icon='user' content={this.state.token.username} />
-                                                    <Dropdown.Item href={"/users/" + `${this.state.token._id}`}>Profile</Dropdown.Item>
+                                                    <Dropdown.Header icon='user' content={this.state.user.username} />
+                                                    <Dropdown.Item href={"/profile/" + `${this.state.user._id}`}>Profile</Dropdown.Item>
                                                     <Dropdown.Item>Inbox</Dropdown.Item>
                                                     <Dropdown.Item>Request verification</Dropdown.Item>
                                                     <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>

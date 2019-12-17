@@ -15,13 +15,17 @@ export default class ProfilePage extends Component {
         token:"",
         setshow: false,
         profileimg: null,
-        firstname: null,
-        lastname:null,
+        firstname: '',
+        lastname:'',
         description:null,
         city:null,
         guest:false,
+        data:'',
+        followers:[],
     }
     componentDidMount=()=>{
+
+       
 
         let self=this;
 
@@ -32,12 +36,12 @@ export default class ProfilePage extends Component {
                   self.setState({guest:true})
                 }else{
                     var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                    console.log("decoded dot user")
-                    console.log(decoded.user);
+                    console.log("decoded ==")
+                    console.log(decoded);
                     self.setState({ token: decoded, })
-                    axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.user._id}`).then(res=>{
+                    axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${self.props.match.params.id}`,{ headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res=>{
                         self.setState({
-                          firstname:res.data.result.firstname, lastname:res.data.result.lastname, description:res.data.result.description, profileimg:res.data.result.profileimg, city:res.data.result.city
+                          firstname:res.data.result.firstname, lastname:res.data.result.lastname, description:res.data.result.description, profileimg:res.data.result.profileimg, city:res.data.result.city, data:res.data.result
                         })
                         console.log("shahsbahs")
                         console.log(res)
@@ -73,9 +77,10 @@ export default class ProfilePage extends Component {
         console.log(this.state)
     }
     submit = (e) => {
-        axios.put(`https://sei-bazaar-backend.herokuapp.com/users/${this.state.token}`, this.state.profileimg)
+        e.preventDefault()
+        axios.put(`https://sei-bazaar-backend.herokuapp.com/users/${this.state.token.id}`, this.state,{ headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res =>{
-                
+                alert("hase been edited successfully")
                 console.log(res)})
         
             .catch(err => console.log(err))
@@ -163,7 +168,7 @@ export default class ProfilePage extends Component {
                                         <Form.Control name="description" as="textarea" rows="3" onChange={this.onChange} />
                                     </Form.Group>
                                     <br/>
-                                    <Button variant="success" type="submit">
+                                    <Button onClick={this.submit} variant="success" type="submit">
                                         Submit </Button>
                                 </Form>
                             </Col>
@@ -174,50 +179,55 @@ export default class ProfilePage extends Component {
                 <Container style={{ marginBottom: '-20px' }}>
                     <div style={{ marginLeft: '-15px' }}>
                         <Button onClick={() => this.setState({ setshow: true })} style={{ marginLeft: '0px', marginRight: '10px', width: '135px' }} inline-block variant="dark"><Icon name="edit outline"></Icon>Edit Profile</Button>
+                        {this.state.token.id!==this.props.match.params.id?
                         <OverlayTrigger trigger="click" placement="bottom" overlay={<Popover id="popover-basic">
-                            <Popover.Title as="h3">Give a Rating</Popover.Title>
-                            <Popover.Content>
-                                <Form>
-                                    <Rating icon='star' maxRating={5} clearable />
-                                    <Form.Control style={{ margin: '5px auto' }} placeholder="Say something?" />
-                                    <Button size="sm" variant="primary" type="submit">
-                                        Submit </Button>
-                                </Form>
-                            </Popover.Content>
-                        </Popover>}>
-                            <Button style={{ float: 'right', marginRight: '-15px' }} inline-block variant="success"><Icon name="plus circle"></Icon>Rate User</Button>
-                        </OverlayTrigger>
+                        <Popover.Title as="h3">Give a Rating</Popover.Title>
+                        <Popover.Content>
+                            <Form>
+                                <Rating icon='star' maxRating={5} clearable />
+                                <Form.Control style={{ margin: '5px auto' }} placeholder="Say something?" />
+                                <Button size="sm" variant="primary" type="submit">
+                                    Submit </Button>
+                            </Form>
+                        </Popover.Content>
+                    </Popover>}>
+
+                        <Button style={{ float: 'right', marginRight: '-15px' }} inline-block variant="success"><Icon name="plus circle"></Icon>Rate User</Button>
+                        
+                    </OverlayTrigger>:null}
+                        
                     </div>
                 </Container>
                 <br />
                 <Container style={{ border: 'solid 2px black', backgroundColor: 'white' }}>
                     <Row style={{ marginTop: '5%' }}>
                         <Col sm={4}><Image style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src="https://i.imgur.com/0hWpxv0.png" thumbnail />
-                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>Ali hdd</h4></Col>
+                                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.data.username}</h4></Col>
                         <Col sm={1}></Col>
                         <Col sm={6}>
                             <Row>
                                 <Container style={{ border: '1px gray solid', width: '100%', borderRadius: '5px', backgroundColor: '#f8f7f6' }}>
                                     <br />
-                                    <h5>Ali Hamidaddin</h5>
-                                    <h5>Jeddah</h5>
+                                    <h5>{this.state.firstname +" "+ this.state.lastname}</h5>
+                                    <h5>{this.state.city}</h5>
 
-                                    <h5 >Rating: 3.8</h5>
+                                    <h5 >Rating: {this.state.data.Rating}</h5>
 
 
-                                    <h5>Member since: 3/12/2019</h5>
-                                    <h5>Ali.hd1997@hotmail.com</h5>
-                                    <h5>0545306262</h5>
-                                    <h5>Followers: 4</h5>
+                                            <h5>Member since: {this.state.data.createdAt!==undefined?this.state.data.createdAt.replace("T", " at ").slice(0, -5):null}</h5>
+                                    <h5>{this.state.data.email}</h5>
+                                    <h5>{this.state.data.phonenumber}</h5>
+                                    <h5>Followers: {this.state.data.followers!==undefined ? this.state.followers.length : null}</h5>
                                     <br />
                                 </Container>
                             </Row>
                             <Row>
+                           
+                            
                                 <br />
-                                <Button style={{ margin: '15px auto', width: '150px' }} block variant="primary"><Icon name="add user"></Icon> Follow</Button>
-                                <br />
-                                <Button style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Message</Button>
-                                <Button style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Inbox</Button>
+                                {this.state.token.id===this.props.match.params.id?<Button style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Inbox</Button>:this.state.token.id?  <div style={{margin:'0 auto'}}><Button style={{ margin: '15px auto', width: '150px' }} variant="primary"><Icon name="add user"></Icon> Follow</Button><div style={{marginLeft:'50px', display:'inline-block'}}></div>
+                                <Button style={{ margin: '15px auto', width: '150px' }} variant="warning"><Icon name="envelope"></Icon>Message</Button></div>
+                                :null}
                             </Row>
                         </Col>
                         <Col sm={1}></Col>
@@ -225,7 +235,7 @@ export default class ProfilePage extends Component {
                     <br />
                     <Container>
                         <h4>Description:</h4>
-                        <p>is nullam lacinia deserunt ipsum veritatis, quaerat vivamus ullam! Qui hymenaeos curabitur excepteur voluptates, ducimus, condimentum gravida natus. Ea? Nisl corrupti? Sapien totam vehicula laborum quibusdam anim officia autem eaque varius quod repudiandae? Sociosqu penatibus similique, venenatis ipsum sequi! Ullam dolore totam blandit fames primis! Sit distinctio, </p>
+                        <p>{this.state.data.description}</p>
                     </Container>
                     <br /><br />
                     <Tabs defaultActiveKey="posts" id="uncontrolled-tab-example">
@@ -233,7 +243,8 @@ export default class ProfilePage extends Component {
                             <br />
 
                             <Item.Group>
-                                <Item>
+                                {this.state.data.posts!==undefined ?this.state.data.posts.map((post)=>{
+                                    return<Item>
                                     <Item.Image size='tiny' src='https://i.imgur.com/8Uirvpc.jpg' />
 
                                     <Item.Content>
@@ -245,19 +256,7 @@ export default class ProfilePage extends Component {
                                         <Item.Extra>Additional Details</Item.Extra>
                                     </Item.Content>
                                 </Item>
-
-                                <Item>
-                                    <Item.Image size='tiny' src='https://a.imge.to/2019/12/14/vfFIKx.png' />
-
-                                    <Item.Content>
-                                        <Item.Header as='a'>Macbook</Item.Header>
-                                        <Item.Meta>this is a bad product i dont want it</Item.Meta>
-                                        <Item.Description>
-                                            <Image src='' />
-                                        </Item.Description>
-                                        <Item.Extra>price 400$</Item.Extra>
-                                    </Item.Content>
-                                </Item>
+                                }):null}
                             </Item.Group>
                         </Tab>
                         <Tab eventKey="orders" title="Previous Orders">
@@ -291,7 +290,7 @@ export default class ProfilePage extends Component {
                                 </Item>
                             </Item.Group>
                         </Tab>
-                        <Tab eventKey="ratings" title="Ratings">
+                        <Tab eventKey="ratings" title="Reviews">
                             <br />
                             <h1>Ratings and comments</h1>
                         </Tab>
@@ -309,17 +308,16 @@ export default class ProfilePage extends Component {
                     <br /><br /><br /><br /><br /><br /><br /><br /><br />
                 </Container>
                 <br />
-                <Button style={{ width: '150px', margin: '0 auto' }} block variant="info">Edit Profile</Button>
-
+                {this.state.token.id===this.props.match.params.id?<Button style={{ width: '150px', margin: '0 auto' }} block variant="info">Edit Profile</Button>:null}
                 <br />
-                <Container>
+                {this.state.token.isadmin===true? <Container>
                     <Row>
                         <Col>
                             <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} inline-block variant="success">Verify User</Button>
                         </Col>
                         <Col><Button style={{ float: 'right', width: '150px', marginRight: '30%' }} inline-block variant="danger">Delete User</Button></Col>
                     </Row>
-                </Container>
+                </Container>:null}
                 <br /><br />
                 <br /><br /><br />
                 <br />

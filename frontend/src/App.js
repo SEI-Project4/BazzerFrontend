@@ -29,9 +29,10 @@ export default class App extends Component {
         />
         <Route
             
-            path="/profile"
+            path="/profile/:id"
             render={props => (
-              <ProfilePage
+              <ProfilePage 
+                
                 {...props}
               />
             )}

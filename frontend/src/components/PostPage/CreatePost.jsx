@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import { Container } from 'react-bootstrap'
-import { Button, Checkbox, Form, Input, Radio, Select, TextArea } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Loader } from 'semantic-ui-react'
 import './PostStyle.css'
 import Dropzone from 'react-dropzone'
 
@@ -28,6 +28,7 @@ export default class CreatePost extends Component {
     token: localStorage.usertoken,
     title: '',
     session: true,
+    submited:false,
   }
 
   componentDidMount = () => {
@@ -69,6 +70,9 @@ export default class CreatePost extends Component {
 
   submit = (e) => {
     e.preventDefault()
+    this.setState({
+      submited:true
+    })
     if (this.state.session == false) {
       alert("Your session has expired please login again")
     } else if (this.state.value == 0) {
@@ -86,7 +90,7 @@ export default class CreatePost extends Component {
     } else if (this.state.title == '') {
       alert("you need to state a title")
     } else {
-      axios.post(`https://sei-bazaar-backend.herokuapp.com/posts`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }, this.state)
+      axios.post(`https://sei-bazaar-backend.herokuapp.com/posts`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res => {
           if (res.data.msg == "created successfully") {
             alert("You post have been created, please wait for admin approval")
@@ -94,6 +98,9 @@ export default class CreatePost extends Component {
               success: true
             })
           }else{
+            this.setState({
+              submited:false
+            })
             console.log(this.state)
           }
         })
@@ -178,6 +185,8 @@ export default class CreatePost extends Component {
           })}
         </div>
         <Container>
+          {this.state.submited===true?<div><Loader active inline='centered' /></div>:null}
+        
           <br /><br /><br />
           <Form onSubmit={this.submit} method="POST">
             <Form.Group>
@@ -193,7 +202,7 @@ export default class CreatePost extends Component {
                 control={Select}
                 label='Location'
                 options={options}
-                placeholder='Choose the closest location'
+                placeholder='Closest location'
                 onChange={this.changeLocation}
                 type="name" name="city"
               />

@@ -65,25 +65,25 @@ export default class NavBar extends Component {
                                 />
                                  <Menu.Item style={{ marginBottom: '2px' }}
                                     href="/create"
-                                    name='create'
+                                    name='Sell'
                                     active={activeItem === 'create'}
                                     onClick={this.handleItemClick}
                                 />
                                 <Menu.Item
-                                    name='categories'
+                                    name='About Us'
                                     style={{ marginBottom: '2px' }}
                                 >
                                     <Dropdown id="dropdown-categ"
                                         onClick={this.handleItemClick}
                                         active={activeItem === 'categories'}
-                                        text='Categories'
+                                        text='About Us'
                                         floating
                                         labeled
                                         search
                                     >
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href="/categories">Pets</Dropdown.Item>
-                                            <Dropdown.Item>Cars</Dropdown.Item>
+                                            <Dropdown.Item href="/terms">Terms and Conditions</Dropdown.Item>
+                                            <Dropdown.Item>Contact information</Dropdown.Item>
                                             <Dropdown.Item>Electronics</Dropdown.Item>
                                             <Dropdown.Item>Food</Dropdown.Item>
                                         </Dropdown.Menu>

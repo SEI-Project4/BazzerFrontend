@@ -10,6 +10,7 @@ import SignIn from './components/SignIn/SignIn'
 import SignUp from './components/SignUp/SignUp'
 import NavBar from './components/NavBar/NavBar'
 import Footer from './components/Footer/Footer'
+import Terms from './components/AboutUs/Terms'
 
 export default class App extends Component {
   render() {
@@ -32,6 +33,16 @@ export default class App extends Component {
             path="/profile/:id"
             render={props => (
               <ProfilePage 
+                
+                {...props}
+              />
+            )}
+        />
+        <Route
+            
+            path="/terms"
+            render={props => (
+              <Terms 
                 
                 {...props}
               />

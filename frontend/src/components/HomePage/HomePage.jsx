@@ -4,9 +4,10 @@ import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
 import Footer from '../Footer/Footer'
+import axios from 'axios'
 
 const locations = [
-    {key:1,text: 'Jeddah',value: 'Jeddah'},{key:2,text: 'Riyadh',value: 'Riyadh'},{key:3,text: 'Dammam',value: 'Dammam'},{key:4, text: 'South SA',value: 'South SA'}
+    {key:1,text: 'Jeddah',value: 'Jeddah'},{key:2,text: 'Riyadh',value: 'Riyadh'},{key:3,text: 'Dammam',value: 'Dammam'},{key:4, text: 'Jizan',value: 'Jizan'}
 ]
 const filterCity = (e, {value}) => {
     console.log(value)
@@ -27,6 +28,14 @@ export default class HomePage extends Component {
             console.log(decoded.user);
             this.setState({ token: decoded })
         } else { }
+
+        axios.get('https://sei-bazaar-backend.herokuapp.com/posts')
+        .then((res)=>{
+            this.setState({
+               
+            })
+        })
+        .catch(err=>console.log(err))
     }
 
     checkbox=()=>{
@@ -94,6 +103,8 @@ export default class HomePage extends Component {
                 </Container>
                 <br /><br />
                 <div className="ui four column doubling stackable grid center aligned container">
+
+
                     <div class="column">
 
                         <Card style={{ margin: '0 auto' }} class="ui segment">
@@ -118,6 +129,7 @@ export default class HomePage extends Component {
                         </Card>
 
                     </div>
+
                     <div class="column">
 
                         <Card style={{ margin: '0 auto' }} class="ui segment">

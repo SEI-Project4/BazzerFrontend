@@ -114,6 +114,7 @@ export default class ProfilePage extends Component {
                 myFileItemReader.addEventListener("load", () => {
                     console.log(myFileItemReader.result)
                     const myResult = myFileItemReader.result
+                    // const myResult2 = new Buffer(myResult,'base64').toString('binary')
                     this.setState({ profileimg: myResult })
                 }, false)
                 myFileItemReader.readAsDataURL(currentFile)

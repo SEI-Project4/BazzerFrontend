@@ -11,7 +11,7 @@ export default class Terms extends Component {
                     <br/><br/>
                     <h4>Welcome to Open Bazaar</h4>
                     <br/>
-<h4>These terms and conditions outline the rules and regulations for the use of Company Name's Website, located at Website.com.</h4>
+<h4>These terms and conditions outline the rules and regulations for the use of Open Bazaar's Website, located at openbazaar.com.</h4>
 <br/>
 <h4>By accessing this website we assume you accept these terms and conditions. Do not continue to use Website Name if you do not agree to take all of the terms and conditions stated on this page.</h4>
 <br/>

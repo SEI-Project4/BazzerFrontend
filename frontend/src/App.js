@@ -40,6 +40,16 @@ export default class App extends Component {
         />
         <Route
             
+            path="/post/:id"
+            render={props => (
+              <PostReady 
+                
+                {...props}
+              />
+            )}
+        />
+        <Route
+            
             path="/terms"
             render={props => (
               <Terms 

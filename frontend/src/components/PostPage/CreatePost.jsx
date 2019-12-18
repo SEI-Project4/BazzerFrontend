@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import { Container } from 'react-bootstrap'
-import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Loader } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Loader, Icon } from 'semantic-ui-react'
 import './PostStyle.css'
 import Dropzone from 'react-dropzone'
 
@@ -82,9 +82,9 @@ export default class CreatePost extends Component {
     } else if (this.state.value == 2 && this.state.startingbid == '') {
       alert("please set a starting bid")
     }
-    // else if(this.state.postimages.length<1){
-    //   alert("you need to provide atleast 1 image")
-    // }
+    else if(this.state.postimages.length<1){
+      alert("you need to provide atleast 1 image")
+    }
     else if (this.state.check == false) {
       alert("please accept the terms and conditions")
     } else if (this.state.title == '') {
@@ -94,6 +94,7 @@ export default class CreatePost extends Component {
         .then(res => {
           if (res.data.msg == "created successfully") {
             alert("You post have been created, please wait for admin approval")
+            window.location = "/home"
             this.setState({
               success: true
             })
@@ -166,11 +167,15 @@ export default class CreatePost extends Component {
                     <section>
                       <div style={{ textAlign: 'center' }} {...getRootProps()}>
                         <input {...getInputProps()} />
-                        <br /><br /><br /><br /><br /><br /><br />
+                        <br /><br /><br /><br /><br />
+                        
+                        <br />
                         <h1 >Drag 'n' drop your images here, or Click to browse</h1>
                         <br />
                         <h5>Maximum 5 images each no bigger than 2MB</h5>
-                        <br /><br /><br /><br /><br /><br />
+                        <br />
+                        <h1><Icon name="upload"></Icon></h1>
+                        <br /><br /><br /><br /><br />
                       </div>
                     </section>
                   )}
@@ -185,7 +190,8 @@ export default class CreatePost extends Component {
           })}
         </div>
         <Container>
-          {this.state.submited===true?<div><Loader active inline='centered' /></div>:null}
+          <br/>
+          {this.state.submited===true?<div><Loader content='Loading' active inline='centered' /></div>:null}
         
           <br /><br /><br />
           <Form onSubmit={this.submit} method="POST">
@@ -224,12 +230,12 @@ export default class CreatePost extends Component {
                 onChange={this.handleChange}
               />
               {this.state.value == 1 ? <div>
-                <Input focus placeholder='Enter a price...'
+                <Input focus placeholder='Enter a price in SAR'
                   onChange={this.onChange}
                   type="number" name="price" />
               </div> : null}
               {this.state.value == 2 ? <div>
-                <Input focus placeholder='Enter a starting bid...'
+                <Input focus placeholder='Enter a starting bid in SAR'
                   onChange={this.onChange}
                   type="number" name="startingbid" />
               </div> : null}

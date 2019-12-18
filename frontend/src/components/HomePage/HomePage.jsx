@@ -1,26 +1,30 @@
 import React, { Component } from 'react'
 import jwt from 'jsonwebtoken'
 import './HomePage.css'
-import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox } from 'semantic-ui-react'
+import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox, Loader, Pagination } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
 import Footer from '../Footer/Footer'
 import axios from 'axios'
 
 const locations = [
-    {key:1,text: 'Jeddah',value: 'Jeddah'},{key:2,text: 'Riyadh',value: 'Riyadh'},{key:3,text: 'Dammam',value: 'Dammam'},{key:4, text: 'Jizan',value: 'Jizan'}
+    { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Riyadh', value: 'Riyadh' }, { key: 3, text: 'Dammam', value: 'Dammam' }, { key: 4, text: 'Jizan', value: 'Jizan' }
 ]
-const filterCity = (e, {value}) => {
+const filterCity = (e, { value }) => {
     console.log(value)
-  }
+}
 
 
 export default class HomePage extends Component {
     state = {
         token: "",
-        advanced:false,
+        advanced: false,
+        data: [],
+        search: '',
+        loading: true,
     }
 
     componentDidMount() {
+
         if (localStorage.usertoken == true) {
             console.log('user token');
 
@@ -30,55 +34,59 @@ export default class HomePage extends Component {
         } else { }
 
         axios.get('https://sei-bazaar-backend.herokuapp.com/posts')
-        .then((res)=>{
-            this.setState({
-               
+            .then((res) => {
+                this.setState({
+                    data: res.data.result, loading: false
+                })
             })
-        })
-        .catch(err=>console.log(err))
+            .catch(err => console.log(err))
     }
 
-    checkbox=()=>{
-        if(this.state.advanced==false){
-            this.setState({advanced:true})
-        }else{this.setState({advanced:false})}
+    checkbox = () => {
+        if (this.state.advanced == false) {
+            this.setState({ advanced: true })
+        } else { this.setState({ advanced: false }) }
     }
-    searchOnChange=(e)=>{
-        console.log(e.target.value)
+    searchOnChange = (e) => {
+        this.setState({ search: e.target.value.toLowerCase() })
     }
     render() {
 
+        const lowercasedsearch = this.state.search.toLowerCase();
+        const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
+        console.log("filtered items")
+        console.log(filteredItems)
         return (
             <div>
                 <Container>
                     <br />
                     <Segment basic textAlign='center'>
-                    {this.state.advanced?
-                        <div>
-                        <Dropdown
-                        style={{marginBottom:'12px', marginRight:'10px'}}
-                            placeholder='City'
-                            // fluid
-                            multiple
-                            search
-                            selection
-                            options={locations}
-                            onChange={filterCity.bind(this)}
-                        />
-                        <Dropdown
-                            placeholder='Categorie'
-                            // fluid
-                            multiple
-                            search
-                            selection
-                            options={locations}
-                            onChange={filterCity.bind(this)}
-                        />
-                        <br/>
-                        </div>
-                    :null}
+                        {this.state.advanced ?
+                            <div>
+                                <Dropdown
+                                    style={{ marginBottom: '12px', marginRight: '10px' }}
+                                    placeholder='City'
+                                    // fluid
+                                    multiple
+                                    search
+                                    selection
+                                    options={locations}
+                                    onChange={filterCity.bind(this)}
+                                />
+                                <Dropdown
+                                    placeholder='Categorie'
+                                    // fluid
+                                    multiple
+                                    search
+                                    selection
+                                    options={locations}
+                                    onChange={filterCity.bind(this)}
+                                />
+                                <br />
+                            </div>
+                            : null}
                         <Input
-                            
+
                             action={{ color: 'blue', content: 'Search' }}
                             icon='search'
                             iconPosition='left'
@@ -88,7 +96,7 @@ export default class HomePage extends Component {
                             onChange={this.searchOnChange}
                         />
                         {/* <br/><div style={{marginBottom:'10px'}}></div> */}
-                        <Checkbox style={{marginLeft:'10px'}} onClick={this.checkbox} label="Advanced" />
+                        <Checkbox style={{ marginLeft: '10px' }} onClick={this.checkbox} label="Advanced" />
 
                         <Divider horizontal>Or</Divider>
 
@@ -100,35 +108,49 @@ export default class HomePage extends Component {
                             href="/create"
                         />
                     </Segment>
+                    <br />
+                    {this.state.loading === true ? <div><Loader content='Loading Please Wait' active inline='centered' /></div> : null}
                 </Container>
                 <br /><br />
                 <div className="ui four column doubling stackable grid center aligned container">
 
+                    {filteredItems.map((post) => {
+                        return <div class="column">
+                            <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                                <Card style={{ margin: '0 auto' }} class="ui segment">
 
-                    <div class="column">
+                                    <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
+                                        label={{
+                                            as: 'a',
+                                            color: 'black',
+                                            content: `${33}`,
+                                            icon: 'eye',
+                                            ribbon: true,
+                                        }} />
+                                    <Card.Content>
+                                        <Card.Header>{post.title}</Card.Header>
 
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
+                                        <Card.Description>
+                                            {post.description.substring(0, 54) + "..."}
+                                        </Card.Description>
+                                        <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
+                                            {post.price > 0 ? <span>Price {post.price}</span> : <span>starting bid {post.startingbid}</span>}
 
-                            <img style={{ maxHeight: '250px' }} src="https://a.imge.to/2019/12/14/vfFIKx.png" />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
+                                        </Card.Meta>
+                                    </Card.Content>
+                                    <Card.Content extra>
+                                        <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                                            <Icon name='user' />
+                                            {post.username}
+                                        </a>
+                                    </Card.Content>
+                                </Card>
+                            </a>
+                        </div>
+                    })}
 
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
 
-                    </div>
+
 
                     <div class="column">
 
@@ -176,29 +198,7 @@ export default class HomePage extends Component {
                         </Card>
 
                     </div>
-                    <div class="column">
 
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://a.imge.to/2019/12/14/vfFIKx.png' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
                     <div class="column">
 
                         <Card style={{ margin: '0 auto' }} class="ui segment">
@@ -314,32 +314,19 @@ export default class HomePage extends Component {
                         </Card>
 
                     </div>
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
+                    <br />
 
                 </div>
-                <br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br />
+                {/* <div style={{ textAlign: 'center' }}>
+                    <Pagination defaultActivePage={1}
+                        firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+                        lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+                        prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                        nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                        totalPages={5} />
+                </div> */}
+                <br /><br /><br />
             </div>
         )
     }

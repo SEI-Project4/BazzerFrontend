@@ -5,6 +5,7 @@ import { Container } from 'react-bootstrap'
 import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Loader, Icon } from 'semantic-ui-react'
 import './PostStyle.css'
 import Dropzone from 'react-dropzone'
+import Swal from 'sweetalert2'
 
 const imageMaxSize = 2132600 // bytes = 2MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
@@ -39,7 +40,13 @@ export default class CreatePost extends Component {
       jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
         if (err) {
           self.setState({ session: false })
-          alert("Your session has expired please login again")
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'token expired',
+            showConfirmButton: false,
+            timer: 1500
+        })
         } else {
           var decoded = jwt.verify(localStorage.usertoken, 'secret')
           console.log("decoded dot user")

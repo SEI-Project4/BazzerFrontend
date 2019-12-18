@@ -148,176 +148,10 @@ export default class HomePage extends Component {
                             </a>
                         </div>
                     })}
-
-
-
-
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <img style={{ height: '250px' }} src='https://i.imgur.com/8Uirvpc.jpg' />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
-
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
-                    <div class="column">
-
-                        <Card style={{ margin: '0 auto' }} class="ui segment">
-                            <Image src='https://i.imgur.com/8Uirvpc.jpg' wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>MacBook</Card.Header>
-
-                                <Card.Description>
-                                    This is a 2018 model item, light usag..
-</Card.Description>
-                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                    <span>Current bid 400$</span>
-                                </Card.Meta>
-                            </Card.Content>
-                            <Card.Content extra>
-                                <a>
-                                    <Icon name='user' />
-                                    Ali hdd
-      </a>
-                            </Card.Content>
-                        </Card>
-
-                    </div>
                     <br />
 
                 </div>
-                <br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br />
                 {/* <div style={{ textAlign: 'center' }}>
                     <Pagination defaultActivePage={1}
                         firstItem={{ content: <Icon name='angle double left' />, icon: true }}
@@ -326,7 +160,7 @@ export default class HomePage extends Component {
                         nextItem={{ content: <Icon name='angle right' />, icon: true }}
                         totalPages={5} />
                 </div> */}
-                <br /><br /><br />
+                <br /><br /><br /><br /><br /><br />
             </div>
         )
     }

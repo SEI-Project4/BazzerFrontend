@@ -4,6 +4,7 @@ import { Row, Col, Container, Carousel } from 'react-bootstrap'
 import { Divider, Header, Icon, Comment, Form, Button, Segment, Input, Loader } from 'semantic-ui-react'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default class PostReady extends Component {
 
@@ -11,6 +12,7 @@ export default class PostReady extends Component {
         guest: false,
         data: '',
         loading: true,
+        loading2:false,
     }
 
 
@@ -63,11 +65,12 @@ export default class PostReady extends Component {
             .catch(err => console.log(err))
     }
     delete = (e) =>{
+        this.setState({loading2:true})
         console.log("deleting")
         axios.delete(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
-            if(res.data.msg=="the post has been deleted"){
-                alert("post deleted")
+            if(res.data.msg=="the post has been deleted "){
+                window.location.replace("/home");
             }
         })
         .catch(err=>console.log(err))
@@ -75,10 +78,16 @@ export default class PostReady extends Component {
 
     later = (e) =>{
         console.log("watching later")
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/watchlater`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/watchlater`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
             if(res.data.msg=="post added to watch later"){
-                alert("post added to watch later")
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Post have been added',
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
             }
         })
         .catch(err=>console.log(err))
@@ -89,6 +98,7 @@ export default class PostReady extends Component {
             <div>
                 <br />
                 <Container>
+                    
                     {this.state.token===undefined?null:this.state.token.isadmin==true?
                     <Row>
                     <Col><Button onClick={this.delete} floated='left' color='red'>Delete Post</Button></Col>
@@ -101,6 +111,7 @@ export default class PostReady extends Component {
                     <h3><a href={"http://localhost:3000/profile/"+this.state.data.user} style={{ textDecoration: 'none', color: 'black' }} href=""><strong>By:</strong> {this.state.data.username}</a></h3>
                 </Container>
                 <br />
+                {this.state.loading2 === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                 <Container style={{ marginBottom: '30px' }}>
                     {this.state.data.postimages!==undefined?
                     <Carousel style={{ border: '2px solid black' }} >

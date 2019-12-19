@@ -122,43 +122,42 @@ export default class HomePage extends Component {
                 filteredItems.map((post) => {
                     return <div class="column">
 
-                        {this.state.cities.map((city)=>{
-                            
-                        })}
-                        <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
-                            <Card style={{ margin: '0 auto' }} class="ui segment">
+                    {post.isapproved===true?
+                    <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                    <Card style={{ margin: '0 auto' }} class="ui segment">
 
-                                <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
-                                    label={{
-                                        as: 'a',
-                                        color: 'black',
-                                        content: `${33}`,
-                                        icon: 'eye',
-                                        ribbon: true,
-                                    }} />
-                                <Card.Content>
-                <Card.Header>{post.title}</Card.Header>
+                        <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
+                            label={{
+                                as: 'a',
+                                color: 'black',
+                                content: `${33}`,
+                                icon: 'eye',
+                                ribbon: true,
+                            }} />
+                        <Card.Content>
+        <Card.Header>{post.title}</Card.Header>
 
-                                    <Card.Description>
-                                        {post.description.substring(0, 54) + "..."}
-                                    </Card.Description>
-                                    <Card.Meta style={{ fontWeight: 'bold', marginTop: '7px', textAlign: 'center' }}>
-                                         {post.views}<Icon name="eye"></Icon>
+                            <Card.Description>
+                                {post.description.substring(0, 54) + "..."}
+                            </Card.Description>
+                            <Card.Meta style={{ fontWeight: 'bold', marginTop: '7px', textAlign: 'center' }}>
+                                 {post.views}<Icon name="eye"></Icon>
 
-                                    </Card.Meta>
-                                    <Card.Meta style={{ fontWeight: 'bold', marginTop: '12px', textAlign: 'center' }}>
-                                        {post.price > 0 ? <span>Price {post.price}</span> : <span>starting bid {post.startingbid}</span>}
+                            </Card.Meta>
+                            <Card.Meta style={{ fontWeight: 'bold', marginTop: '12px', textAlign: 'center' }}>
+                                {post.price > 0 ? <span>Price {post.price}</span> : <span>starting bid {post.startingbid}</span>}
 
-                                    </Card.Meta>
-                                </Card.Content>
-                                <Card.Content extra>
-                                    <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
-                                        <Icon name='user' />
-                                        {post.username}
-                                    </a>
-                                </Card.Content>
-                            </Card>
-                        </a>
+                            </Card.Meta>
+                        </Card.Content>
+                        <Card.Content extra>
+                            <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                                <Icon name='user' />
+                                {post.username}
+                            </a>
+                        </Card.Content>
+                    </Card>
+                </a>:null}
+                        
                     </div>
                 }):filteredItems.map((post) => {
                     return <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>

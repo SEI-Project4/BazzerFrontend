@@ -97,9 +97,10 @@ export default class SignIn extends Component {
                             <Form.Label>Password</Form.Label>
                             <Form.Control onChange={this.onChange} name="password" type="password" placeholder="Password" />
                         </Form.Group>
-                        <Form.Group controlId="formBasicCheckbox">
+                        {/* <Form.Group controlId="formBasicCheckbox">
                             <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group>
+                        </Form.Group> */}
+                        <br/>
                         <Button style={{ marginRight: '10px' }} variant="primary" type="submit">
                             Sign-in
   </Button>

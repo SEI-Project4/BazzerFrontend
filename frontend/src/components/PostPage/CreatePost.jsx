@@ -15,6 +15,14 @@ const options = [
   { text: 'Jeddah', value: 'Jeddah' },
   { text: 'Makkah', value: 'Makkah' },
   { text: 'Abha', value: 'Abha' },
+  { text: 'Medina', value: 'Medina' },
+  { text: 'Tabuk', value: 'Tabuk' },
+  { text: 'Sakaka', value: 'Sakaka' },
+  { text: 'Hail', value: 'Hail' },
+  { text: 'Buraydah', value: 'Buraydah' },
+  { text: 'Riyadh', value: 'Riyadh' },
+  { text: 'Dammam', value: 'Dammam' },
+  { text: 'Taif', value: 'Taif' },
 ]
 
 export default class CreatePost extends Component {
@@ -100,8 +108,13 @@ export default class CreatePost extends Component {
       axios.post(`https://sei-bazaar-backend.herokuapp.com/posts`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res => {
           if (res.data.msg == "created successfully") {
-            alert("You post have been created, please wait for admin approval")
-            window.location = "/home"
+            Swal.fire(
+              'Good job!',
+              'Your post have been created!. Please wait for adming approval',
+              'success'
+            )
+          
+            
             this.setState({
               success: true
             })
@@ -111,6 +124,7 @@ export default class CreatePost extends Component {
             })
             console.log(this.state)
           }
+          window.location = "/home"
         })
 
         .catch(err => console.log(err))

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import jwt from 'jsonwebtoken'
-import { Row, Col, Button, Container, Tabs, Tab, OverlayTrigger, Popover, Form, Modal, Card } from 'react-bootstrap'
+import { Row, Col, Button, Container, Tabs, Tab, OverlayTrigger, Popover, Form, Modal, Card, Badge } from 'react-bootstrap'
 import './ProfilePage.css'
-import { Item, Rating, Icon, Image, Loader, Segment } from 'semantic-ui-react'
+import { Item, Rating, Icon, Image, Loader, Segment, Divider, Header } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 const imageMaxSize = 1066300 // bytes = 1MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
-
+let sumrate = 0
 export default class ProfilePage extends Component {
     state = {
         token: "",
@@ -26,7 +26,7 @@ export default class ProfilePage extends Component {
         loading: true,
         maxRating: 5,
         inboxShow: false,
-        msg:"",
+        msg: "",
     }
     componentDidMount = () => {
 
@@ -36,11 +36,9 @@ export default class ProfilePage extends Component {
             jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
                 if (err) {
                     Swal.fire({
-                        position: 'top-end',
                         icon: 'error',
                         title: 'token expired',
-                        showConfirmButton: false,
-                        timer: 1500
+                        showConfirmButton: true,
                     })
                     self.setState({ guest: true })
                 } else {
@@ -52,8 +50,9 @@ export default class ProfilePage extends Component {
                         self.setState({
                             firstname: res.data.result.firstname, lastname: res.data.result.lastname, description: res.data.result.description, profileimg: res.data.result.profileimg, city: res.data.result.city, data: res.data.result, loading: false
                         })
-                        console.log("shahsbahs")
-                        console.log(res)
+                        console.log(res.data.result.msg)
+                        console.log("infooo")
+                        console.log(res.data.result)
                     })
                         .catch(err => console.log(err))
                 }
@@ -90,17 +89,18 @@ export default class ProfilePage extends Component {
         console.log(this.state)
     }
     chat = (e) => {
+
         e.preventDefault()
         axios.post(`https://sei-bazaar-backend.herokuapp.com/users/send/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
-                
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'message sent',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+
+                // Swal.fire({
+                //     position: 'top-end',
+                //     icon: 'success',
+                //     title: 'message sent',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // })
             })
 
             .catch(err => console.log(err))
@@ -161,18 +161,18 @@ export default class ProfilePage extends Component {
         e.preventDefault()
         console.log("rate sent")
         axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/rate`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-        .then(res=>{
-            if(res.data.msg=="follow Done"){
-                Swal.fire({
-                    icon: 'success',
-                    title: 'review submitted',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
-        }).catch(err=>{
+            .then(res => {
+                if (res.data.msg == "follow Done") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'review submitted',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            }).catch(err => {
 
-        })
+            })
     }
 
     handleRate = (e, { rating, maxRating }) => {
@@ -185,9 +185,57 @@ export default class ProfilePage extends Component {
         console.log(this.state)
     }
 
+    submitpass = (e) => {
+        e.preventDefault()
+        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/changepassword`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+            .then(res => {
+                if (res.data.msg == "Password changed") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'your password has been updated',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+            }).catch(err => {
+
+            })
+    }
+
+    passwordOnChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
+    verifyuser = (e) => {
+        e.preventDefault()
+        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/isverified`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+            .then(res => {
+                console.log(res)
+                if (res.data.msg == "isverified status changed") {
+                    alert("user has been verified")
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+    }
+
+    componentDidUpdate = () => {
+        console.log("update")
+        axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+            .then(res => {
+                console.log(res)
+                this.setState({
+                    allmsg: res.data.result
+                })
+            }).catch(err => console.log(err))
+    }
+
     render() {
         return (
             <div>
+
                 <Modal
                     size="lg"
                     show={this.state.setshow}
@@ -206,7 +254,7 @@ export default class ProfilePage extends Component {
                         <Row>
                             <Col lg={4} md={12}>
                                 <Card style={{ width: '18rem', margin: '0 auto' }}>
-                                    <Card.Img variant="top" src={this.state.profileimg==""?"https://i.imgur.com/3KR0iMp.jpg":this.state.profileimg} />
+                                    <Card.Img variant="top" src={this.state.profileimg == "" ? "https://i.imgur.com/3KR0iMp.jpg" : this.state.profileimg} />
                                     <Card.Body>
                                         <Card.Text>
                                             Want to change your profile picture?</Card.Text>
@@ -223,6 +271,18 @@ export default class ProfilePage extends Component {
                                 </Card>
                             </Col>
                             <Col lg={8} md={12}>
+                                <Form method="post" onSubmit={this.submitpass}>
+                                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                                        <Form.Label>Change password</Form.Label>
+                                        <Form.Control placeholder="Current Password" name="password" type="password" rows="3" onChange={this.passwordOnChange} />
+                                    </Form.Group>
+                                    <Form.Group controlId="exampleForm.ControlTextarea1">
+
+                                        <Form.Control placeholder="New Password" name="newpassword" type="password" rows="3" onChange={this.passwordOnChange} />
+                                    </Form.Group>
+                                    <Button onClick={this.submitpass} variant="success" type="submit" variant="dark">Change</Button>
+                                    <br /><br />
+                                </Form>
                                 <Form method="post" onSubmit={this.submit}>
                                     <Form.Group controlId="exampleForm.ControlInput1">
                                         <Form.Label>Location</Form.Label>
@@ -234,7 +294,7 @@ export default class ProfilePage extends Component {
                                     </Form.Group>
                                     <br />
                                     <Button onClick={this.submit} variant="success" type="submit">
-                                        Submit </Button>
+                                        Save </Button>
                                 </Form>
                             </Col>
                         </Row>
@@ -257,7 +317,7 @@ export default class ProfilePage extends Component {
                                 </Popover.Content>
                             </Popover>}>
 
-                                <Button style={{ float: 'right', marginRight: '-15px'}} inline-block variant="success"><Icon name="plus circle"></Icon>Rate User</Button>
+                                <Button style={{ float: 'right', marginRight: '-15px' }} inline-block variant="success"><Icon name="plus circle"></Icon>Rate User</Button>
 
                             </OverlayTrigger> : null}
 
@@ -266,8 +326,8 @@ export default class ProfilePage extends Component {
                 <br />
                 <Container style={{ border: 'solid 2px black', backgroundColor: 'white' }}>
                     <Row style={{ marginTop: '5%' }}>
-                        <Col sm={4}><Image style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src={this.state.profileimg==""?"https://i.imgur.com/3KR0iMp.jpg":this.state.profileimg} thumbnail />
-                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.data.username}</h4></Col>
+                        <Col sm={4}><Image style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src={this.state.profileimg == "" ? "https://i.imgur.com/3KR0iMp.jpg" : this.state.profileimg} thumbnail />
+                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.data.username}</h4>{this.state.data.isadmin === true ? <div><Badge style={{ marginLeft: '35px' }} variant="danger">Admin</Badge></div> : null}</Col>
                         <Col sm={1}></Col>
                         <Col sm={6}>
                             <Row>
@@ -276,7 +336,11 @@ export default class ProfilePage extends Component {
                                     <h5>{this.state.firstname + " " + this.state.lastname}</h5>
                                     <h5>{this.state.city}</h5>
 
-                                    {/* <h5 >Rating: {this.state.data.Rating}</h5> */}
+                                    {/* <h5 >Rating: {this.state.data.Rating!=undefined?
+                                    this.state.data.Rating.length>0?this.state.data.Rating.map((rating)=>{
+                                        return sumrate = rating.star + sumrate
+                                        console.log(sumrate)
+                                    }):null:null}</h5> */}
 
 
                                     <h5>Member since: {this.state.data.createdAt !== undefined ? this.state.data.createdAt.slice(0, -14) : null}</h5>
@@ -306,24 +370,22 @@ export default class ProfilePage extends Component {
                                             {/* <Col lg={1}></Col> */}
                                             <Col lg={12} md={12}>
                                                 <Form method="post" onSubmit={this.chat}>
-                                                    <Segment>
-                                                    <Segment>
-                                                        hello
-                                                    </Segment>
-                                                    <Segment>
-                                                        hi
-                                                    </Segment>
-                                                    <Segment>
-                                                        haay
-                                                    </Segment>
-                                                    </Segment>
-                                                   
+            {this.state.allmsg !== undefined ? this.state.allmsg.map((room) => {
+                return room.user1 == this.state.token.id || room.user2 == this.state.token.id ? room.msg.map((chat) => {
+                    return <div>
+                            {chat.from !== this.state.token.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}{chat.from}</Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{chat.from}{": "}{chat.content}</Segment> }
+                    </div>      
+                }) : null
+            }) : null}
+                                                
+
+
                                                     <Form.Group controlId="exampleForm.ControlTextarea1">
                                                         <Form.Label>Description</Form.Label>
                                                         <Form.Control name="msg" as="textarea" rows="3" onChange={this.activeChat} />
                                                     </Form.Group>
                                                     <br />
-                                                    <Button style={{margin:'0 auto', width:'35%', display:'block'}} onClick={this.chat} variant="success" type="submit">
+                                                    <Button style={{ margin: '0 auto', width: '35%', display: 'block' }} onClick={this.chat} variant="success" type="submit">
                                                         Send </Button>
                                                 </Form>
                                             </Col>
@@ -370,43 +432,82 @@ export default class ProfilePage extends Component {
                             </Item.Group>
                         </Tab>
                         {this.state.token.id === this.props.match.params.id ?
-                        <Tab eventKey="orders" title="Previous Orders">
-                            <br />
+                            <Tab eventKey="orders" title="Previous Orders">
+                                <br />
+                                <Item.Group>
+                                    {this.state.data.purchesedorder !== undefined ? this.state.data.purchesedorder.map((order) => {
+                                        return <Item>
+                                            <Item.Image size='tiny' src={order.postimages[0]} />
 
-                            
-                        </Tab>:null}
+                                            <Item.Content>
+                                                <Item.Header as='a'>{order.title}</Item.Header>
+                                                <Item.Meta>{order.description}</Item.Meta>
+                                                <Item.Description>
+                                                    {/* comments({post.comments.length}) */}
+                                                </Item.Description>
+                                                <Item.Extra>{order.createdAt.slice(0, -14)}</Item.Extra>
+                                            </Item.Content>
+                                        </Item>
+                                    }) : null}
+                                </Item.Group>
+                            </Tab> : null}
                         <Tab eventKey="ratings" title="Reviews">
                             <br />
-                            <h1>Ratings and comments</h1>
+                            {this.state.data.Rating !== undefined ? this.state.data.Rating.map((review) => {
+                                return <div >
+                                    <a style={{ color: 'black', textDecoration: 'none' }} href={"/profile/" + review.userid} >
+                                        <h4>By:{" "}{review.username}</h4></a>
+                                    <h5>{review.review}  {" "} <Rating icon='star' defaultRating={review.star} maxRating={5} /></h5>
+                                    <br />
+                                </div>
+
+                            }) : null}
                         </Tab>
                         {this.state.token.id === this.props.match.params.id ?
-                        <Tab eventKey="following" title="Following">
-                            <br />
-                            <h1>Followings:</h1>
-
-                            <h1>Followers:</h1>
-                        </Tab>:null}
-                        {this.state.token.id === this.props.match.params.id ?
-                        <Tab eventKey="watchlater" title="Watch list">
-                            <br />
-
-                            <Item.Group>
-                                {this.state.data.watchlater !== undefined ? this.state.data.watchlater.map((post) => {
-                                    return <Item>
-                                        <Item.Image size='tiny' src={post.postimages[0]} />
-
-                                        <Item.Content>
-                                            <Item.Header href={"/post/" + post._id} as='a'>{post.title}</Item.Header>
-                                            <Item.Meta>{post.description}</Item.Meta>
-                                            <Item.Description>
-                                                {/* comments({post.comments.length}) */}
-            </Item.Description>
-                                            {/* <Item.Extra>{post.createdAt.slice(0, -14)}</Item.Extra> */}
-                                        </Item.Content>
-                                    </Item>
+                            <Tab eventKey="following" title="Following">
+                                <br />
+                                <h2>Followings:</h2>
+                                <br />
+                                {this.state.data.following !== undefined ? this.state.data.following.map((user) => {
+                                    return <Segment href={"/profile/" + user._id}>
+                                        {user.username}
+                                    </Segment>
                                 }) : null}
-                            </Item.Group>
-                        </Tab>:null}
+                                <br />
+                                <Divider horizontal>
+                                    <Header as='h4'>
+
+                                        ... </Header>
+                                </Divider>
+                                <h2>Followers:</h2>
+                                <br />
+                                {this.state.data.followers !== undefined ? this.state.data.followers.map((user) => {
+                                    return <Segment href={"/profile/" + user._id}>
+                                        {user.username}
+                                    </Segment>
+                                }) : null}
+                            </Tab> : null}
+                        {this.state.token.id === this.props.match.params.id ?
+                            <Tab eventKey="watchlater" title="Watch list">
+                                <br />
+
+                                <Item.Group>
+                                    {this.state.data.watchlater !== undefined ? this.state.data.watchlater.map((post) => {
+                                        return <Item>
+                                            <Item.Image size='tiny' src={post.postimages[0]} />
+
+                                            <Item.Content>
+                                                <Item.Header href={"/post/" + post._id} as='a'>{post.title}</Item.Header>
+                                                <Item.Meta>{post.description}</Item.Meta>
+                                                <Item.Description>
+                                                    {/* comments({post.comments.length}) */}
+                                                </Item.Description>
+                                                {/* <Item.Extra>{post.createdAt.slice(0, -14)}</Item.Extra> */}
+                                            </Item.Content>
+                                        </Item>
+                                    }) : null}
+                                </Item.Group>
+                            </Tab> : null}
                     </Tabs>
                     <br /><br /><br /><br /><br /><br /><br /><br /><br />
                 </Container>
@@ -416,14 +517,14 @@ export default class ProfilePage extends Component {
                 {this.state.token.isadmin === true ? <Container>
                     <Row>
                         <Col>
-                            <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} inline-block variant="success">Verify User</Button>
+                            <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} onClick={this.verifyuser} inline-block variant="success">Verify User</Button>
                         </Col>
                         <Col><Button style={{ float: 'right', width: '150px', marginRight: '30%' }} inline-block variant="danger">Delete User</Button></Col>
                     </Row>
                 </Container> : null}
                 <br /><br />
-                <br /><br /><br />
-                <br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }

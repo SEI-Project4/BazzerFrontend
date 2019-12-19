@@ -6,12 +6,10 @@ import { Container } from 'react-bootstrap'
 import Footer from '../Footer/Footer'
 import axios from 'axios'
 
+
 const locations = [
-    { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Riyadh', value: 'Riyadh' }, { key: 3, text: 'Dammam', value: 'Dammam' }, { key: 4, text: 'Jizan', value: 'Jizan' }
+    { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Makkah', value: 'Makkah' }, { key: 3, text: 'Abha', value: 'Abha' }, { key: 4, text: 'Medina', value: 'Medina' }, { key: 5, text: 'Tabuk', value: 'Tabuk' }, { key: 6, text: 'Sakaka', value: 'Sakaka' }, { key: 7, text: 'Hail', value: 'Hail' }, { key: 8, text: 'Buraydah', value: 'Buraydah' }, { key: 9, text: 'Riyadh', value: 'Riyadh' }, { key: 10, text: 'Dammam', value: 'Dammam' }, { key: 11, text: 'Taif', value: 'Taif' }
 ]
-const filterCity = (e, { value }) => {
-    console.log(value)
-}
 
 
 export default class HomePage extends Component {
@@ -21,6 +19,7 @@ export default class HomePage extends Component {
         data: [],
         search: '',
         loading: true,
+        cities :[],
     }
 
     componentDidMount() {
@@ -42,6 +41,12 @@ export default class HomePage extends Component {
             .catch(err => console.log(err))
     }
 
+    filterCity =(e,{value})=>{
+        this.setState({
+            cities : value
+        })
+    }
+
     checkbox = () => {
         if (this.state.advanced == false) {
             this.setState({ advanced: true })
@@ -54,7 +59,6 @@ export default class HomePage extends Component {
 
         const lowercasedsearch = this.state.search.toLowerCase();
         const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
-        console.log("filtered items")
         console.log(filteredItems)
         return (
             <div>
@@ -71,7 +75,7 @@ export default class HomePage extends Component {
                                     search
                                     selection
                                     options={locations}
-                                    onChange={filterCity.bind(this)}
+                                    onChange={this.filterCity.bind(this)}
                                 />
                                 <Dropdown
                                     placeholder='Categorie'
@@ -80,7 +84,7 @@ export default class HomePage extends Component {
                                     search
                                     selection
                                     options={locations}
-                                    onChange={filterCity.bind(this)}
+                                    onChange={this.filterCity.bind(this)}
                                 />
                                 <br />
                             </div>
@@ -113,41 +117,93 @@ export default class HomePage extends Component {
                 </Container>
                 <br /><br />
                 <div className="ui four column doubling stackable grid center aligned container">
+                
+                {this.state.cities.length==0?
+                filteredItems.map((post) => {
+                    return <div class="column">
 
-                    {filteredItems.map((post) => {
-                        return <div class="column">
-                            <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
-                                <Card style={{ margin: '0 auto' }} class="ui segment">
+                        {this.state.cities.map((city)=>{
+                            
+                        })}
+                        <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                            <Card style={{ margin: '0 auto' }} class="ui segment">
 
-                                    <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
-                                        label={{
-                                            as: 'a',
-                                            color: 'black',
-                                            content: `${33}`,
-                                            icon: 'eye',
-                                            ribbon: true,
-                                        }} />
-                                    <Card.Content>
-                                        <Card.Header>{post.title}</Card.Header>
+                                <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
+                                    label={{
+                                        as: 'a',
+                                        color: 'black',
+                                        content: `${33}`,
+                                        icon: 'eye',
+                                        ribbon: true,
+                                    }} />
+                                <Card.Content>
+                <Card.Header>{post.title}</Card.Header>
 
-                                        <Card.Description>
-                                            {post.description.substring(0, 54) + "..."}
-                                        </Card.Description>
-                                        <Card.Meta style={{ fontWeight: 'bold', marginTop: '20px', textAlign: 'center' }}>
-                                            {post.price > 0 ? <span>Price {post.price}</span> : <span>starting bid {post.startingbid}</span>}
+                                    <Card.Description>
+                                        {post.description.substring(0, 54) + "..."}
+                                    </Card.Description>
+                                    <Card.Meta style={{ fontWeight: 'bold', marginTop: '7px', textAlign: 'center' }}>
+                                         {post.views}<Icon name="eye"></Icon>
 
-                                        </Card.Meta>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                        <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
-                                            <Icon name='user' />
-                                            {post.username}
-                                        </a>
-                                    </Card.Content>
-                                </Card>
-                            </a>
-                        </div>
-                    })}
+                                    </Card.Meta>
+                                    <Card.Meta style={{ fontWeight: 'bold', marginTop: '12px', textAlign: 'center' }}>
+                                        {post.price > 0 ? <span>Price {post.price}</span> : <span>starting bid {post.startingbid}</span>}
+
+                                    </Card.Meta>
+                                </Card.Content>
+                                <Card.Content extra>
+                                    <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                                        <Icon name='user' />
+                                        {post.username}
+                                    </a>
+                                </Card.Content>
+                            </Card>
+                        </a>
+                    </div>
+                }):filteredItems.map((post) => {
+                    return <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                        {this.state.cities.map((city)=>{
+                            return post.city==city? <div class="column">
+                                
+                            <Card style={{ margin: '0 auto' }} class="ui segment">
+
+                            <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
+                                label={{
+                                    as: 'a',
+                                    color: 'black',
+                                    content: `${33}`,
+                                    icon: 'eye',
+                                    ribbon: true,
+                                }} />
+                            <Card.Content>
+            <Card.Header>{post.title}</Card.Header>
+
+                                <Card.Description>
+                                    {post.description.substring(0, 54) + "..."}
+                                </Card.Description>
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '7px', textAlign: 'center' }}>
+                                     {post.views}<Icon name="eye"></Icon>
+
+                                </Card.Meta>
+                                <Card.Meta style={{ fontWeight: 'bold', marginTop: '12px', textAlign: 'center' }}>
+                                    {post.price > 0 ? <span>Price {post.price}</span> : <span>starting bid {post.startingbid}</span>}
+
+                                </Card.Meta>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                                    <Icon name='user' />
+                                    {post.username}
+                                </a>
+                            </Card.Content>
+                        </Card></div>:null}
+                        )}
+                        
+                            
+                        </a>
+                    
+                })}
+                    
                     <br />
 
                 </div>
@@ -160,7 +216,7 @@ export default class HomePage extends Component {
                         nextItem={{ content: <Icon name='angle right' />, icon: true }}
                         totalPages={5} />
                 </div> */}
-                <br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }

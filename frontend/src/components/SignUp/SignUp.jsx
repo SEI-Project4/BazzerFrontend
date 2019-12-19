@@ -3,6 +3,8 @@ import { Container, Icon } from 'semantic-ui-react'
 import { Form, Button, Col, Modal } from 'react-bootstrap'
 import axios from 'axios'
 import './SignUp.css'
+import Swal from 'sweetalert2'
+
 
 export default class SignUp extends Component {
     state = {
@@ -22,11 +24,29 @@ export default class SignUp extends Component {
                 })
             }else{
                 this.setState({
-                    erroruser:false
+                    erroruser:false, erroremail:false
                 })
             }
         })
         console.log(this.state.username)
+
+    }
+    onChange2 = (e) => {
+
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    
+        if(this.state.password!=this.state.password2){
+            this.setState({
+                errorepass:true
+            })
+        }else{
+            this.setState({
+                errorepass:false
+            })
+        }
+        
     }
     componentDidMount(){
         axios.get('https://sei-bazaar-backend.herokuapp.com/users/')
@@ -40,7 +60,14 @@ export default class SignUp extends Component {
     }
     submit = (e) => {
         e.preventDefault()
-        axios.post('https://sei-bazaar-backend.herokuapp.com/users/', this.state)
+        if(this.state.password!=this.state.password2){
+            Swal.fire({
+                icon: 'error',
+                title: 'Confirm password doesnt match',
+                showConfirmButton: true,
+            })
+        }else{
+            axios.post('https://sei-bazaar-backend.herokuapp.com/users/', this.state)
             .then(res =>{
                 if(res.data.msg == "created successfully"){
                     this.setState({
@@ -58,6 +85,7 @@ export default class SignUp extends Component {
                 })
         
             .catch(err => console.log(err))
+        }
     }
     render() {
 
@@ -111,10 +139,15 @@ export default class SignUp extends Component {
                             <Form.Control type="password" placeholder="Password" name="password" onChange={this.onChange} />
                         </Form.Group>
 
+                        <Form.Group controlId="formGridPassword">
+                            <Form.Label>Confirm password</Form.Label>
+                            <Form.Control type="password" placeholder="Confirm password" name="password2" onChange={this.onChange} />
+                        </Form.Group>
+                        {this.state.errorepass ? <Form.Text style={{color:'red'}}>error password dont match</Form.Text>:null}
 
                         <Form.Group controlId="formGridFirstname">
                             <Form.Label>First name</Form.Label>
-                            <Form.Control type="name" name="firstname" placeholder="Enter your first name" onChange={this.onChange} />
+                            <Form.Control type="name" name="firstname" placeholder="Enter your first name" onChange={this.onChange2} />
                         </Form.Group>
 
                         <Form.Group controlId="formGridLastname">
@@ -128,9 +161,10 @@ export default class SignUp extends Component {
                         </Form.Group>
 
 
-                        <Form.Group id="formGridCheckbox">
+                        {/* <Form.Group id="formGridCheckbox">
                             <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group>
+                        </Form.Group> */}
+                        <br/>
 
                         <Button style={{marginRight:'10px'}} variant="primary" type="submit">
                             Sign-up </Button>

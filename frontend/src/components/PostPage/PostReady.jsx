@@ -55,7 +55,7 @@ export default class PostReady extends Component {
     }
 
     componentDidUpdate = () =>{
-        axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}`)
+        axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/noview`)
         .then(res=>{
             this.setState({
                 data2:res.data.result.bids, bidslength: res.data.result.bids.length

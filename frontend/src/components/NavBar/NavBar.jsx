@@ -16,7 +16,7 @@ export default class NavBar extends Component {
 
     logout = () => {
         localStorage.removeItem("usertoken");
-        window.location.reload()
+        window.location.replace("/home");
     }
 
     componentDidMount = () => {

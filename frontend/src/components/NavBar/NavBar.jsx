@@ -84,8 +84,7 @@ export default class NavBar extends Component {
                                         <Dropdown.Menu>
                                             <Dropdown.Item href="/terms">Terms and Conditions</Dropdown.Item>
                                             <Dropdown.Item>Contact information</Dropdown.Item>
-                                            <Dropdown.Item>Electronics</Dropdown.Item>
-                                            <Dropdown.Item>Food</Dropdown.Item>
+                                            <Dropdown.Item>How to use</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Menu.Item>
@@ -103,7 +102,7 @@ export default class NavBar extends Component {
                                                 <Dropdown.Menu>
                                                     <Dropdown.Header icon='user' content={this.state.user.username} />
                                                     <Dropdown.Item href={"/profile/" + `${this.state.user._id}`}>Profile</Dropdown.Item>
-                                                    <Dropdown.Item>Inbox</Dropdown.Item>
+                                                    <Dropdown.Item href={"/profile/" + `${this.state.user._id}`}>Inbox</Dropdown.Item>
                                                     <Dropdown.Item>Request verification</Dropdown.Item>
                                                     <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>
                                                 </Dropdown.Menu>

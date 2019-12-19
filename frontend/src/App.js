@@ -11,6 +11,7 @@ import SignUp from './components/SignUp/SignUp'
 import NavBar from './components/NavBar/NavBar'
 import Footer from './components/Footer/Footer'
 import Terms from './components/AboutUs/Terms'
+import Approve from './components/HomePage/Approve'
 
 export default class App extends Component {
   render() {
@@ -44,6 +45,15 @@ export default class App extends Component {
             render={props => (
               <PostReady 
                 
+                {...props}
+              />
+            )}
+        />
+        <Route
+            
+            path="/approve"
+            render={props => (
+              <Approve
                 {...props}
               />
             )}

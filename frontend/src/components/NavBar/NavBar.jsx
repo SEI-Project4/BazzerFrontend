@@ -28,7 +28,7 @@ export default class NavBar extends Component {
                 self.setState({ session: false })
             } else {
                 var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                self.setState({ session: true })
+                self.setState({ session: true,token: decoded })
                 console.log("response get user")
                 axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
                     .then(res => {
@@ -103,6 +103,8 @@ export default class NavBar extends Component {
                                                     <Dropdown.Header icon='user' content={this.state.user.username} />
                                                     <Dropdown.Item href={"/profile/" + `${this.state.user._id}`}>Profile</Dropdown.Item>
                                                     <Dropdown.Item href={"/profile/" + `${this.state.user._id}`}>Inbox</Dropdown.Item>
+                                                    {this.state.token.isadmin === true ?
+                                                    <Dropdown.Item href="/approve"><strong>Approve posts</strong></Dropdown.Item>:null}
                                                     <Dropdown.Item>Request verification</Dropdown.Item>
                                                     <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>
                                                 </Dropdown.Menu>

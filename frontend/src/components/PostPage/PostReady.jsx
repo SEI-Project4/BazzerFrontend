@@ -15,6 +15,7 @@ export default class PostReady extends Component {
         loading2: false,
         bidslength: 0,
         data2:'',
+        token:'',
     }
 
 
@@ -170,6 +171,29 @@ export default class PostReady extends Component {
         })
     }
 
+    approve= (e) =>{
+        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        .then(res=>{
+            if(res.data.msg=="isapproved status changed"){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'post have been approved',
+                    showConfirmButton: true,
+                })
+                window.location.replace("/approve");
+            }else if(res.data.msg=="item is Sold out!"){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'item sold out!',
+                    showConfirmButton: true,
+                })
+            }
+            
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
+
     render() {
         return (
             <div>
@@ -259,7 +283,8 @@ export default class PostReady extends Component {
                         <Col lg={3} md={4} sm={12}>
                             <Container style={{ margin: '0 auto', textAlign: 'center' }}>
                                 <div class="ui vertical buttons">
-                                    <Button style={{ margin: '15px auto', width: '160px', color: 'black', display: 'block' }} color='yellow'><Icon name="envelope"></Icon>Message Seller</Button>
+                                    {this.state.token.isadmin===true?<Button onClick={this.approve} style={{ margin: '15px auto', width: '160px', color: 'black', display: 'block' }} color='green'>Approve post</Button>:null}
+
                                     <Button onClick={this.later} style={{ margin: '15px auto', width: '160px', }} color='grey'><Icon name="plus circle"></Icon>Watch later</Button>
                                 </div>
                             </Container>
@@ -275,7 +300,7 @@ export default class PostReady extends Component {
                                 <Segment style={{ width: '300px', margin: '0 auto', textAlign: 'center', backgroundColor: '#a39ea0' }}>
                                     
                                     <h3 style={{ textAlign: 'center', fontWeight: '500' }}>:Top 3 biders:</h3>
-                                    {/* {this.state.bidslength>0?
+                                    {this.state.bidslength>0?
                                     <Segment>
                                         <a style={{color:'black'}} href={"/profile/" + this.state.data2[this.state.bidslength - 1].userid}>
                                         <h5> <strong>1: {this.state.data2[this.state.bidslength - 1].username}{"="}{this.state.data2[this.state.bidslength - 1].value}SAR</strong></h5></a>
@@ -283,10 +308,10 @@ export default class PostReady extends Component {
                                         <h5> <strong>2: {this.state.data2[this.state.bidslength - 2].username}{"="}{this.state.data2[this.state.bidslength - 2].value}SAR</strong></h5></a>
                                         <a style={{color:'black'}} href={"/profile/" + this.state.data2[this.state.bidslength - 3].userid}>
                                         <h5> <strong>3: {this.state.data2[this.state.bidslength - 3].username}{"="}{this.state.data2[this.state.bidslength - 3].value}SAR</strong></h5></a>
-                                        </Segment>:null} */}
+                                        </Segment>:null}
                                     
                         <br/>
-                                    {/* <h3><strong>Current Bid: {this.state.bidslength>0? this.state.data2[this.state.bidslength - 1].value:this.state.data.startingbid}SAR</strong></h3> */}
+                                    <h3><strong>Current Bid: {this.state.bidslength>0? this.state.data2[this.state.bidslength - 1].value:this.state.data.startingbid}SAR</strong></h3>
 
                                     <h4 style={{ display: 'inline-block', fontWeight: '600', marginRight: '5px' }}>Add a bid</h4><Input name="value" type="number" onChange={this.BidOnChange} style={{ width: '100px', margin: '10px auto' }}></Input>
                                     <br /><br />

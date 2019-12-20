@@ -116,11 +116,11 @@ export default class App extends Component {
               />
             )}
         />
-
+<Route component={Page404}/>
      </Switch>
      
     
-         {/* <Route component={Page404}/> */}
+         
         <Footer/>
       </Router> 
       </div>

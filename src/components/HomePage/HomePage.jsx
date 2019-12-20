@@ -160,7 +160,7 @@ export default class HomePage extends Component {
                         
                     </div>
                 }):filteredItems.map((post) => {
-                    return <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                    return post.isapproved===true?<a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
                         {this.state.cities.map((city)=>{
                             return post.city==city? <div class="column">
                                 
@@ -201,7 +201,7 @@ export default class HomePage extends Component {
                             
                         </a>
                     
-                })}
+                :null})}
                     
                     <br />
 

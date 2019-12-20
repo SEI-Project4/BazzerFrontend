@@ -104,6 +104,7 @@ export default class ProfilePage extends Component {
             })
 
             .catch(err => console.log(err))
+            e.target.msg=""
     }
     verifyFile = (files) => {
         if (files && files.length > 0) {
@@ -373,20 +374,21 @@ export default class ProfilePage extends Component {
             {this.state.allmsg !== undefined ? this.state.allmsg.map((room) => {
                 return room.user1 == this.state.token.id || room.user2 == this.state.token.id ? room.msg.map((chat) => {
                     return <div>
-                            {chat.from !== this.state.token.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}{chat.from}</Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{chat.from}{": "}{chat.content}</Segment> }
+                            {chat.from !== this.state.token.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}<a style={{color:'black'}} href={"/profile/"+chat.from}>{chat.from}</a></Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{"You"}{": "}{chat.content}</Segment> }
                     </div>      
                 }) : null
             }) : null}
                                                 
 
-
+                                                {this.state.token.id !== this.props.match.params.id ?
                                                     <Form.Group controlId="exampleForm.ControlTextarea1">
                                                         <Form.Label>Description</Form.Label>
                                                         <Form.Control name="msg" as="textarea" rows="3" onChange={this.activeChat} />
-                                                    </Form.Group>
-                                                    <br />
+                                                        <br />
+                                                    </Form.Group>:<h6 style={{textAlign:'center', marginTop:'30px'}}>This is your inbox. Click on a receiving Id and go to their profile to reply back</h6>}
+                                                    {this.state.token.id !== this.props.match.params.id ?
                                                     <Button style={{ margin: '0 auto', width: '35%', display: 'block' }} onClick={this.chat} variant="success" type="submit">
-                                                        Send </Button>
+                                                        Send </Button>:null}
                                                 </Form>
                                             </Col>
                                             {/* <Col lg={1}></Col> */}

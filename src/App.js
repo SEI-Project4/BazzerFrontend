@@ -98,17 +98,7 @@ export default class App extends Component {
               />
             )}
         />
-        <Route
-          
-            render={props => (
-              <Page404
-                {...props}
-              />
-            )}
-        />
-     </Switch>
-     
-     <Route
+         <Route
         exact
         path="/login"
         render={props => (
@@ -126,6 +116,11 @@ export default class App extends Component {
               />
             )}
         />
+
+     </Switch>
+     
+    
+         {/* <Route component={Page404}/> */}
         <Footer/>
       </Router> 
       </div>

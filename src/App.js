@@ -12,6 +12,8 @@ import NavBar from './components/NavBar/NavBar'
 import Footer from './components/Footer/Footer'
 import Terms from './components/AboutUs/Terms'
 import Approve from './components/HomePage/Approve'
+import Startpage from './components/Startpage';
+import Page404 from './components/Page404/Page404'
 
 export default class App extends Component {
   render() {
@@ -34,6 +36,16 @@ export default class App extends Component {
             path="/profile/:id"
             render={props => (
               <ProfilePage 
+                
+                {...props}
+              />
+            )}
+        />
+        <Route
+            exact
+            path="/"
+            render={props => (
+              <Startpage
                 
                 {...props}
               />
@@ -82,6 +94,14 @@ export default class App extends Component {
             path="/create"
             render={props => (
               <CreatePost
+                {...props}
+              />
+            )}
+        />
+        <Route
+          
+            render={props => (
+              <Page404
                 {...props}
               />
             )}

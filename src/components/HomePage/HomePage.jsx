@@ -120,9 +120,8 @@ export default class HomePage extends Component {
                 
                 {this.state.cities.length==0?
                 filteredItems.map((post) => {
-                    return <div class="column">
-
-                    {post.isapproved===true?
+                    return post.isapproved===true?
+                        <div class="column">
                     <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
                     <Card style={{ margin: '0 auto' }} class="ui segment">
 
@@ -156,10 +155,10 @@ export default class HomePage extends Component {
                             </a>
                         </Card.Content>
                     </Card>
-                </a>:null}
+                </a>
                         
                     </div>
-                }):filteredItems.map((post) => {
+                :null}):filteredItems.map((post) => {
                     return post.isapproved===true?<a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
                         {this.state.cities.map((city)=>{
                             return post.city==city? <div class="column">

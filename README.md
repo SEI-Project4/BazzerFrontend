@@ -8,6 +8,10 @@
 
 this project fouces on making buying and selling things easy so the costumer can find what he wants to buy or sell in one website .
 
+## Deployment link
+
+http://open-bazaar.herokuapp.com/
+
 ### Technical Used 
 
 ```

@@ -5,7 +5,7 @@ import {REQUEST_USER_DATA, receiveUserData} from './actions'
 import fetchData from './GetUserData'
 
 // worker Saga: will be fired on USER_FETCH_REQUESTED actions
-function* helloWorld(action) {
+function* getUserData(action) {
   
     try {
         // do api call
@@ -27,5 +27,5 @@ function* helloWorld(action) {
   and only the latest one will be run.
 */
 export default function* mySaga() {
-  yield takeLatest(REQUEST_USER_DATA, helloWorld);
+  yield takeLatest(REQUEST_USER_DATA, getUserData);
 }

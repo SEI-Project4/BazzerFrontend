@@ -3,4 +3,4 @@ export const RECEIVE_USER_DATA = "RECEIVE_USER_DATA"
 
 export const requestUserData = () => ({type: REQUEST_USER_DATA});
 
-export const receiveUserData = text => ({type: RECEIVE_USER_DATA, text});
+export const receiveUserData = userdata => ({type: RECEIVE_USER_DATA, userdata});

@@ -1,9 +1,15 @@
 import {RECEIVE_USER_DATA} from '../actions'
 
-export default (state="", {type, text=""}) =>{
+
+const initState={
+    userData: [],
+}
+
+export default (state=initState, {type, userdata}) =>{
     switch(type){
         case RECEIVE_USER_DATA:
-            return text
+            initState.userData.push(userdata)
+            return state
 
     default:
         return state;

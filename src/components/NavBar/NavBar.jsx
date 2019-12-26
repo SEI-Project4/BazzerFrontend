@@ -29,7 +29,7 @@ export default class NavBar extends Component {
             } else {
                 var decoded = jwt.verify(localStorage.usertoken, 'secret')
                 self.setState({ session: true,token: decoded })
-                console.log("response get user")
+                // console.log("response get user")
                 axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
                     .then(res => {
                         self.setState({ user: res.data.result })

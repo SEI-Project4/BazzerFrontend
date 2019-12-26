@@ -33,7 +33,7 @@ export default class PostReady extends Component {
                     self.setState({ guest: true })
                 } else {
                     var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                    console.log("decoded ==")
+                    console.log("decoded ===")
                     console.log(decoded);
                     self.setState({ token: decoded, })
                     axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${self.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res => {
@@ -74,7 +74,7 @@ export default class PostReady extends Component {
         e.preventDefault()
         axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
-                if (res.data.msg == "created successfully") {
+                if (res.data.msg === "created successfully") {
                     window.location.reload();
                 }
                 console.log(res)
@@ -87,7 +87,7 @@ export default class PostReady extends Component {
         console.log("deleting")
         axios.delete(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
-                if (res.data.msg == "the post has been deleted ") {
+                if (res.data.msg === "the post has been deleted ") {
                     window.location.replace("/home");
                 }
             })
@@ -98,7 +98,7 @@ export default class PostReady extends Component {
         console.log("watching later")
         axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/watchlater`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
-                if (res.data.msg == "post added to watch later") {
+                if (res.data.msg === "post added to watch later") {
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
@@ -124,25 +124,25 @@ export default class PostReady extends Component {
         axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/bid`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 console.log(res)
-                if(res.data.msg=="value must be greater than current bid"){
+                if(res.data.msg==="value must be greater than current bid"){
                     Swal.fire({
                         icon: 'error',
                         title: 'value must be greater than current bid',
                         showConfirmButton: true,
                     })
-                }else if(res.data.msg=="you cant bid on your post ! or you have to pass value as number"){
+                }else if(res.data.msg==="you cant bid on your post ! or you have to pass value as number"){
                     Swal.fire({
                         icon: 'error',
                         title: 'you cant bid on your post',
                         showConfirmButton: true,
                     })
-                }else if(res.data.msg=="item is Sold out!"){
+                }else if(res.data.msg==="item is Sold out!"){
                     Swal.fire({
                         icon: 'error',
                         title: 'item sold out',
                         timer: 4000
                     })
-                }else if(res.data.msg=="bid regesterd"){
+                }else if(res.data.msg==="bid regesterd"){
                     console.log("bid sent")
                 }
             })
@@ -152,13 +152,13 @@ export default class PostReady extends Component {
     Buy = (e) =>{
         axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/buy`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
-            if(res.data.msg=="buy order regesterd"){
+            if(res.data.msg==="buy order regesterd"){
                 Swal.fire({
                     icon: 'success',
                     title: 'You have purchased this order, you will be contacted by seller',
                     showConfirmButton: true,
                 })
-            }else if(res.data.msg=="item is Sold out!"){
+            }else if(res.data.msg==="item is Sold out!"){
                 Swal.fire({
                     icon: 'error',
                     title: 'item sold out!',
@@ -174,14 +174,14 @@ export default class PostReady extends Component {
     approve= (e) =>{
         axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
-            if(res.data.msg=="isapproved status changed"){
+            if(res.data.msg==="isapproved status changed"){
                 Swal.fire({
                     icon: 'success',
                     title: 'post have been approved',
                     showConfirmButton: true,
                 })
                 window.location.replace("/approve");
-            }else if(res.data.msg=="item is Sold out!"){
+            }else if(res.data.msg==="item is Sold out!"){
                 Swal.fire({
                     icon: 'error',
                     title: 'item sold out!',
@@ -200,7 +200,7 @@ export default class PostReady extends Component {
                 <br />
                 <Container>
 
-                    {this.state.token === undefined ? null : this.state.token.isadmin == true ?
+                    {this.state.token === undefined ? null : this.state.token.isadmin === true ?
                         <Row>
                             <Col><Button onClick={this.delete} floated='left' color='red'>Delete Post</Button></Col>
                             <Col><Button floated='right' color='orange'>Close Post</Button></Col>

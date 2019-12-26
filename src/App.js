@@ -14,6 +14,7 @@ import Terms from './components/AboutUs/Terms'
 import Approve from './components/HomePage/Approve'
 import Startpage from './components/Startpage';
 import Page404 from './components/Page404/Page404'
+import Home from './Home'
 
 export default class App extends Component {
   render() {
@@ -22,6 +23,16 @@ export default class App extends Component {
         <Router>
           <NavBar/>
           <Switch>
+
+          <Route
+            
+            path="/test"
+            render={props => (
+              <Home
+                {...props}
+              />
+            )}
+        />
         <Route
             
             path="/home"

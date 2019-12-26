@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox, Loader, Pagination } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
-import Footer from '../Footer/Footer'
 import axios from 'axios'
 
 
@@ -123,7 +122,7 @@ export default class HomePage extends Component {
                     return post.isapproved===true?
                         <div class="column">
                     <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
-                    <Card style={{ margin: '0 auto' }} class="ui segment">
+                    <Card style={{ margin: '0 auto', minHeight: '450px' }} class="ui segment">
 
                         <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
                             label={{
@@ -163,7 +162,7 @@ export default class HomePage extends Component {
                         {this.state.cities.map((city)=>{
                             return post.city==city? <div class="column">
                                 
-                            <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Card style={{ margin: '0 auto', minHeight: '450px' }} class="ui segment">
 
                             <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
                                 label={{

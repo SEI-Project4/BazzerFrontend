@@ -4,13 +4,14 @@ import fetchtoken from '../api/getToken'
 import {USER} from '../constants'
 import {setUser, setError, loadUser} from '../actions/index'
 
-function* handleUserLoad(){
+function* handleUserLoad(action){
     try{
         // yield all([
         //     call(fetchData),
         //     call(fetchtoken)
         //   ])
-        const userdata = yield call(fetchData)
+        const pageid = action.pageid
+        const userdata = yield call(fetchData,pageid)
         // const userToken = yield call(fetchtoken)
         console.log(userdata)
         // console.lgog(userToken)

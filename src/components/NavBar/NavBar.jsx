@@ -32,12 +32,6 @@ class NavBar extends Component {
             } else {
                 var decoded = jwt.verify(localStorage.usertoken, 'secret')
                 self.setState({ session: true,token: decoded })
-                // console.log("response get user")
-                axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-                    .then(res => {
-                        self.setState({ user: res.data.result })
-                        console.log(res.data.result)
-                    }).catch(err => console.log(err))
             }
         });
     }
@@ -47,8 +41,8 @@ class NavBar extends Component {
            this.setState({userdata:this.props.user, loading:false})
            
        }else if(this.props.error=='session expired'){
-           alert("session expired please login again")
-           this.setState({session:false})
+        //    alert("session expired please login again")
+        //    this.setState({session:false})
        }
         const { activeItem } = this.state
 
@@ -105,15 +99,16 @@ class NavBar extends Component {
                                             >
                                                 {this.state.userdata.firstname?
                                                 <Dropdown.Menu>
-                                                    
-                                                    <Dropdown.Header icon='user' content={this.state.userdata.username} />
-                                                    <Dropdown.Item href={"/profile/" + `${this.state.userdata._id}`}>Profile</Dropdown.Item>
-                                                    <Dropdown.Item href={"/profile/" + `${this.state.userdata._id}`}>Inbox</Dropdown.Item>
-                                                    {this.state.userdata.isadmin === true ?
+                                                    <Dropdown.Header icon='user' content={this.state.userdata.tokenuser} />
+                                                    <Dropdown.Item href={"/profile/" + `${this.state.userdata.id}`}>Profile</Dropdown.Item>
+                                                    <Dropdown.Item href={"/profile/" + `${this.state.userdata.id}`}>Inbox</Dropdown.Item>
+                                                    {this.state.userdata.admin === true ?
                                                     <Dropdown.Item href="/approve"><strong>Approve posts</strong></Dropdown.Item>:null}
                                                     <Dropdown.Item>Request verification</Dropdown.Item>
                                                     <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>
-                                                </Dropdown.Menu>:null}
+                                                </Dropdown.Menu>:<Dropdown.Menu>
+                                                <Dropdown.Header icon='user' content=' Loading...' />
+                                                    </Dropdown.Menu>}
                                             </Dropdown>
                                         </Menu.Item> : <Menu.Item style={{ marginRight: '-15px' }}>
                                             <Button href="/register" style={{ marginRight: '5px' }} id="nav-signupp" primary>Sign-up</Button>

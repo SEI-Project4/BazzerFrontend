@@ -14,7 +14,9 @@ const imageMaxSize = 1066300 // bytes = 1MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
 let sumrate = 0
+let text = "noppooo"
 class ProfilePage extends Component {
+    
     state = {
         token: "",
         setshow: false,
@@ -30,9 +32,10 @@ class ProfilePage extends Component {
         maxRating: 5,
         inboxShow: false,
         msg: "",
+        userdata:[],
     }
     componentDidMount = () => {
-        this.props.loadUser()
+        this.props.loadUser(this.props.match.params.id)
         // let self = this;
         // jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
         //     if (err) {
@@ -84,6 +87,7 @@ class ProfilePage extends Component {
     componentDidUpdate = () => {
         console.log("state is equal to")
         console.log(this.state)
+        
     }
 
     onChange = (e) => {
@@ -259,7 +263,7 @@ class ProfilePage extends Component {
             console.log(this.props)            
             const User = this.props.user
             this.setState({
-                firstname: User.firstname, lastname: User.lastname, description: User.description, profileimg: User.profileimg, city: User.city, data: User, loading: false
+                 description: User.description, profileimg: User.profileimg, city: User.city, loading: false, userdata:User, firstname:User.firstname, lastname:User.lastname
             })
         }else if(this.props.error=="session expired"){
             Swal.fire({
@@ -283,7 +287,7 @@ class ProfilePage extends Component {
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
-                    {this.state.token.id === this.props.match.params.id ? <Modal.Header closeButton>
+                    {this.state.userdata.id === this.props.match.params.id ? <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
                             <Icon name="edit outline"></Icon>Edit Profile
           </Modal.Title>
@@ -342,8 +346,8 @@ class ProfilePage extends Component {
                 <br />
                 <Container style={{ marginBottom: '-20px' }}>
                     <div style={{ marginLeft: '-15px' }}>
-                        {this.state.token.id === this.props.match.params.id ? <Button onClick={() => this.setState({ setshow: true })} style={{ marginLeft: '0px', marginRight: '10px', width: '135px' }} inline-block variant="dark"><Icon name="edit outline"></Icon>Edit Profile</Button> : null}
-                        {this.state.token.id !== this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ? <Button onClick={() => this.setState({ setshow: true })} style={{ marginLeft: '0px', marginRight: '10px', width: '135px' }} inline-block variant="dark"><Icon name="edit outline"></Icon>Edit Profile</Button> : null}
+                        {this.state.userdata.id !== this.props.match.params.id ?
                             <OverlayTrigger trigger="click" placement="bottom" overlay={<Popover id="popover-basic">
                                 <Popover.Title as="h3">Give a Rating</Popover.Title>
                                 <Popover.Content>
@@ -366,7 +370,7 @@ class ProfilePage extends Component {
                 <Container style={{ border: 'solid 2px black', backgroundColor: 'white' }}>
                     <Row style={{ marginTop: '5%' }}>
                         <Col sm={4}><Image style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src={this.state.profileimg == "" ? "https://i.imgur.com/3KR0iMp.jpg" : this.state.profileimg} thumbnail />
-                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.data.username}</h4>{this.state.data.isadmin === true ? <div><Badge style={{ marginLeft: '35px' }} variant="danger">Admin</Badge></div> : null}</Col>
+                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.userdata.username}</h4>{this.state.userdata.isadmin === true ? <div><Badge style={{ marginLeft: '35px' }} variant="danger">Admin</Badge></div> : null}</Col>
                         <Col sm={1}></Col>
                         <Col sm={6}>
                             <Row>
@@ -382,10 +386,10 @@ class ProfilePage extends Component {
                                     }):null:null}</h5> */}
 
 
-                                    <h5>Member since: {this.state.data.createdAt !== undefined ? this.state.data.createdAt.slice(0, -14) : null}</h5>
-                                    <h5>{this.state.data.email}</h5>
-                                    <h5>{this.state.data.phonenumber}</h5>
-                                    <h5>Followers: {this.state.data.followers !== undefined ? this.state.data.followers.length : null}</h5>
+                                    <h5>Member since: {this.state.userdata.createdAt !== undefined ? this.state.userdata.createdAt.slice(0, -14) : null}</h5>
+                                    <h5>{this.state.userdata.email}</h5>
+                                    <h5>{this.state.userdata.phonenumber}</h5>
+                                    <h5>Followers: {this.state.userdata.followers !== undefined ? this.state.userdata.followers.length : null}</h5>
                                     <br />
                                 </Container>
                             </Row>
@@ -418,13 +422,13 @@ class ProfilePage extends Component {
             }) : null}
                                                 
 
-                                                {this.state.token.id !== this.props.match.params.id ?
+                                                {this.state.userdata.id !== this.props.match.params.id ?
                                                     <Form.Group controlId="exampleForm.ControlTextarea1">
                                                         <Form.Label>Description</Form.Label>
                                                         <Form.Control name="msg" as="textarea" rows="3" onChange={this.activeChat} />
                                                         <br />
                                                     </Form.Group>:<h6 style={{textAlign:'center', marginTop:'30px'}}>This is your inbox. Click on a receiving Id and go to their profile to reply back</h6>}
-                                                    {this.state.token.id !== this.props.match.params.id ?
+                                                    {this.state.userdata.id !== this.props.match.params.id ?
                                                     <Button style={{ margin: '0 auto', width: '35%', display: 'block' }} onClick={this.chat} variant="success" type="submit">
                                                         Send </Button>:null}
                                                 </Form>
@@ -447,7 +451,7 @@ class ProfilePage extends Component {
                     <Container>
                         <h4>Description:</h4>
                         {this.state.loading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
-                        <p>{this.state.data.description}</p>
+                        <p>{this.state.userdata.description}</p>
                     </Container>
                     <br /><br />
                     <Tabs defaultActiveKey="posts" id="uncontrolled-tab-example">
@@ -455,7 +459,7 @@ class ProfilePage extends Component {
                             <br />
 
                             <Item.Group>
-                                {this.state.data.posts !== undefined ? this.state.data.posts.map((post) => {
+                                {this.state.userdata.posts !== undefined ? this.state.userdata.posts.map((post) => {
                                     return <Item>
                                         <Item.Image size='tiny' src={post.postimages[0]} />
 
@@ -471,11 +475,11 @@ class ProfilePage extends Component {
                                 }) : null}
                             </Item.Group>
                         </Tab>
-                        {this.state.token.id === this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ?
                             <Tab eventKey="orders" title="Previous Orders">
                                 <br />
                                 <Item.Group>
-                                    {this.state.data.purchesedorder !== undefined ? this.state.data.purchesedorder.map((order) => {
+                                    {this.state.userdata.purchesedorder !== undefined ? this.state.userdata.purchesedorder.map((order) => {
                                         return <Item>
                                             <Item.Image size='tiny' src={order.postimages[0]} />
 
@@ -493,7 +497,7 @@ class ProfilePage extends Component {
                             </Tab> : null}
                         <Tab eventKey="ratings" title="Reviews">
                             <br />
-                            {this.state.data.Rating !== undefined ? this.state.data.Rating.map((review) => {
+                            {this.state.userdata.Rating !== undefined ? this.state.userdata.Rating.map((review) => {
                                 return <div >
                                     <a style={{ color: 'black', textDecoration: 'none' }} href={"/profile/" + review.userid} >
                                         <h4>By:{" "}{review.username}</h4></a>
@@ -503,12 +507,12 @@ class ProfilePage extends Component {
 
                             }) : null}
                         </Tab>
-                        {this.state.token.id === this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ?
                             <Tab eventKey="following" title="Following">
                                 <br />
                                 <h2>Followings:</h2>
                                 <br />
-                                {this.state.data.following !== undefined ? this.state.data.following.map((user) => {
+                                {this.state.userdata.following !== undefined ? this.state.userdata.following.map((user) => {
                                     return <Segment href={"/profile/" + user._id}>
                                         {user.username}
                                     </Segment>
@@ -521,18 +525,18 @@ class ProfilePage extends Component {
                                 </Divider>
                                 <h2>Followers:</h2>
                                 <br />
-                                {this.state.data.followers !== undefined ? this.state.data.followers.map((user) => {
+                                {this.state.userdata.followers !== undefined ? this.state.userdata.followers.map((user) => {
                                     return <Segment href={"/profile/" + user._id}>
                                         {user.username}
                                     </Segment>
                                 }) : null}
                             </Tab> : null}
-                        {this.state.token.id === this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ?
                             <Tab eventKey="watchlater" title="Watch list">
                                 <br />
 
                                 <Item.Group>
-                                    {this.state.data.watchlater !== undefined ? this.state.data.watchlater.map((post) => {
+                                    {this.state.userdata.watchlater !== undefined ? this.state.userdata.watchlater.map((post) => {
                                         return <Item>
                                             <Item.Image size='tiny' src={post.postimages[0]} />
 
@@ -554,7 +558,7 @@ class ProfilePage extends Component {
                 <br />
 
                 <br />
-                {this.state.token.isadmin === true ? <Container>
+                {this.state.userdata.isadmin === true ? <Container>
                     <Row>
                         <Col>
                             <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} onClick={this.verifyuser} inline-block variant="success">Verify User</Button>
@@ -574,9 +578,9 @@ const mapStateToProps = ({ isLoading, user, error }) => ({
     user,
     error, 
  });
- 
+
  const mapDispatchToProps = dispatch => ({
-   loadUser: () => dispatch(loadUser()),
+   loadUser: (pageid) => dispatch(loadUser(pageid)),
  })
    // bindActionCreators({ requestUserData }, dispatch);
  

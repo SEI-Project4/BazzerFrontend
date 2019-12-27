@@ -4,14 +4,16 @@ import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox, Loader, Pagination } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
 import axios from 'axios'
-
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { loadUser, setUser } from "../../actions";
 
 const locations = [
     { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Makkah', value: 'Makkah' }, { key: 3, text: 'Abha', value: 'Abha' }, { key: 4, text: 'Medina', value: 'Medina' }, { key: 5, text: 'Tabuk', value: 'Tabuk' }, { key: 6, text: 'Sakaka', value: 'Sakaka' }, { key: 7, text: 'Hail', value: 'Hail' }, { key: 8, text: 'Buraydah', value: 'Buraydah' }, { key: 9, text: 'Riyadh', value: 'Riyadh' }, { key: 10, text: 'Dammam', value: 'Dammam' }, { key: 11, text: 'Taif', value: 'Taif' }
 ]
 
 
-export default class HomePage extends Component {
+class HomePage extends Component {
     state = {
         token: "",
         advanced: false,
@@ -22,7 +24,7 @@ export default class HomePage extends Component {
     }
 
     componentDidMount() {
-
+        this.props.loadUser()
         if (localStorage.usertoken == true) {
             console.log('user token');
 
@@ -218,3 +220,15 @@ export default class HomePage extends Component {
         )
     }
 }
+const mapStateToProps = ({ isLoading, user, error }) => ({
+    isLoading,
+    user,
+    error, 
+ });
+ 
+ const mapDispatchToProps = dispatch => ({
+   loadUser: () => dispatch(loadUser()),
+ })
+   // bindActionCreators({ requestUserData }, dispatch);
+ 
+ export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

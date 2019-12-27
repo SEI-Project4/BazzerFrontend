@@ -1,14 +1,23 @@
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
 
-
- const fetchData = async () => {
+ const fetchData = async (pageid) => {
      try{
         var decoded = await jwt.verify(localStorage.usertoken, 'secret')
-        return await axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        var token = {
+            id:decoded.id,
+            admin: decoded.isadmin,
+            verified: decoded.isverified,
+            tokenuser: decoded.username
+        }
+        let userid = pageid
+        if(decoded.id==pageid){
+             userid = decoded.id
+        }
+        return await axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${userid}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
                         .then((res) => {
                                 const userdata = res.data.result
-                                const alldata = {...decoded,...userdata}
+                                const alldata = {...token,...userdata}
                                 return alldata;
                         }).catch(err => console.log(err))
 

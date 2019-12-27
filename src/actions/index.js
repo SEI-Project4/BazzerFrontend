@@ -1,7 +1,8 @@
 import {USER} from '../constants/index'
 
-const loadUser = () =>({
+const loadUser = pageid =>({
     type: USER.LOAD,
+    pageid,
 })
 
 const setUser = user => ({

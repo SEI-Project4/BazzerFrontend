@@ -6,12 +6,15 @@ import { Item, Rating, Icon, Image, Loader, Segment, Divider, Header } from 'sem
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { loadUser, setUser } from "../../actions";
 
 const imageMaxSize = 1066300 // bytes = 1MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
 let sumrate = 0
-export default class ProfilePage extends Component {
+class ProfilePage extends Component {
     state = {
         token: "",
         setshow: false,
@@ -29,39 +32,57 @@ export default class ProfilePage extends Component {
         msg: "",
     }
     componentDidMount = () => {
+        this.props.loadUser()
+        // let self = this;
+        // jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
+        //     if (err) {
+        //         self.setState({ session: false })
+        //     } else if(decoded){
+        //         var decoded = jwt.verify(localStorage.usertoken, 'secret')
+        //         self.setState({ session: true,token: decoded })
+        //         // console.log("response get user")
+        //         axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        //             .then(res => {
+        //                 self.setState({ user: res.data.result })
+        //                 console.log(res.data.result)
+        //             }).catch(err => console.log(err))
+        //     }else{
+        //         self.setState({ guest: true })
+        //     }
+        // });
 
-        let self = this;
+        // let self = this;
 
-        if (localStorage.usertoken) {
-            jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
-                if (err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'token expired',
-                        showConfirmButton: true,
-                    })
-                    self.setState({ guest: true })
-                } else {
-                    var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                    console.log("decoded ==")
-                    console.log(decoded);
-                    self.setState({ token: decoded, })
-                    axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${self.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res => {
-                        self.setState({
-                            firstname: res.data.result.firstname, lastname: res.data.result.lastname, description: res.data.result.description, profileimg: res.data.result.profileimg, city: res.data.result.city, data: res.data.result, loading: false
-                        })
-                        console.log(res.data.result.msg)
-                        console.log("infooo")
-                        console.log(res.data.result)
-                    })
-                        .catch(err => console.log(err))
-                }
-            });
+        // if (localStorage.usertoken) {
+        //     jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
+        //         if (err) {
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'token expired',
+        //                 showConfirmButton: true,
+        //             })
+        //             self.setState({ guest: true })
+        //         } else {
+        //             var decoded = jwt.verify(localStorage.usertoken, 'secret')
+        //             console.log("decoded ==")
+        //             console.log(decoded);
+        //             self.setState({ token: decoded, })
+        //             axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${self.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res => {
+        //                 self.setState({
+        //                     firstname: res.data.result.firstname, lastname: res.data.result.lastname, description: res.data.result.description, profileimg: res.data.result.profileimg, city: res.data.result.city, data: res.data.result, loading: false
+        //                 })
+        //                 console.log(res.data.result.msg)
+        //                 console.log("infooo")
+        //                 console.log(res.data.result)
+        //             })
+        //                 .catch(err => console.log(err))
+        //         }
+        //     });
 
-        } else { this.setState({ guest: true }) }
+        // } else { this.setState({ guest: true }) }
     }
     componentDidUpdate = () => {
-        console.log("state:=")
+        console.log("state is equal to")
         console.log(this.state)
     }
 
@@ -222,18 +243,35 @@ export default class ProfilePage extends Component {
             })
     }
 
-    componentDidUpdate = () => {
-        console.log("update")
-        axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                console.log(res)
-                this.setState({
-                    allmsg: res.data.result
-                })
-            }).catch(err => console.log(err))
-    }
+    // componentDidUpdate = () => {
+    //     console.log("update")
+    //     axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+    //         .then(res => {
+    //             console.log(res)
+    //             this.setState({
+    //                 allmsg: res.data.result
+    //             })
+    //         }).catch(err => console.log(err))
+    // }
 
     render() {
+        if(this.props.user.firstname && this.state.loading == true){
+            console.log(this.props)            
+            const User = this.props.user
+            this.setState({
+                firstname: User.firstname, lastname: User.lastname, description: User.description, profileimg: User.profileimg, city: User.city, data: User, loading: false
+            })
+        }else if(this.props.error=="session expired"){
+            Swal.fire({
+                icon: 'error',
+                title: 'Session expired please Login again',
+                showConfirmButton: true,
+            })
+            
+            this.setState({ guest: true })
+        }else{
+            
+        }
         return (
             <div>
 
@@ -531,3 +569,15 @@ export default class ProfilePage extends Component {
         )
     }
 }
+const mapStateToProps = ({ isLoading, user, error }) => ({
+    isLoading,
+    user,
+    error, 
+ });
+ 
+ const mapDispatchToProps = dispatch => ({
+   loadUser: () => dispatch(loadUser()),
+ })
+   // bindActionCreators({ requestUserData }, dispatch);
+ 
+ export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);

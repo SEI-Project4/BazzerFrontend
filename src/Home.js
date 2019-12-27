@@ -1,32 +1,42 @@
-import React from "react";
+import React, { Component } from 'react'
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { loadUser, setUser } from "./actions/index";
 
-import { requestUserData } from "./actions";
+class Home extends Component {
 
-class Home extends React.Component {
   componentDidMount() {
-    this.props.requestUserData();
-console.log(this.props.requestUserData())
-      console.log(this.props)
-
+    this.props.loadUser()
   }
 
   render() {
-    const { results = [] } = this.props.userData
-    return (
-      results.length
-      ? <h1>
-          {results.first}
-        </h1>
-      : <h1>loading...</h1>;
-    );
+    if(this.props.user.firstname){
+      const User = this.props.user
+      return (
+        <div>
+        <h1>{User.firstname}</h1>
+        </div>
+      )
+    }
+      return (
+        <div>
+        
+        </div>
+      )
+ 
+      
   }
 }
 
-const mapStateToProps = state => ({ userdata: state.userdata });
+const mapStateToProps = ({ isLoading, user, error }) => ({
+   isLoading,
+   user,
+   error, 
+});
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ requestUserData }, dispatch);
+const mapDispatchToProps = dispatch => ({
+  loadUser: () => dispatch(loadUser()),
+})
+  // bindActionCreators({ requestUserData }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

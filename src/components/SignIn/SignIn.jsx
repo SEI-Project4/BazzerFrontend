@@ -5,6 +5,7 @@ import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import SweetAlert from 'sweetalert2-react';
 import axios from 'axios'
 import './SignIn.css'
+import Swal from 'sweetalert2'
 
 export default class SignIn extends Component {
     state = {
@@ -27,9 +28,12 @@ export default class SignIn extends Component {
                     })
                     
                 } else {
-                    this.setState({
-                        success: true
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'You have successfully signed in',
+                        showConfirmButton: false,
                     })
+                    window.location.replace("/home")
                     console.log(res.data.token)
                     localStorage.setItem('usertoken', res.data.token)
                 }
@@ -41,6 +45,7 @@ export default class SignIn extends Component {
             })})
     }
 
+    
     handlesubmit(e) {
         e.preventDefault()
         console.log('checking')

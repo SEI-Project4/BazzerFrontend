@@ -1,0 +1,7 @@
+const USER = {
+    LOAD: 'USER_LOAD',
+    LOAD_SUCCESS: 'USER_LOAD_SUCCESS',
+    LOAD_FAIL: 'USER_LOAD_FAIL'
+}
+
+export { USER };

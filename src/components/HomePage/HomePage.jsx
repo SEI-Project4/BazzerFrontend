@@ -6,7 +6,7 @@ import { Container } from 'react-bootstrap'
 import axios from 'axios'
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { loadUser, setUser } from "../../actions";
+import { loadPost } from "../../actions";
 
 const locations = [
     { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Makkah', value: 'Makkah' }, { key: 3, text: 'Abha', value: 'Abha' }, { key: 4, text: 'Medina', value: 'Medina' }, { key: 5, text: 'Tabuk', value: 'Tabuk' }, { key: 6, text: 'Sakaka', value: 'Sakaka' }, { key: 7, text: 'Hail', value: 'Hail' }, { key: 8, text: 'Buraydah', value: 'Buraydah' }, { key: 9, text: 'Riyadh', value: 'Riyadh' }, { key: 10, text: 'Dammam', value: 'Dammam' }, { key: 11, text: 'Taif', value: 'Taif' }
@@ -24,22 +24,8 @@ class HomePage extends Component {
     }
 
     componentDidMount() {
-        this.props.loadUser()
-        if (localStorage.usertoken == true) {
-            console.log('user token');
+        this.props.loadPost(this.props.match.params.id)
 
-            var decoded = jwt.verify(localStorage.usertoken, 'secret')
-            console.log(decoded.user);
-            this.setState({ token: decoded })
-        } else { }
-
-        axios.get('https://sei-bazaar-backend.herokuapp.com/posts')
-            .then((res) => {
-                this.setState({
-                    data: res.data.result, loading: false
-                })
-            })
-            .catch(err => console.log(err))
     }
 
     filterCity =(e,{value})=>{
@@ -57,6 +43,11 @@ class HomePage extends Component {
         this.setState({ search: e.target.value.toLowerCase() })
     }
     render() {
+        if(this.props.post.length>0 && this.state.loading == true){           
+            this.setState({
+                data: this.props.post, loading: false
+            })
+        }
 
         const lowercasedsearch = this.state.search.toLowerCase();
         const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
@@ -220,14 +211,14 @@ class HomePage extends Component {
         )
     }
 }
-const mapStateToProps = ({ isLoading, user, error }) => ({
-    isLoading,
-    user,
-    error, 
+const mapStateToProps = ({ postLoading, post, errorpost }) => ({
+    postLoading,
+    post,
+    errorpost, 
  });
  
  const mapDispatchToProps = dispatch => ({
-   loadUser: () => dispatch(loadUser()),
+   loadPost: (pageid) => dispatch(loadPost(pageid)),
  })
    // bindActionCreators({ requestUserData }, dispatch);
  

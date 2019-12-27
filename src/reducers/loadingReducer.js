@@ -9,7 +9,6 @@ const loadingReducer = (state = false, action) => {
             return false;
         case USER.LOAD_FAIL:
             return false;
-
         default:
             return state;
     }

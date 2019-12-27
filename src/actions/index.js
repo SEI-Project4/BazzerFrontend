@@ -1,4 +1,4 @@
-import {USER} from '../constants/index'
+import {USER, POST} from '../constants/index'
 
 const loadUser = pageid =>({
     type: USER.LOAD,
@@ -15,9 +15,19 @@ const setError = error => ({
     error,
 });
 
-const getToken = token => ({
-    type: 'GET_TOKEN',
-    token,
+const loadPost = pageid => ({
+    type: POST.LOAD,
+    pageid,
+});
+
+const getposts = post => ({
+    type: POST.LOAD_SUCCESS,
+    post,
+});
+
+const errorPost = error => ({
+    type: POST.LOAD_FAIL,
+    error,
 });
 
 
@@ -25,5 +35,7 @@ export {
     loadUser,
     setUser,
     setError,
-    getToken
+    getposts,
+    loadPost,
+    errorPost,
 }

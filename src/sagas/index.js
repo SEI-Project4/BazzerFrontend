@@ -1,12 +1,13 @@
-import {all} from 'redux-saga/effects'
+import {all, takeEvery} from 'redux-saga/effects'
 import UserSaga from './UserSaga'
-// import TokenSaga from './TokenSaga'
-import {USER} from '../constants/index'
+import PostSaga from './PostSaga'
 
 //watcher Saga
-function* rootSaga(){
-    yield all([UserSaga()])
+export default function* rootSaga(){
+    yield all([
+        UserSaga(),
+        PostSaga()
+    
+    ])
     // yield takeEvery(USER.LOAD, handleUserLoad)
 }
-
-export default rootSaga

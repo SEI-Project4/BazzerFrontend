@@ -36,53 +36,7 @@ class ProfilePage extends Component {
     }
     componentDidMount = () => {
         this.props.loadUser(this.props.match.params.id)
-        // let self = this;
-        // jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
-        //     if (err) {
-        //         self.setState({ session: false })
-        //     } else if(decoded){
-        //         var decoded = jwt.verify(localStorage.usertoken, 'secret')
-        //         self.setState({ session: true,token: decoded })
-        //         // console.log("response get user")
-        //         axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${decoded.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-        //             .then(res => {
-        //                 self.setState({ user: res.data.result })
-        //                 console.log(res.data.result)
-        //             }).catch(err => console.log(err))
-        //     }else{
-        //         self.setState({ guest: true })
-        //     }
-        // });
-
-        // let self = this;
-
-        // if (localStorage.usertoken) {
-        //     jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
-        //         if (err) {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'token expired',
-        //                 showConfirmButton: true,
-        //             })
-        //             self.setState({ guest: true })
-        //         } else {
-        //             var decoded = jwt.verify(localStorage.usertoken, 'secret')
-        //             console.log("decoded ==")
-        //             console.log(decoded);
-        //             self.setState({ token: decoded, })
-        //             axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${self.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res => {
-        //                 self.setState({
-        //                     firstname: res.data.result.firstname, lastname: res.data.result.lastname, description: res.data.result.description, profileimg: res.data.result.profileimg, city: res.data.result.city, data: res.data.result, loading: false
-        //                 })
-        //                 console.log(res.data.result.msg)
-        //                 console.log("infooo")
-        //                 console.log(res.data.result)
-        //             })
-        //                 .catch(err => console.log(err))
-        //         }
-        //     });
-
-        // } else { this.setState({ guest: true }) }
+    
     }
     componentDidUpdate = () => {
         console.log("state is equal to")
@@ -119,13 +73,13 @@ class ProfilePage extends Component {
         axios.post(`https://sei-bazaar-backend.herokuapp.com/users/send/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
 
-                // Swal.fire({
-                //     position: 'top-end',
-                //     icon: 'success',
-                //     title: 'message sent',
-                //     showConfirmButton: false,
-                //     timer: 1500
-                // })
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'message sent',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             })
 
             .catch(err => console.log(err))
@@ -247,16 +201,16 @@ class ProfilePage extends Component {
             })
     }
 
-    // componentDidUpdate = () => {
-    //     console.log("update")
-    //     axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-    //         .then(res => {
-    //             console.log(res)
-    //             this.setState({
-    //                 allmsg: res.data.result
-    //             })
-    //         }).catch(err => console.log(err))
-    // }
+    componentDidUpdate = () => {
+        console.log("update")
+        axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+            .then(res => {
+                console.log(res)
+                this.setState({
+                    allmsg: res.data.result
+                })
+            }).catch(err => console.log(err))
+    }
 
     render() {
         if(this.props.user.firstname && this.state.loading == true){
@@ -414,9 +368,9 @@ class ProfilePage extends Component {
                                             <Col lg={12} md={12}>
                                                 <Form method="post" onSubmit={this.chat}>
             {this.state.allmsg !== undefined ? this.state.allmsg.map((room) => {
-                return room.user1 == this.state.token.id || room.user2 == this.state.token.id ? room.msg.map((chat) => {
+                return room.user1 == this.state.userdata.id || room.user2 == this.state.userdata.id ? room.msg.map((chat) => {
                     return <div>
-                            {chat.from !== this.state.token.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}<a style={{color:'black'}} href={"/profile/"+chat.from}>{chat.from}</a></Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{"You"}{": "}{chat.content}</Segment> }
+                            {chat.from !== this.state.userdata.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}<a style={{color:'black'}} href={"/profile/"+chat.from}>{chat.from}</a></Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{"You"}{": "}{chat.content}</Segment> }
                     </div>      
                 }) : null
             }) : null}
@@ -440,7 +394,7 @@ class ProfilePage extends Component {
 
 
                                 <br />
-                                {this.state.token.id === this.props.match.params.id ? <Button onClick={() => this.setState({ inboxShow: true })} style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Inbox</Button> : this.state.token.id ? <div style={{ margin: '0 auto' }}><Button onClick={this.follow} style={{ margin: '15px auto', width: '150px' }} variant="primary"><Icon name="add user"></Icon> Follow</Button><div style={{ marginLeft: '50px', display: 'inline-block' }}></div>
+                                {this.state.userdata.id === this.props.match.params.id ? <Button onClick={() => this.setState({ inboxShow: true })} style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Inbox</Button> : this.state.userdata.id ? <div style={{ margin: '0 auto' }}><Button onClick={this.follow} style={{ margin: '15px auto', width: '150px' }} variant="primary"><Icon name="add user"></Icon> Follow</Button><div style={{ marginLeft: '50px', display: 'inline-block' }}></div>
                                     <Button onClick={() => this.setState({ inboxShow: true })} style={{ margin: '15px auto', width: '150px' }} variant="warning"><Icon name="envelope"></Icon>Message</Button></div>
                                     : null}
                             </Row>

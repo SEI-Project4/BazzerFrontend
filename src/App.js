@@ -17,7 +17,6 @@ import Page404 from './components/Page404/Page404'
 import Home from './Home'
 import { Provider } from 'react-redux'
 import configureStore from './store/store'
-import GetUserData from './GetUserData'
 
 const store = configureStore()
 
@@ -58,15 +57,6 @@ export default class App extends Component {
               />
             )}
         />
-        {/* <Route
-          path='/djhh'
-            render={props => (
-              <GetUserData 
-                
-                {...props}
-              />
-            )}
-        /> */}
         <Route
             exact
             path="/"

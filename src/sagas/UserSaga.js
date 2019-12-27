@@ -1,6 +1,5 @@
 import {takeEvery, put, takeLatest, take, call, all} from 'redux-saga/effects'
 import fetchData from '../GetUserData'
-import fetchtoken from '../api/getToken'
 import {USER} from '../constants'
 import {setUser, setError, loadUser} from '../actions/index'
 

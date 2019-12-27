@@ -4,7 +4,7 @@ import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import { connect } from "react-redux";
-
+import { loadUser } from "../../actions";
 
 class NavBar extends Component {
     state = {
@@ -23,6 +23,7 @@ class NavBar extends Component {
     }
 
     componentDidMount = () => {
+        this.props.loadUser()
 
         let self = this;
 
@@ -131,4 +132,8 @@ const mapStateToProps = ({ isLoading, user, error }) => ({
     error, 
  });
 
-export default connect(mapStateToProps)(NavBar);
+ const mapDispatchToProps = dispatch => ({
+    loadUser: (pageid) => dispatch(loadUser(pageid)),
+  })
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

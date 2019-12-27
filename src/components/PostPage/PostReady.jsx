@@ -5,8 +5,11 @@ import { Divider, Header, Icon, Comment, Form, Button, Segment, Input, Loader } 
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { loadPost } from "../../actions";
 
-export default class PostReady extends Component {
+class PostReady extends Component {
 
     state = {
         guest: false,
@@ -20,37 +23,7 @@ export default class PostReady extends Component {
 
 
     componentDidMount = () => {
-        let self = this;
-
-        if (localStorage.usertoken) {
-            jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
-                if (err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Session expired please login again',
-                        showConfirmButton: true,
-                    })
-                    self.setState({ guest: true })
-                } else {
-                    var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                    console.log("decoded ===")
-                    console.log(decoded);
-                    self.setState({ token: decoded, })
-                    axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${self.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res => {
-                        console.log("data from post id")
-                        console.log(res)
-                        self.setState({
-                            data: res.data.result, loading: false
-                        })
-                        console.log("bids length")
-                        console.log(self.state.bidslength)
-                    })
-                        .catch(err => console.log(err))
-                }
-            });
-
-        } else { this.setState({ guest: true }) }
-
+        this.props.loadPost(this.props.match.params.id)
 
     }
 
@@ -195,12 +168,17 @@ export default class PostReady extends Component {
     }
 
     render() {
+        if(this.props.post.title && this.state.loading == true){  
+            console.log(this.props)         
+            this.setState({
+                data: this.props.post, loading: false
+            })
+        }
         return (
             <div>
                 <br />
                 <Container>
-
-                    {this.state.token === undefined ? null : this.state.token.isadmin === true ?
+                    {this.props.user === undefined ? null : this.props.user.admin === true ?
                         <Row>
                             <Col><Button onClick={this.delete} floated='left' color='red'>Delete Post</Button></Col>
                             <Col><Button floated='right' color='orange'>Close Post</Button></Col>
@@ -209,10 +187,10 @@ export default class PostReady extends Component {
                     <br /><br />
                 </Container>
                 <Container>
-                    <h3><a href={"http://localhost:3000/profile/" + this.state.data.user} style={{ textDecoration: 'none', color: 'black' }}><strong>By:</strong> {this.state.data.username}</a></h3>
+                    <h3><a href={"/profile/" + this.state.data.user} style={{ textDecoration: 'none', color: 'black' }}><strong>By:</strong> {this.state.data.username}</a></h3>
                 </Container>
                 <br />
-                {this.state.loading2 === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
+                {this.props.postLoading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                 <Container style={{ marginBottom: '30px' }}>
                     {this.state.data.postimages !== undefined ?
                         <Carousel style={{ border: '2px solid black' }} >
@@ -258,7 +236,7 @@ export default class PostReady extends Component {
                                     />
                                 </Carousel.Item> : null}
                         </Carousel> : null}
-                    {this.state.loading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
+                    {/* {this.props.postLoading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null} */}
                 </Container>
 
                 <Container>
@@ -283,7 +261,7 @@ export default class PostReady extends Component {
                         <Col lg={3} md={4} sm={12}>
                             <Container style={{ margin: '0 auto', textAlign: 'center' }}>
                                 <div class="ui vertical buttons">
-                                    {this.state.token.isadmin===true?<Button onClick={this.approve} style={{ margin: '15px auto', width: '160px', color: 'black', display: 'block' }} color='green'>Approve post</Button>:null}
+                                    {this.props.user.admin===true?<Button onClick={this.approve} style={{ margin: '15px auto', width: '160px', color: 'black', display: 'block' }} color='green'>Approve post</Button>:null}
 
                                     <Button onClick={this.later} style={{ margin: '15px auto', width: '160px', }} color='grey'><Icon name="plus circle"></Icon>Watch later</Button>
                                 </div>
@@ -358,3 +336,16 @@ export default class PostReady extends Component {
         )
     }
 }
+const mapStateToProps = ({ postLoading, post, errorpost, user }) => ({
+    postLoading,
+    post,
+    errorpost, 
+    user,
+ });
+ 
+ const mapDispatchToProps = dispatch => ({
+   loadPost: (pageid) => dispatch(loadPost(pageid)),
+ })
+   // bindActionCreators({ requestUserData }, dispatch);
+ 
+ export default connect(mapStateToProps, mapDispatchToProps)(PostReady);

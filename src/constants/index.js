@@ -4,4 +4,10 @@ const USER = {
     LOAD_FAIL: 'USER_LOAD_FAIL'
 }
 
-export { USER };
+const POST = {
+    LOAD: 'POST_LOAD',
+    LOAD_SUCCESS: 'POST_LOAD_SUCCESS',
+    LOAD_FAIL: 'POST_LOAD_FAIL'
+}
+
+export { USER, POST };

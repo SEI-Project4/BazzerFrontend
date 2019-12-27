@@ -11,7 +11,7 @@ import axios from 'axios'
             tokenuser: decoded.username
         }
         let userid = pageid
-        if(decoded.id==pageid){
+        if(decoded.id==pageid || pageid==undefined){
              userid = decoded.id
         }
         return await axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${userid}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })

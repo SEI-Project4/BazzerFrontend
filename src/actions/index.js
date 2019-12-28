@@ -1,4 +1,4 @@
-import {USER, POST} from '../constants/index'
+import {USER, POST, USERTASK} from '../constants/index'
 
 const loadUser = pageid =>({
     type: USER.LOAD,
@@ -30,6 +30,21 @@ const errorPost = error => ({
     error,
 });
 
+const loadusertask = pageid => ({
+    type: USERTASK.LOAD,
+    pageid,
+});
+
+const setusertask = usertask => ({
+    type: USERTASK.LOAD_SUCCESS,
+    usertask,
+});
+
+const usertaskerr = error => ({
+    type: USERTASK.LOAD_FAIL,
+    error,
+});
+
 
 export {
     loadUser,
@@ -38,4 +53,7 @@ export {
     getposts,
     loadPost,
     errorPost,
+    loadusertask,
+    setusertask,
+    usertaskerr
 }

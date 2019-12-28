@@ -11,6 +11,7 @@ import axios from 'axios'
             tokenuser: decoded.username
         }
         let userid = pageid
+        //sometimes the page might be undefined during redirecting which makes the wrong action. find a solution
         if(decoded.id==pageid || pageid==undefined){
              userid = decoded.id
         }

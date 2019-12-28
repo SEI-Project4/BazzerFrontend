@@ -8,7 +8,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { loadUser, setUser } from "../../actions";
+import { loadUser, loadusertask} from "../../actions";
 
 const imageMaxSize = 1066300 // bytes = 1MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
@@ -33,6 +33,7 @@ class ProfilePage extends Component {
         inboxShow: false,
         msg: "",
         userdata:[],
+        type:'',
     }
     componentDidMount = () => {
         this.props.loadUser(this.props.match.params.id)
@@ -51,14 +52,10 @@ class ProfilePage extends Component {
         console.log(this.state)
     }
     submit = (e) => {
+        this.setState({ type: 'submit' })
+        let state = this.state
+        this.props.loadusertask(state)
         e.preventDefault()
-        axios.put(`https://sei-bazaar-backend.herokuapp.com/users/${this.state.token.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                window.location.reload();
-                console.log(res)
-            })
-
-            .catch(err => console.log(err))
     }
 
     activeChat = (e) => {
@@ -68,7 +65,9 @@ class ProfilePage extends Component {
         console.log(this.state)
     }
     chat = (e) => {
-
+        this.setState({ type: 'chat', pageid:this.props.match.params.id})
+        let state = this.state
+        this.props.loadusertask(state)
         e.preventDefault()
         axios.post(`https://sei-bazaar-backend.herokuapp.com/users/send/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
@@ -123,6 +122,9 @@ class ProfilePage extends Component {
     }
 
     follow = (e) => {
+        this.setState({ type: 'follow', pageid:this.props.match.params.id})
+        let state = this.state
+        this.props.loadusertask(state)
         axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then((res) => {
                 if (res.data.msg == "follow Done") {
@@ -201,16 +203,16 @@ class ProfilePage extends Component {
             })
     }
 
-    componentDidUpdate = () => {
-        console.log("update")
-        axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                console.log(res)
-                this.setState({
-                    allmsg: res.data.result
-                })
-            }).catch(err => console.log(err))
-    }
+    // componentDidUpdate = () => {
+    //     console.log("update")
+    //     axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+    //         .then(res => {
+    //             console.log(res)
+    //             this.setState({
+    //                 allmsg: res.data.result
+    //             })
+    //         }).catch(err => console.log(err))
+    // }
 
     render() {
         if(this.props.user.firstname && this.state.loading == true){
@@ -225,7 +227,7 @@ class ProfilePage extends Component {
                 title: 'Session expired please Login again',
                 showConfirmButton: true,
             })
-            
+            window.location.replace("/home")
             this.setState({ guest: true })
         }else{
             
@@ -527,14 +529,17 @@ class ProfilePage extends Component {
         )
     }
 }
-const mapStateToProps = ({ isLoading, user, error }) => ({
+const mapStateToProps = ({ isLoading, user, error, userTaskLoading, userTask }) => ({
     isLoading,
     user,
-    error, 
+    error,
+    userTaskLoading,
+    userTask
  });
 
  const mapDispatchToProps = dispatch => ({
    loadUser: (pageid) => dispatch(loadUser(pageid)),
+   loadusertask: (pageid) => dispatch(loadusertask(pageid))
  })
    // bindActionCreators({ requestUserData }, dispatch);
  

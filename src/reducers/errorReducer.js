@@ -1,4 +1,4 @@
-import { USER, POST } from '../constants';
+import { USER, POST, USERTASK } from '../constants';
 
 const errorReducer = (state = null, action) => {
     switch (action.type) {
@@ -11,6 +11,11 @@ const errorReducer = (state = null, action) => {
             return action.error;
         case POST.LOAD:
         case POST.LOAD_SUCCESS:
+            return null;
+        case USERTASK.LOAD_FAIL:
+            return action.error;
+        case USERTASK.LOAD:
+        case USERTASK.LOAD_SUCCESS:
             return null;
 
         default:

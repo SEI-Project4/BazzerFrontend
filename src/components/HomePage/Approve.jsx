@@ -43,6 +43,7 @@ export default class Approve extends Component {
     render() {
         return (
             <div>
+                {this.state.loading===true?<div><br/><br/><br/><Loader content='Loading' active inline='centered' /></div>:null}
                 {this.state.token.isadmin===true?
                 <Container style={{marginTop:'20%'}}>
                 <div className="ui four column doubling stackable grid center aligned container">

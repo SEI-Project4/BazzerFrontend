@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './PostStyle.css'
 import { Row, Col, Container, Carousel } from 'react-bootstrap'
 import { Divider, Header, Icon, Comment, Form, Button, Segment, Input, Loader } from 'semantic-ui-react'
-import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { bindActionCreators } from "redux";
@@ -28,7 +27,7 @@ class PostReady extends Component {
     }
 
     componentDidUpdate = () =>{
-        axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/noview`)
+        axios.get(`http://localhost:5000/posts/${this.props.match.params.id}/noview`)
         .then(res=>{
             this.setState({
                 data2:res.data.result.bids, bidslength: res.data.result.bids.length
@@ -45,7 +44,7 @@ class PostReady extends Component {
     }
     submit = (e) => {
         e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 if (res.data.msg === "created successfully") {
                     window.location.reload();
@@ -58,7 +57,7 @@ class PostReady extends Component {
     delete = (e) => {
         this.setState({ loading2: true })
         console.log("deleting")
-        axios.delete(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.delete(`http://localhost:5000/posts/${this.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 if (res.data.msg === "the post has been deleted ") {
                     window.location.replace("/home");
@@ -69,7 +68,7 @@ class PostReady extends Component {
 
     later = (e) => {
         console.log("watching later")
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/watchlater`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/watchlater`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 if (res.data.msg === "post added to watch later") {
                     Swal.fire({
@@ -94,7 +93,7 @@ class PostReady extends Component {
     submitBid = (e) =>{
         console.log(this.state)
         // e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/bid`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/bid`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 console.log(res)
                 if(res.data.msg==="value must be greater than current bid"){
@@ -120,10 +119,11 @@ class PostReady extends Component {
                 }
             })
             .catch(err => console.log(err))
+            console.log(this.state)
     }
 
     Buy = (e) =>{
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/buy`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/buy`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
             if(res.data.msg==="buy order regesterd"){
                 Swal.fire({
@@ -145,7 +145,7 @@ class PostReady extends Component {
     }
 
     approve= (e) =>{
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
             if(res.data.msg==="isapproved status changed"){
                 Swal.fire({
@@ -315,9 +315,9 @@ class PostReady extends Component {
                     <Comment.Group>
                         {this.state.data.comments !== undefined ? this.state.data.comments.map((comment) => {
                             return <Comment>
-                                <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
+                                <Comment.Avatar as='a' src={comment.user.profileimg==''? 'https://i.imgur.com/3KR0iMp.jpg' : comment.user.profileimg } />
                                 <Comment.Content>
-                                    <Comment.Author href={"/profile/" + comment.user}>{comment.username}</Comment.Author>
+                                    <Comment.Author href={"/profile/" + comment.user._id}>{comment.username}</Comment.Author>
                                     <Comment.Text>
                                         <p>{comment.description} </p>
                                     </Comment.Text>

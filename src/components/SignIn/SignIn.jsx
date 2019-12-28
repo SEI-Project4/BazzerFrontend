@@ -20,7 +20,7 @@ export default class SignIn extends Component {
     }
     submit = (e) => {
         e.preventDefault()
-        axios.post('https://sei-bazaar-backend.herokuapp.com/auth/login', this.state)
+        axios.post('http://localhost:5000/auth/login', this.state)
             .then(res => {
                 if (res.message == "Password or email is NOT correct") {
                     this.setState({

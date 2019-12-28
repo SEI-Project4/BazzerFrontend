@@ -98,12 +98,12 @@ class NavBar extends Component {
                                                 button
                                                 className='icon'
                                             >
-                                                {this.state.userdata.firstname?
+                                                {this.props.isLoading===false?
                                                 <Dropdown.Menu>
-                                                    <Dropdown.Header icon='user' content={this.state.userdata.tokenuser} />
-                                                    <Dropdown.Item href={"/profile/" + `${this.state.userdata.id}`}>Profile</Dropdown.Item>
-                                                    <Dropdown.Item href={"/profile/" + `${this.state.userdata.id}`}>Inbox</Dropdown.Item>
-                                                    {this.state.userdata.admin === true ?
+                                                    <Dropdown.Header icon='user' content={this.props.user.tokenuser} />
+                                                    <Dropdown.Item href={"/profile/" + `${this.props.user.id}`}>Profile</Dropdown.Item>
+                                                    <Dropdown.Item href={"/profile/" + `${this.props.user.id}`}>Inbox</Dropdown.Item>
+                                                    {this.props.user.admin === true ?
                                                     <Dropdown.Item href="/approve"><strong>Approve posts</strong></Dropdown.Item>:null}
                                                     <Dropdown.Item>Request verification</Dropdown.Item>
                                                     <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>

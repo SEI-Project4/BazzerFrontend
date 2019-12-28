@@ -12,10 +12,10 @@ import axios from 'axios'
         }
         let userid = pageid
         //sometimes the page might be undefined during redirecting which makes the wrong action. find a solution
-        if(decoded.id==pageid || pageid==undefined){
+        if(decoded.id==pageid){
              userid = decoded.id
         }
-        return await axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${userid}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        return await axios.get(`http://localhost:5000/users/${userid}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
                         .then((res) => {
                                 const userdata = res.data.result
                                 const alldata = {...token,...userdata}

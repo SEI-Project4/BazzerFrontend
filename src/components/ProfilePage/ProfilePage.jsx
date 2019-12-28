@@ -53,9 +53,12 @@ class ProfilePage extends Component {
     }
     submit = (e) => {
         this.setState({ type: 'submit' })
-        let state = this.state
-        this.props.loadusertask(state)
-        e.preventDefault()
+        if(this.state.type=='submit'){
+            let state = this.state
+            console.log(state)
+            this.props.loadusertask(state)
+            e.preventDefault()
+        }
     }
 
     activeChat = (e) => {
@@ -66,23 +69,12 @@ class ProfilePage extends Component {
     }
     chat = (e) => {
         this.setState({ type: 'chat', pageid:this.props.match.params.id})
-        let state = this.state
-        this.props.loadusertask(state)
-        e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/send/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'message sent',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            })
-
-            .catch(err => console.log(err))
-            e.target.msg=""
+        if(this.state.type=='chat'){
+            let state = this.state
+            console.log(state)
+            this.props.loadusertask(state)
+            e.preventDefault()
+        }
     }
     verifyFile = (files) => {
         if (files && files.length > 0) {
@@ -123,38 +115,22 @@ class ProfilePage extends Component {
 
     follow = (e) => {
         this.setState({ type: 'follow', pageid:this.props.match.params.id})
-        let state = this.state
-        this.props.loadusertask(state)
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then((res) => {
-                if (res.data.msg == "follow Done") {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Follow Done',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            }).catch(err => { console.log(err) })
+        if(this.state.type=='follow'){
+            let state = this.state
+            console.log(state)
+            this.props.loadusertask(state)
+            e.preventDefault()
+        }
     }
 
     rate = (e) => {
-        e.preventDefault()
-        console.log("rate sent")
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/rate`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg == "follow Done") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'review submitted',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            }).catch(err => {
-
-            })
+        this.setState({ type: 'rate', pageid:this.props.match.params.id})
+        if(this.state.type=='rate'){
+            let state = this.state
+            console.log(state)
+            this.props.loadusertask(state)
+            e.preventDefault()
+        }
     }
 
     handleRate = (e, { rating, maxRating }) => {
@@ -168,20 +144,13 @@ class ProfilePage extends Component {
     }
 
     submitpass = (e) => {
-        e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/changepassword`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg == "Password changed") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'your password has been updated',
-                        showConfirmButton: false,
-                        timer: 3000
-                    })
-                }
-            }).catch(err => {
-
-            })
+        this.setState({ type: 'submitpass', pageid:this.props.match.params.id})
+        if(this.state.type=='submitpass'){
+            let state = this.state
+            console.log(state)
+            this.props.loadusertask(state)
+            e.preventDefault()
+        }
     }
 
     passwordOnChange = (e) => {
@@ -192,7 +161,7 @@ class ProfilePage extends Component {
 
     verifyuser = (e) => {
         e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/isverified`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.post(`http://localhost:5000/users/${this.props.match.params.id}/isverified`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 console.log(res)
                 if (res.data.msg == "isverified status changed") {
@@ -203,16 +172,16 @@ class ProfilePage extends Component {
             })
     }
 
-    // componentDidUpdate = () => {
-    //     console.log("update")
-    //     axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-    //         .then(res => {
-    //             console.log(res)
-    //             this.setState({
-    //                 allmsg: res.data.result
-    //             })
-    //         }).catch(err => console.log(err))
-    // }
+    componentDidUpdate = () => {
+        // console.log("update")
+        axios.get(`http://localhost:5000/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+            .then(res => {
+                // console.log(res)
+                this.setState({
+                    allmsg: res.data.result
+                })
+            }).catch(err => console.log(err))
+    }
 
     render() {
         if(this.props.user.firstname && this.state.loading == true){
@@ -280,7 +249,9 @@ class ProfilePage extends Component {
                                         <Form.Control placeholder="New Password" name="newpassword" type="password" rows="3" onChange={this.passwordOnChange} />
                                     </Form.Group>
                                     <Button onClick={this.submitpass} variant="success" type="submit" variant="dark">Change</Button>
-                                    <br /><br />
+                                    <br />
+                                    {this.props.userTaskLoading ? <div><Loader content='Loading' active inline='centered' /></div> : null}
+                                    <br />
                                 </Form>
                                 <Form method="post" onSubmit={this.submit}>
                                     <Form.Group controlId="exampleForm.ControlInput1">
@@ -288,7 +259,7 @@ class ProfilePage extends Component {
                                         <Form.Control value={this.state.city} name="city" placeholder="Jeddah.." onChange={this.onChange} />
                                     </Form.Group>
                                     <Form.Group controlId="exampleForm.ControlTextarea1">
-                                        <Form.Label>Description</Form.Label>
+                                        <Form.Label>Bio</Form.Label>
                                         <Form.Control value={this.state.description} name="description" as="textarea" rows="3" onChange={this.onChange} />
                                     </Form.Group>
                                     <br />
@@ -329,6 +300,7 @@ class ProfilePage extends Component {
                             <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.userdata.username}</h4>{this.state.userdata.isadmin === true ? <div><Badge style={{ marginLeft: '35px' }} variant="danger">Admin</Badge></div> : null}</Col>
                         <Col sm={1}></Col>
                         <Col sm={6}>
+                        {this.props.userTaskLoading ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                             <Row>
                                 <Container style={{ border: '1px gray solid', width: '100%', borderRadius: '5px', backgroundColor: '#f8f7f6' }}>
                                     <br />
@@ -384,6 +356,7 @@ class ProfilePage extends Component {
                                                         <Form.Control name="msg" as="textarea" rows="3" onChange={this.activeChat} />
                                                         <br />
                                                     </Form.Group>:<h6 style={{textAlign:'center', marginTop:'30px'}}>This is your inbox. Click on a receiving Id and go to their profile to reply back</h6>}
+                                                    {this.props.userTaskLoading ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                                                     {this.state.userdata.id !== this.props.match.params.id ?
                                                     <Button style={{ margin: '0 auto', width: '35%', display: 'block' }} onClick={this.chat} variant="success" type="submit">
                                                         Send </Button>:null}
@@ -405,7 +378,7 @@ class ProfilePage extends Component {
                     </Row>
                     <br />
                     <Container>
-                        <h4>Description:</h4>
+                        <h4>Bio:</h4>
                         {this.state.loading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                         <p>{this.state.userdata.description}</p>
                     </Container>
@@ -438,9 +411,9 @@ class ProfilePage extends Component {
                                     {this.state.userdata.purchesedorder !== undefined ? this.state.userdata.purchesedorder.map((order) => {
                                         return <Item>
                                             <Item.Image size='tiny' src={order.postimages[0]} />
-
+                                            
                                             <Item.Content>
-                                                <Item.Header as='a'>{order.title}</Item.Header>
+                                                <Item.Header href={"/post/" + order._id} as='a'>{order.title}</Item.Header>
                                                 <Item.Meta>{order.description}</Item.Meta>
                                                 <Item.Description>
                                                     {/* comments({post.comments.length}) */}
@@ -457,7 +430,7 @@ class ProfilePage extends Component {
                                 return <div >
                                     <a style={{ color: 'black', textDecoration: 'none' }} href={"/profile/" + review.userid} >
                                         <h4>By:{" "}{review.username}</h4></a>
-                                    <h5>{review.review}  {" "} <Rating icon='star' defaultRating={review.star} maxRating={5} /></h5>
+                                    <h5>{review.review}  {" "} <Rating icon='star' defaultRating={review.star} maxRating={5} disabled /></h5>
                                     <br />
                                 </div>
 
@@ -514,7 +487,7 @@ class ProfilePage extends Component {
                 <br />
 
                 <br />
-                {this.state.userdata.isadmin === true ? <Container>
+                {this.state.userdata.admin === true ? <Container>
                     <Row>
                         <Col>
                             <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} onClick={this.verifyuser} inline-block variant="success">Verify User</Button>

@@ -52,13 +52,11 @@ class ProfilePage extends Component {
         console.log(this.state)
     }
     submit = (e) => {
-        this.setState({ type: 'submit' })
-        if(this.state.type=='submit'){
+        this.setState({ type: 'submit' },()=>{
             let state = this.state
-            console.log(state)
             this.props.loadusertask(state)
             e.preventDefault()
-        }
+        })
     }
 
     activeChat = (e) => {
@@ -68,13 +66,11 @@ class ProfilePage extends Component {
         console.log(this.state)
     }
     chat = (e) => {
-        this.setState({ type: 'chat', pageid:this.props.match.params.id})
-        if(this.state.type=='chat'){
+        this.setState({ type: 'chat', pageid:this.props.match.params.id},()=>{
             let state = this.state
-            console.log(state)
             this.props.loadusertask(state)
             e.preventDefault()
-        }
+        })
     }
     verifyFile = (files) => {
         if (files && files.length > 0) {
@@ -114,23 +110,19 @@ class ProfilePage extends Component {
     }
 
     follow = (e) => {
-        this.setState({ type: 'follow', pageid:this.props.match.params.id})
-        if(this.state.type=='follow'){
+        this.setState({ type: 'follow', pageid:this.props.match.params.id},()=>{
             let state = this.state
-            console.log(state)
             this.props.loadusertask(state)
             e.preventDefault()
-        }
+        })
     }
 
     rate = (e) => {
-        this.setState({ type: 'rate', pageid:this.props.match.params.id})
-        if(this.state.type=='rate'){
+        e.preventDefault()
+        this.setState({ type: 'rate', pageid:this.props.match.params.id},()=>{
             let state = this.state
-            console.log(state)
             this.props.loadusertask(state)
-            e.preventDefault()
-        }
+        })
     }
 
     handleRate = (e, { rating, maxRating }) => {
@@ -140,17 +132,14 @@ class ProfilePage extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-        console.log(this.state)
     }
 
     submitpass = (e) => {
-        this.setState({ type: 'submitpass', pageid:this.props.match.params.id})
-        if(this.state.type=='submitpass'){
+        this.setState({ type: 'submitpass', pageid:this.props.match.params.id},()=>{
             let state = this.state
-            console.log(state)
             this.props.loadusertask(state)
             e.preventDefault()
-        }
+        })
     }
 
     passwordOnChange = (e) => {
@@ -160,21 +149,16 @@ class ProfilePage extends Component {
     }
 
     verifyuser = (e) => {
-        e.preventDefault()
-        axios.post(`http://localhost:5000/users/${this.props.match.params.id}/isverified`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                console.log(res)
-                if (res.data.msg == "isverified status changed") {
-                    alert("user has been verified")
-                }
-            }).catch(err => {
-                console.log(err)
-            })
+        this.setState({ type: 'verifyuser', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+            e.preventDefault()
+        })
     }
 
     componentDidUpdate = () => {
         // console.log("update")
-        axios.get(`http://localhost:5000/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 // console.log(res)
                 this.setState({

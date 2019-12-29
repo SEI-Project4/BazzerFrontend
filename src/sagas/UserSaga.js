@@ -1,26 +1,23 @@
 import {takeEvery, put, takeLatest, take, call, all} from 'redux-saga/effects'
-import fetchData from '../GetUserData'
+import fetchData from '../api/GetUserData'
 import {USER} from '../constants'
-import {setUser, setError, loadUser} from '../actions/index'
+import {setUser, setError} from '../actions/index'
 
 function* handleUserLoad(action){
     try{
-        // yield all([
-        //     call(fetchData),
-        //     call(fetchtoken)
-        //   ])
+
         const pageid = action.pageid
         const userdata = yield call(fetchData,pageid)
-        // const userToken = yield call(fetchtoken)
+
         console.log(userdata)
-        // console.lgog(userToken)
+
         if(userdata == 'session expired'){
             yield put(setError('session expired'))
         }else{
             yield put(setUser(userdata))
         }
     }catch(error){
-        //dispatch error
+
         console.log('err saga')
         yield put(setError(error.toString()))
     }

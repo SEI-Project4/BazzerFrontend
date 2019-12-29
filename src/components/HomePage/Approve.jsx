@@ -29,7 +29,7 @@ export default class Approve extends Component {
             console.log(decoded)
         } else { }
 
-        axios.get('http://localhost:5000/posts')
+        axios.get('https://sei-bazaar-backend.herokuapp.com/posts')
             .then((res) => {
                 this.setState({
                     data: res.data.result, loading: false

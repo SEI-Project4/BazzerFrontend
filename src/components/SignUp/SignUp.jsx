@@ -49,7 +49,7 @@ export default class SignUp extends Component {
         
     }
     componentDidMount(){
-        axios.get('http://localhost:5000/users/')
+        axios.get('https://sei-bazaar-backend.herokuapp.com/users/')
         .then(res=>{
             this.setState({
                 allusers:res.data.result
@@ -67,7 +67,7 @@ export default class SignUp extends Component {
                 showConfirmButton: true,
             })
         }else{
-            axios.post('http://localhost:5000/users/', this.state)
+            axios.post('https://sei-bazaar-backend.herokuapp.com/users/', this.state)
             .then(res =>{
                 if(res.data.msg == "created successfully"){
                     this.setState({

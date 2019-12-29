@@ -10,10 +10,10 @@ function* handleUserTaskLoad(action){
         const userTaskdata = yield call(fetchTask,state)
 
         console.log(userTaskdata)
-        // console.lgog(userToken)
+
         yield put(setusertask(userTaskdata))
     }catch(error){
-        //dispatch error
+
         console.log('err usertask saga')
         yield put(usertaskerr(error.toString()))
     }

@@ -6,7 +6,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { loadPost } from "../../actions";
+import { loadPost, loadposttask } from "../../actions";
 
 class PostReady extends Component {
 
@@ -23,11 +23,11 @@ class PostReady extends Component {
 
     componentDidMount = () => {
         this.props.loadPost(this.props.match.params.id)
-
+        this.updatebid()
     }
 
-    componentDidUpdate = () =>{
-        axios.get(`http://localhost:5000/posts/${this.props.match.params.id}/noview`)
+    updatebid = () =>{
+        axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/noview`)
         .then(res=>{
             this.setState({
                 data2:res.data.result.bids, bidslength: res.data.result.bids.length
@@ -43,128 +43,76 @@ class PostReady extends Component {
         console.log(this.state)
     }
     submit = (e) => {
-        e.preventDefault()
-        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg === "created successfully") {
-                    window.location.reload();
-                }
-                console.log(res)
-            })
-
-            .catch(err => console.log(err))
+        this.setState({ type: 'submit', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadposttask(state)
+            e.preventDefault()
+        })
     }
     delete = (e) => {
-        this.setState({ loading2: true })
-        console.log("deleting")
-        axios.delete(`http://localhost:5000/posts/${this.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg === "the post has been deleted ") {
-                    window.location.replace("/home");
-                }
-            })
-            .catch(err => console.log(err))
+        this.setState({ type: 'delete', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadposttask(state)
+            e.preventDefault()
+        })
     }
 
     later = (e) => {
-        console.log("watching later")
-        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/watchlater`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg === "post added to watch later") {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Post have been added',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            })
-            .catch(err => console.log(err))
+        this.setState({ type: 'later', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadposttask(state)
+            e.preventDefault()
+        })
     }
 
     BidOnChange=(e)=>{
         this.setState({
             value:e.target.value
         })
-        console.log(this.state)
     }
 
     submitBid = (e) =>{
-        console.log(this.state)
-        // e.preventDefault()
-        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/bid`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                console.log(res)
-                if(res.data.msg==="value must be greater than current bid"){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'value must be greater than current bid',
-                        showConfirmButton: true,
-                    })
-                }else if(res.data.msg==="you cant bid on your post ! or you have to pass value as number"){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'you cant bid on your post',
-                        showConfirmButton: true,
-                    })
-                }else if(res.data.msg==="item is Sold out!"){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'item sold out',
-                        timer: 4000
-                    })
-                }else if(res.data.msg==="bid regesterd"){
-                    console.log("bid sent")
-                }
-            })
-            .catch(err => console.log(err))
-            console.log(this.state)
+        this.setState({ type: 'submitBid', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadposttask(state)
+            e.preventDefault()
+        })
     }
 
     Buy = (e) =>{
-        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/buy`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-        .then(res=>{
-            if(res.data.msg==="buy order regesterd"){
-                Swal.fire({
-                    icon: 'success',
-                    title: 'You have purchased this order, you will be contacted by seller',
-                    showConfirmButton: true,
-                })
-            }else if(res.data.msg==="item is Sold out!"){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'item sold out!',
-                    showConfirmButton: true,
-                })
-            }
-            
-        }).catch(err=>{
-
+        this.setState({ type: 'Buy', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadposttask(state)
+            e.preventDefault()
         })
     }
 
     approve= (e) =>{
-        axios.post(`http://localhost:5000/posts/${this.props.match.params.id}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-        .then(res=>{
-            if(res.data.msg==="isapproved status changed"){
-                Swal.fire({
-                    icon: 'success',
-                    title: 'post have been approved',
-                    showConfirmButton: true,
-                })
-                window.location.replace("/approve");
-            }else if(res.data.msg==="item is Sold out!"){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'item sold out!',
-                    showConfirmButton: true,
-                })
-            }
-            
-        }).catch(err=>{
-            console.log(err)
+        this.setState({ type: 'approve', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadposttask(state)
+            e.preventDefault()
         })
+    }
+
+    success(result){
+        this.setState=({type:''})
+        Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: `${result}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+    }
+
+    error = (result) =>{
+        this.setState=({type:''})
+         Swal.fire({
+                    icon: 'error',
+                    title: `${result}`,
+                    showConfirmButton: true,
+                })
     }
 
     render() {
@@ -174,8 +122,13 @@ class PostReady extends Component {
                 data: this.props.post, loading: false
             })
         }
+        const postres = this.props.postTask 
         return (
             <div>
+                {postres== "post added to watch later"?
+                this.success(postres) : postres== "bid sent"? this.success(postres) : postres== "item has been ordered successfully"? this.success(postres) : null }
+                {postres== "value must be greater than current bid"?
+                this.error(postres) : postres== "you can't bid on your own post | or use only valid numbers"? this.error(postres) : postres== "item sold out!"? this.error(postres) : postres== "session expired"? this.error(postres):null }
                 <br />
                 <Container>
                     {this.props.user === undefined ? null : this.props.user.admin === true ?
@@ -187,7 +140,7 @@ class PostReady extends Component {
                     <br /><br />
                 </Container>
                 <Container>
-                    <h3><a href={"/profile/" + this.state.data.user} style={{ textDecoration: 'none', color: 'black' }}><strong>By:</strong> {this.state.data.username}</a></h3>
+                    <h3><a href={"/profile/" + this.state.data.user} style={{ color: '#2185D0' }}><strong>By:</strong> {this.state.data.username}</a></h3>
                 </Container>
                 <br />
                 {this.props.postLoading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
@@ -238,7 +191,7 @@ class PostReady extends Component {
                         </Carousel> : null}
                     {/* {this.props.postLoading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null} */}
                 </Container>
-
+                {this.props.postTaskLoading === true ? <div><Loader content='sending action...' active inline='centered' /></div> : null}
                 <Container>
                     <Row>
                         <Col lg={9} md={8} sm={12}>
@@ -278,7 +231,7 @@ class PostReady extends Component {
                                 <Segment style={{ width: '300px', margin: '0 auto', textAlign: 'center', backgroundColor: '#a39ea0' }}>
                                     
                                     <h3 style={{ textAlign: 'center', fontWeight: '500' }}>:Top 3 biders:</h3>
-                                    {this.state.bidslength>0?
+                                    {this.state.bidslength>2?
                                     <Segment>
                                         <a style={{color:'black'}} href={"/profile/" + this.state.data2[this.state.bidslength - 1].userid}>
                                         <h5> <strong>1: {this.state.data2[this.state.bidslength - 1].username}{"="}{this.state.data2[this.state.bidslength - 1].value}SAR</strong></h5></a>
@@ -286,6 +239,16 @@ class PostReady extends Component {
                                         <h5> <strong>2: {this.state.data2[this.state.bidslength - 2].username}{"="}{this.state.data2[this.state.bidslength - 2].value}SAR</strong></h5></a>
                                         <a style={{color:'black'}} href={"/profile/" + this.state.data2[this.state.bidslength - 3].userid}>
                                         <h5> <strong>3: {this.state.data2[this.state.bidslength - 3].username}{"="}{this.state.data2[this.state.bidslength - 3].value}SAR</strong></h5></a>
+                                        </Segment>:null}
+                                    {this.state.bidslength==1?
+                                <Segment>
+                                    <a style={{color:'black'}} href={"/profile/" + this.state.data2[0].userid}>
+                                    <h5> <strong>1: {this.state.data2[0].username}{"="}{this.state.data2[0].value}SAR</strong></h5></a>
+                                    </Segment>: this.state.bidslength==2 ? <Segment>
+                                        <a style={{color:'black'}} href={"/profile/" + this.state.data2[this.state.bidslength - 1].userid}>
+                                        <h5> <strong>1: {this.state.data2[this.state.bidslength - 1].username}{"="}{this.state.data2[this.state.bidslength - 1].value}SAR</strong></h5></a>
+                                        <a style={{color:'black'}} href={"/profile/" + this.state.data2[this.state.bidslength - 2].userid}>
+                                        <h5> <strong>2: {this.state.data2[this.state.bidslength - 2].username}{"="}{this.state.data2[this.state.bidslength - 2].value}SAR</strong></h5></a>
                                         </Segment>:null}
                                     
                         <br/>
@@ -331,20 +294,25 @@ class PostReady extends Component {
                         </Form>
                     </Comment.Group>
                 </Container>
-                <br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }
 }
-const mapStateToProps = ({ postLoading, post, errorpost, user }) => ({
+const mapStateToProps = ({ postLoading, post, errorpost, user, error, postTaskLoading, postTask }) => ({
     postLoading,
     post,
     errorpost, 
     user,
+    error,
+    postTaskLoading,
+    postTask
  });
  
  const mapDispatchToProps = dispatch => ({
    loadPost: (pageid) => dispatch(loadPost(pageid)),
+   loadposttask: (pageid) => dispatch(loadposttask(pageid))
  })
    // bindActionCreators({ requestUserData }, dispatch);
  

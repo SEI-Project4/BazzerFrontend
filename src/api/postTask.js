@@ -60,7 +60,7 @@ const fetchTask = async (state) => {
 
         })
     }else if(state.type=="approve"){
-        return await axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        return await axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${state.pageid}/isapproved`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res=>{
             if(res.data.msg==="isapproved status changed"){
                 

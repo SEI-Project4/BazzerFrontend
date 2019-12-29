@@ -23,7 +23,7 @@ class NavBar extends Component {
     }
 
     componentDidMount = () => {
-        this.props.loadUser()
+         this.props.loadUser()
 
         let self = this;
 

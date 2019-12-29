@@ -130,6 +130,7 @@ class CreatePost extends Component {
   render() {
 
     const { value } = this.state
+    
     return (
       <div>
         <br />
@@ -143,9 +144,7 @@ class CreatePost extends Component {
                     <section>
                       <div style={{ textAlign: 'center' }} {...getRootProps()}>
                         <input {...getInputProps()} />
-                        <br /><br /><br /><br /><br />
-                        
-                        <br />
+                        <br /><br /><br /><br /><br /><br/>
                         <h1 >Drag 'n' drop your images here, or Click to browse</h1>
                         <br />
                         <h5>Maximum 5 images each no bigger than 2MB</h5>

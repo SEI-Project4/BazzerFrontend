@@ -43,17 +43,16 @@ class PostReady extends Component {
         console.log(this.state)
     }
     submit = (e) => {
+        e.preventDefault()
         this.setState({ type: 'submit', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
-            e.preventDefault()
         })
     }
     delete = (e) => {
         this.setState({ type: 'delete', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
-            e.preventDefault()
         })
     }
 
@@ -61,7 +60,6 @@ class PostReady extends Component {
         this.setState({ type: 'later', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
-            e.preventDefault()
         })
     }
 
@@ -75,7 +73,6 @@ class PostReady extends Component {
         this.setState({ type: 'submitBid', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
-            e.preventDefault()
         })
     }
 
@@ -83,7 +80,6 @@ class PostReady extends Component {
         this.setState({ type: 'Buy', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
-            e.preventDefault()
         })
     }
 
@@ -91,7 +87,6 @@ class PostReady extends Component {
         this.setState({ type: 'approve', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
-            e.preventDefault()
         })
     }
 
@@ -208,7 +203,6 @@ class PostReady extends Component {
                                 <h4>Location: <strong>{this.state.data.city}</strong> </h4>
                                 <br />
                                 <h4>Created on: {this.state.data.createdAt !== undefined ? this.state.data.createdAt.slice(0, -14) : null} </h4>
-                                <Button circular icon='settings' />
                             </Container>
                         </Col>
                         <Col lg={3} md={4} sm={12}>

@@ -40,7 +40,7 @@ class ProfilePage extends Component {
     
     }
     componentDidUpdate = () => {
-        console.log("state is equal to")
+        console.log("update state is equal to")
         console.log(this.state)
         
     }
@@ -49,13 +49,12 @@ class ProfilePage extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-        console.log(this.state)
     }
     submit = (e) => {
+        e.preventDefault()
         this.setState({ type: 'submit' },()=>{
             let state = this.state
             this.props.loadusertask(state)
-            e.preventDefault()
         })
     }
 
@@ -63,13 +62,12 @@ class ProfilePage extends Component {
         this.setState({
             msg: e.target.value
         })
-        console.log(this.state)
     }
     chat = (e) => {
+        e.preventDefault()
         this.setState({ type: 'chat', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadusertask(state)
-            e.preventDefault()
         })
     }
     verifyFile = (files) => {
@@ -113,7 +111,6 @@ class ProfilePage extends Component {
         this.setState({ type: 'follow', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadusertask(state)
-            e.preventDefault()
         })
     }
 
@@ -135,10 +132,10 @@ class ProfilePage extends Component {
     }
 
     submitpass = (e) => {
+        e.preventDefault()
         this.setState({ type: 'submitpass', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadusertask(state)
-            e.preventDefault()
         })
     }
 
@@ -152,19 +149,39 @@ class ProfilePage extends Component {
         this.setState({ type: 'verifyuser', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadusertask(state)
-            e.preventDefault()
         })
     }
-
+    
     componentDidUpdate = () => {
+        const self = this
         // console.log("update")
         axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
                 // console.log(res)
-                this.setState({
+                self.setState({
                     allmsg: res.data.result
                 })
             }).catch(err => console.log(err))
+    }
+
+    success(result){
+        this.setState=({type:''})
+        Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: `${result}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+    }
+
+    error = (result) =>{
+        this.setState=({type:''})
+         Swal.fire({
+                    icon: 'error',
+                    title: `${result}`,
+                    showConfirmButton: true,
+                })
     }
 
     render() {
@@ -172,8 +189,8 @@ class ProfilePage extends Component {
             console.log(this.props)            
             const User = this.props.user
             this.setState({
-                 description: User.description, profileimg: User.profileimg, city: User.city, loading: false, userdata:User, firstname:User.firstname, lastname:User.lastname
-            })
+                description: User.description, profileimg: User.profileimg, city: User.city, loading: false, userdata:User, firstname:User.firstname, lastname:User.lastname
+           })
         }else if(this.props.error=="session expired"){
             Swal.fire({
                 icon: 'error',
@@ -185,9 +202,14 @@ class ProfilePage extends Component {
         }else{
             
         }
+
+        const userres = this.props.userTask
         return (
             <div>
-
+                {userres== "submited"?
+                this.success(userres) : userres== "message sent"? this.success(userres) : userres== "follow Done"? this.success(userres) : userres== "Review submited"? this.success(userres) : userres== "Password changed"? this.success(userres) : userres== "submited"? this.success(userres) : null}
+                {userres== "session expired"?
+                this.error(userres) : userres== "error this.state type or not found"? this.error(userres) : userres== "item sold out!"? this.error(userres) : userres== "session expired"? this.error(userres):null }
                 <Modal
                     size="lg"
                     show={this.state.setshow}

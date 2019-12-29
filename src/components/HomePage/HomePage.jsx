@@ -42,13 +42,15 @@ class HomePage extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value.toLowerCase() })
     }
+
+    
     render() {
         if(this.props.post.length>0 && this.state.loading == true){           
             this.setState({
                 data: this.props.post, loading: false
             })
         }
-
+        const post = this.props.post
         const lowercasedsearch = this.state.search.toLowerCase();
         const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
         console.log(filteredItems)
@@ -105,7 +107,7 @@ class HomePage extends Component {
                         />
                     </Segment>
                     <br />
-                    {this.state.loading === true ? <div><Loader content='Loading Please Wait' active inline='centered' /></div> : null}
+                    {this.props.postLoading === true ? <div><Loader content='Loading Please Wait' active inline='centered' /></div> : null}
                 </Container>
                 <br /><br />
                 <div className="ui four column doubling stackable grid center aligned container">

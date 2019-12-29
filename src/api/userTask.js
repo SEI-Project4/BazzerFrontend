@@ -22,7 +22,7 @@ const fetchTask = async (state) => {
     }else if(state.type=="chat"){
         return await axios.post(`https://sei-bazaar-backend.herokuapp.com/users/send/${state.pageid}`, state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res => {
-            return "msg sent"
+            return "message sent"
         })
         .catch(err => {return "error msg sent"})
     }else if(state.type=="follow"){
@@ -33,7 +33,7 @@ const fetchTask = async (state) => {
             }
         }).catch(err => { console.log(err) })
     }else if(state.type=="rate"){
-        return await axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/rate`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
+        return await axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${state.pageid}/rate`, state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res => {
             if (res.data.msg == "follow Done") {
                 return "Review submited"

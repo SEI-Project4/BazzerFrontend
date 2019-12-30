@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import jwt from 'jsonwebtoken'
 import './HomePage.css'
-import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox, Loader, Pagination } from 'semantic-ui-react'
+import { Button, Card, Icon, Loader } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
-import Footer from '../Footer/Footer'
 import axios from 'axios'
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
-export default class Approve extends Component {
+class Approve extends Component {
 
     state = {
         token: "",
@@ -42,9 +43,10 @@ export default class Approve extends Component {
 
     render() {
         return (
-            <div>
-                {this.state.loading===true?<div><br/><br/><br/><Loader content='Loading' active inline='centered' /></div>:null}
-                {this.state.token.isadmin===true?
+            <div style={{marginBottom: '70vh'}}>
+                {this.state.loading?<div><br/><br/><br/><Loader content='Loading' active inline='centered' /></div>:null}
+
+                {this.props.user.admin===true?
                 <Container style={{marginTop:'20%'}}>
                 <div className="ui four column doubling stackable grid center aligned container">
                     {this.state.data.map((post)=>{
@@ -82,10 +84,11 @@ export default class Approve extends Component {
                                     </Card.Meta>
                                 </Card.Content>
                                 <Card.Content extra>
-                                    <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                                <Link to={"/profile/" + post.user}  title="profile">
                                         <Icon name='user' />
                                         {post.username}
-                                    </a>
+                                </Link>
+                                    
                                 </Card.Content>
                             </Card>
                             </div>
@@ -101,23 +104,15 @@ export default class Approve extends Component {
             :null}
                 
 
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }
 }
+
+const mapStateToProps = ({ isLoading, user, error}) => ({
+    isLoading,
+    user,
+    error,
+ });
+
+ export default connect(mapStateToProps)(Approve);

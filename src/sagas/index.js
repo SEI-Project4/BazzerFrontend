@@ -3,6 +3,7 @@ import UserSaga from './UserSaga'
 import PostSaga from './PostSaga'
 import UserTaskSaga from './UserTaskSaga'
 import PostTaskSaga from './PostTaskSaga'
+import SpostSaga from './SpostSaga'
 
 //watcher Saga
 export default function* rootSaga(){
@@ -10,7 +11,8 @@ export default function* rootSaga(){
         UserSaga(),
         PostSaga(),
         UserTaskSaga(),
-        PostTaskSaga()
+        PostTaskSaga(),
+        SpostSaga()
     ])
     // yield takeEvery(USER.LOAD, handleUserLoad)
 }

@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import jwt from 'jsonwebtoken'
 import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox, Loader, Pagination } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
-import axios from 'axios'
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { loadPost } from "../../actions";
+import { Link } from "react-router-dom";
 
 const locations = [
     { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Makkah', value: 'Makkah' }, { key: 3, text: 'Abha', value: 'Abha' }, { key: 4, text: 'Medina', value: 'Medina' }, { key: 5, text: 'Tabuk', value: 'Tabuk' }, { key: 6, text: 'Sakaka', value: 'Sakaka' }, { key: 7, text: 'Hail', value: 'Hail' }, { key: 8, text: 'Buraydah', value: 'Buraydah' }, { key: 9, text: 'Riyadh', value: 'Riyadh' }, { key: 10, text: 'Dammam', value: 'Dammam' }, { key: 11, text: 'Taif', value: 'Taif' }
@@ -24,8 +22,9 @@ class HomePage extends Component {
     }
 
     componentDidMount() {
-        this.props.loadPost(this.props.match.params.id)
-
+        if(!this.props.post[0]){
+            this.props.loadPost(this.props.match.params.id)
+        }
     }
 
     filterCity =(e,{value})=>{
@@ -55,7 +54,7 @@ class HomePage extends Component {
         const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
         console.log(filteredItems)
         return (
-            <div>
+            <div style={{marginBottom:'60vh'}}>
                 <Container>
                     <br />
                     <Segment basic textAlign='center'>
@@ -116,7 +115,7 @@ class HomePage extends Component {
                 filteredItems.map((post) => {
                     return post.isapproved===true?
                         <div class="column">
-                    <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                    <Link to={`/post/${post._id}`} style={{ textDecoration: 'none' }} title="View Post">
                     <Card style={{ margin: '0 auto', minHeight: '450px' }} class="ui segment">
 
                         <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
@@ -143,17 +142,17 @@ class HomePage extends Component {
                             </Card.Meta>
                         </Card.Content>
                         <Card.Content extra>
-                            <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                        <Link to={"/profile/" + post.user} style={{ textDecoration: 'none' }} title="profile">
                                 <Icon name='user' />
                                 {post.username}
-                            </a>
+                        </Link>
                         </Card.Content>
                     </Card>
-                </a>
-                        
+                </Link>    
                     </div>
+                    
                 :null}):filteredItems.map((post) => {
-                    return post.isapproved===true?<a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                    return post.isapproved===true?<Link to={`/post/${post._id}`} style={{ textDecoration: 'none' }} title="View Post">
                         {this.state.cities.map((city)=>{
                             return post.city==city? <div class="column">
                                 
@@ -183,32 +182,20 @@ class HomePage extends Component {
                                 </Card.Meta>
                             </Card.Content>
                             <Card.Content extra>
-                                <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                            <Link to={"/profile/" + post.user} style={{ textDecoration: 'none' }} title="View Profile">
                                     <Icon name='user' />
                                     {post.username}
-                                </a>
+                                </Link>
                             </Card.Content>
                         </Card></div>:null}
                         )}
                         
                             
-                        </a>
+                        </Link>
                     
                 :null})}
-                    
-                    <br />
 
                 </div>
-                <br /><br /><br /><br /><br /><br /><br /><br /><br />
-                {/* <div style={{ textAlign: 'center' }}>
-                    <Pagination defaultActivePage={1}
-                        firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-                        lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-                        prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                        nextItem={{ content: <Icon name='angle right' />, icon: true }}
-                        totalPages={5} />
-                </div> */}
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }

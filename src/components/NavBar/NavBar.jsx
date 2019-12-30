@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import { connect } from "react-redux";
 import { loadUser } from "../../actions";
+import { Link } from "react-router-dom";
 
 class NavBar extends Component {
     state = {
@@ -50,24 +51,27 @@ class NavBar extends Component {
         return (
             <div style={{ backgroundColor: '#1B1C1D' }}>
                 <Navbar collapseOnSelect expand="lg">
-                    <Navbar.Brand id="nav-brandd" style={{ color: 'white', fontWeight: '600' }} href="/home"><Icon name='handshake outline' /> OPEN BAZAAR </Navbar.Brand>
+                    <Navbar.Brand id="nav-brandd" style={{ color: 'white', fontWeight: '600' }}><Link style={{textDecoration:'none', color: 'inherit'}} to="/home" title="Home"><Icon name='handshake outline' /> OPEN BAZAAR </Link></Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav style={{ marginTop: '5px', marginBottom: '5px' }} className="mr-auto">
                             <Menu inverted pointing secondary id='menuu-navv'>
 
-                                <Menu.Item style={{ marginBottom: '2px' }}
-                                    href="/home"
+                            <Link style={{textDecoration:'none', color: 'inherit'}} to="/home" title="Go to Home">
+                                <Menu.Item style={{ marginTop: '4px' }}
+                                    link
                                     name='home'
                                     active={activeItem === 'home'}
                                     onClick={this.handleItemClick}
                                 />
-                                 <Menu.Item style={{ marginBottom: '2px' }}
-                                    href="/create"
+                                </Link>
+                                <Link style={{textDecoration:'none', color: 'inherit'}} to="/create" title="Create a Post">
+                                 <Menu.Item style={{ marginTop: '4px' }}
                                     name='Sell'
                                     active={activeItem === 'create'}
                                     onClick={this.handleItemClick}
                                 />
+                                </Link>
                                 <Menu.Item
                                     name='About Us'
                                     style={{ marginBottom: '2px' }}
@@ -101,10 +105,10 @@ class NavBar extends Component {
                                                 {this.props.isLoading===false?
                                                 <Dropdown.Menu>
                                                     <Dropdown.Header icon='user' content={this.props.user.tokenuser} />
-                                                    <Dropdown.Item href={"/profile/" + `${this.props.user.id}`}>Profile</Dropdown.Item>
-                                                    <Dropdown.Item href={"/profile/" + `${this.props.user.id}`}>Inbox</Dropdown.Item>
+                                                    <Dropdown.Item as={Link} to={"/profile/" + `${this.props.user.id}`}>Profile</Dropdown.Item>
+                                                    <Dropdown.Item as={Link} to={"/profile/" + `${this.props.user.id}`}>Inbox</Dropdown.Item>
                                                     {this.props.user.admin === true ?
-                                                    <Dropdown.Item href="/approve"><strong>Approve posts</strong></Dropdown.Item>:null}
+                                                    <Dropdown.Item as={Link} to="/approve"><strong>Approve posts</strong></Dropdown.Item>:null}
                                                     <Dropdown.Item>Request verification</Dropdown.Item>
                                                     <Dropdown.Item onClick={this.logout}>Log-out</Dropdown.Item>
                                                 </Dropdown.Menu>:<Dropdown.Menu>
@@ -112,8 +116,8 @@ class NavBar extends Component {
                                                     </Dropdown.Menu>}
                                             </Dropdown>
                                         </Menu.Item> : <Menu.Item style={{ marginRight: '-15px' }}>
-                                            <Button href="/register" style={{ marginRight: '5px' }} id="nav-signupp" primary>Sign-up</Button>
-                                            <Button href="/login" id="nav-signinn">Log-in</Button>
+                                            <Button style={{ marginRight: '5px' }} id="nav-signupp" primary><Link style={{textDecoration:'none', color: 'inherit'}} to="/register">Sign-up</Link></Button>
+                                            <Button id="nav-signinn"><Link style={{textDecoration:'none', color: 'inherit'}} to="/login" >Log-in</Link></Button>
                                         </Menu.Item>
                                     }
                                 </Menu.Menu>

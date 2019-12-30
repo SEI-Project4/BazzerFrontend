@@ -4,9 +4,9 @@ import { Row, Col, Container, Carousel } from 'react-bootstrap'
 import { Divider, Header, Icon, Comment, Form, Button, Segment, Input, Loader } from 'semantic-ui-react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { loadPost, loadposttask } from "../../actions";
+import { loadSpost, loadposttask } from "../../actions";
+import { Link } from "react-router-dom";
 
 class PostReady extends Component {
 
@@ -18,11 +18,14 @@ class PostReady extends Component {
         bidslength: 0,
         data2:'',
         token:'',
+        bidloading: true
     }
 
 
     componentDidMount = () => {
-        this.props.loadPost(this.props.match.params.id)
+        if(this.props.spost._id != this.props.match.params.id){
+            this.props.loadSpost(this.props.match.params.id)
+        }
         this.updatebid()
     }
 
@@ -30,7 +33,7 @@ class PostReady extends Component {
         axios.get(`https://sei-bazaar-backend.herokuapp.com/posts/${this.props.match.params.id}/noview`)
         .then(res=>{
             this.setState({
-                data2:res.data.result.bids, bidslength: res.data.result.bids.length
+                data2:res.data.result.bids, bidslength: res.data.result.bids.length, bidloading: false
             })
             
         }).catch(err=>console.log(err))
@@ -111,10 +114,10 @@ class PostReady extends Component {
     }
 
     render() {
-        if(this.props.post.title && this.state.loading == true){  
-            console.log(this.props)         
+        if(this.props.spost.title && this.state.loading == true && this.props.spost._id == this.props.match.params.id){  
+            console.log(this.sprops)         
             this.setState({
-                data: this.props.post, loading: false
+                data: this.props.spost, loading: false
             })
         }
         const postres = this.props.postTask 
@@ -135,10 +138,11 @@ class PostReady extends Component {
                     <br /><br />
                 </Container>
                 <Container>
-                    <h3><a href={"/profile/" + this.state.data.user} style={{ color: '#2185D0' }}><strong>By:</strong> {this.state.data.username}</a></h3>
+                    <h3>
+                    <Link style={{ color: '#2185D0' }} to={"/profile/" + this.state.data.user} title="Go to Seller Profile"><strong>By:</strong> {this.state.data.username}</Link></h3>
                 </Container>
                 <br />
-                {this.props.postLoading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
+                {this.props.spostLoading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                 <Container style={{ marginBottom: '30px' }}>
                     {this.state.data.postimages !== undefined ?
                         <Carousel style={{ border: '2px solid black' }} >
@@ -246,6 +250,8 @@ class PostReady extends Component {
                                         </Segment>:null}
                                     
                         <br/>
+                        {this.state.bidloading? <div><Loader content='Loading' active inline='centered' />
+                        <br/></div> : null}
                                     <h3><strong>Current Bid: {this.state.bidslength>0? this.state.data2[this.state.bidslength - 1].value:this.state.data.startingbid}SAR</strong></h3>
 
                                     <h4 style={{ display: 'inline-block', fontWeight: '600', marginRight: '5px' }}>Add a bid</h4><Input name="value" type="number" onChange={this.BidOnChange} style={{ width: '100px', margin: '10px auto' }}></Input>
@@ -294,10 +300,9 @@ class PostReady extends Component {
         )
     }
 }
-const mapStateToProps = ({ postLoading, post, errorpost, user, error, postTaskLoading, postTask }) => ({
-    postLoading,
-    post,
-    errorpost, 
+const mapStateToProps = ({ spostLoading, spost, user, error, postTaskLoading, postTask,  }) => ({
+    spostLoading,
+    spost, 
     user,
     error,
     postTaskLoading,
@@ -305,7 +310,7 @@ const mapStateToProps = ({ postLoading, post, errorpost, user, error, postTaskLo
  });
  
  const mapDispatchToProps = dispatch => ({
-   loadPost: (pageid) => dispatch(loadPost(pageid)),
+   loadSpost: (pageid) => dispatch(loadSpost(pageid)),
    loadposttask: (pageid) => dispatch(loadposttask(pageid))
  })
    // bindActionCreators({ requestUserData }, dispatch);

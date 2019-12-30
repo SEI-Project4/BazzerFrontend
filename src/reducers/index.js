@@ -8,6 +8,9 @@ import userTaskReducer from './userTaskReducer'
 import loadingUserTask from './loadingUserTask'
 import loadingPostTask from './loadingPostTask'
 import postTask from './postTask'
+import loadSpostReducer from './loadSpostReducer'
+import spostReducer from './spostReducer'
+
 
 const rootReducer = combineReducers({
 
@@ -19,7 +22,9 @@ const rootReducer = combineReducers({
     userTaskLoading: loadingUserTask,
     userTask: userTaskReducer,
     postTaskLoading: loadingPostTask,
-    postTask: postTask
+    postTask: postTask,
+    spost: spostReducer,
+    spostLoading: loadSpostReducer 
 })
 
 export default rootReducer

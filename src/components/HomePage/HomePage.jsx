@@ -20,7 +20,7 @@ class HomePage extends Component {
         loading: true,
         cities :[],
     }
-
+    
     componentDidMount() {
         if(!this.props.post[0]){
             this.props.loadPost(this.props.match.params.id)
@@ -54,7 +54,7 @@ class HomePage extends Component {
         const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
         console.log(filteredItems)
         return (
-            <div style={{marginBottom:'60vh'}}>
+            <div style={{marginBottom:'70vh'}}>
                 <Container>
                     <br />
                     <Segment basic textAlign='center'>

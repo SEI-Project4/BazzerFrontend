@@ -31,7 +31,7 @@ const fetchTask = async (state) => {
                 return "post added to watch later"
             }
         })
-        .catch(err => console.log(err))
+        .catch(err => {console.log(err)})
     }else if(state.type=="submitBid"){
         return await axios.post(`https://sei-bazaar-backend.herokuapp.com/posts/${state.pageid}/bid`, state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
         .then(res => {
@@ -78,7 +78,7 @@ const fetchTask = async (state) => {
        
     }catch(e){
         console.log(e)
-        return 'session expired'
+        return 'Please login'
     }
 
  };

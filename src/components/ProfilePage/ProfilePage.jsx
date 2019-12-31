@@ -13,8 +13,7 @@ import { loadUser, loadusertask} from "../../actions";
 const imageMaxSize = 1066300 // bytes = 1MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
-let sumrate = 0
-let text = "noppooo"
+
 class ProfilePage extends Component {
     
     state = {
@@ -36,13 +35,15 @@ class ProfilePage extends Component {
         type:'',
     }
     componentDidMount = () => {
+        console.log("mounted")
+    if(this.props.user._id != this.props.match.params.id){
         this.props.loadUser(this.props.match.params.id)
-    
     }
+    }
+
     componentDidUpdate = () => {
         console.log("update state is equal to")
         console.log(this.state)
-        
     }
 
     onChange = (e) => {
@@ -99,7 +100,7 @@ class ProfilePage extends Component {
                 myFileItemReader.addEventListener("load", () => {
                     console.log(myFileItemReader.result)
                     const myResult = myFileItemReader.result
-                    // const myResult2 = new Buffer(myResult,'base64').toString('binary')
+
                     this.setState({ profileimg: myResult })
                 }, false)
                 myFileItemReader.readAsDataURL(currentFile)
@@ -185,7 +186,7 @@ class ProfilePage extends Component {
     }
 
     render() {
-        if(this.props.user.firstname && this.state.loading == true){
+        if(this.props.user.firstname && this.state.loading == true && this.props.user._id == this.props.match.params.id){
             console.log(this.props)            
             const User = this.props.user
             this.setState({

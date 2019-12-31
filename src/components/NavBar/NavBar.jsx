@@ -24,7 +24,10 @@ class NavBar extends Component {
     }
 
     componentDidMount = () => {
-         this.props.loadUser()
+        if(this.props.user.tokenuser==""){
+            this.props.loadUser()
+        }
+         
 
         let self = this;
 

@@ -47,6 +47,7 @@ class PostReady extends Component {
     }
     submit = (e) => {
         e.preventDefault()
+        if(this.props.postTask!='Please login')
         this.setState({ type: 'submit', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
@@ -60,6 +61,7 @@ class PostReady extends Component {
     }
 
     later = (e) => {
+    if(this.props.postTask!='Please login')
         this.setState({ type: 'later', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
@@ -73,6 +75,7 @@ class PostReady extends Component {
     }
 
     submitBid = (e) =>{
+        if(this.props.postTask!='Please login')
         this.setState({ type: 'submitBid', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
@@ -80,6 +83,7 @@ class PostReady extends Component {
     }
 
     Buy = (e) =>{
+        if(this.props.postTask!='Please login')
         this.setState({ type: 'Buy', pageid:this.props.match.params.id},()=>{
             let state = this.state
             this.props.loadposttask(state)
@@ -126,7 +130,7 @@ class PostReady extends Component {
                 {postres== "post added to watch later"?
                 this.success(postres) : postres== "bid sent"? this.success(postres) : postres== "item has been ordered successfully"? this.success(postres) : null }
                 {postres== "value must be greater than current bid"?
-                this.error(postres) : postres== "you can't bid on your own post | or use only valid numbers"? this.error(postres) : postres== "item sold out!"? this.error(postres) : postres== "session expired"? this.error(postres):null }
+                this.error(postres) : postres== "you can't bid on your own post | or use only valid numbers"? this.error(postres) : postres== "item sold out!"? this.error(postres) : postres== "You must be logged in to do this"? this.error(postres): postres== "Please login"? this.error(postres):null }
                 <br />
                 <Container>
                     {this.props.user === undefined ? null : this.props.user.admin === true ?

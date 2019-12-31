@@ -44,20 +44,21 @@ A story of the project user, that explains the use of the project.
 
 as a user i want to:
 
-- comment on a sailor post
-- Rate the cellar
+- comment on a seller post
+- Rate the seller
 - Direct message with seller
 - view posts
-- Follow cellar
+- Follow seller
 - Add seller post to watch later
-- Make a bed to the cellar
-- Browse posts by categories
+- Make a bid on a seller post
+- Browse posts by location
 - View trusted verified sellers
 
 as a seller i want to:
 
 - Upload multiple images for my item
 - Rate buyers
+- Message buyers and other users
 
 
 ```

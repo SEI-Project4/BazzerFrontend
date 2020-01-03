@@ -8,7 +8,7 @@ export default class Startpage extends Component {
 
     render() {
         return (
-            <div>
+            <div style={{marginBottom:'80vh'}}>
 
             </div>
         )

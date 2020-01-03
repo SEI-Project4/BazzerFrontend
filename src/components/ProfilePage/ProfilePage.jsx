@@ -6,12 +6,16 @@ import { Item, Rating, Icon, Image, Loader, Segment, Divider, Header } from 'sem
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { loadUser, loadusertask} from "../../actions";
 
 const imageMaxSize = 1066300 // bytes = 1MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() })
-let sumrate = 0
-export default class ProfilePage extends Component {
+
+class ProfilePage extends Component {
+    
     state = {
         token: "",
         setshow: false,
@@ -27,41 +31,18 @@ export default class ProfilePage extends Component {
         maxRating: 5,
         inboxShow: false,
         msg: "",
+        userdata:[],
+        type:'',
     }
     componentDidMount = () => {
-
-        let self = this;
-
-        if (localStorage.usertoken) {
-            jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
-                if (err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'token expired',
-                        showConfirmButton: true,
-                    })
-                    self.setState({ guest: true })
-                } else {
-                    var decoded = jwt.verify(localStorage.usertoken, 'secret')
-                    console.log("decoded ==")
-                    console.log(decoded);
-                    self.setState({ token: decoded, })
-                    axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${self.props.match.params.id}`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } }).then(res => {
-                        self.setState({
-                            firstname: res.data.result.firstname, lastname: res.data.result.lastname, description: res.data.result.description, profileimg: res.data.result.profileimg, city: res.data.result.city, data: res.data.result, loading: false
-                        })
-                        console.log(res.data.result.msg)
-                        console.log("infooo")
-                        console.log(res.data.result)
-                    })
-                        .catch(err => console.log(err))
-                }
-            });
-
-        } else { this.setState({ guest: true }) }
+        console.log("mounted")
+    if(this.props.user._id != this.props.match.params.id){
+        this.props.loadUser(this.props.match.params.id)
     }
+    }
+
     componentDidUpdate = () => {
-        console.log("state:=")
+        console.log("update state is equal to")
         console.log(this.state)
     }
 
@@ -69,42 +50,26 @@ export default class ProfilePage extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-        console.log(this.state)
     }
     submit = (e) => {
         e.preventDefault()
-        axios.put(`https://sei-bazaar-backend.herokuapp.com/users/${this.state.token.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                window.location.reload();
-                console.log(res)
-            })
-
-            .catch(err => console.log(err))
+        this.setState({ type: 'submit' },()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+        })
     }
 
     activeChat = (e) => {
         this.setState({
             msg: e.target.value
         })
-        console.log(this.state)
     }
     chat = (e) => {
-
         e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/send/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-
-                // Swal.fire({
-                //     position: 'top-end',
-                //     icon: 'success',
-                //     title: 'message sent',
-                //     showConfirmButton: false,
-                //     timer: 1500
-                // })
-            })
-
-            .catch(err => console.log(err))
-            e.target.msg=""
+        this.setState({ type: 'chat', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+        })
     }
     verifyFile = (files) => {
         if (files && files.length > 0) {
@@ -135,7 +100,7 @@ export default class ProfilePage extends Component {
                 myFileItemReader.addEventListener("load", () => {
                     console.log(myFileItemReader.result)
                     const myResult = myFileItemReader.result
-                    // const myResult2 = new Buffer(myResult,'base64').toString('binary')
+
                     this.setState({ profileimg: myResult })
                 }, false)
                 myFileItemReader.readAsDataURL(currentFile)
@@ -144,36 +109,18 @@ export default class ProfilePage extends Component {
     }
 
     follow = (e) => {
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then((res) => {
-                if (res.data.msg == "follow Done") {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Follow Done',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            }).catch(err => { console.log(err) })
+        this.setState({ type: 'follow', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+        })
     }
 
     rate = (e) => {
         e.preventDefault()
-        console.log("rate sent")
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/rate`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg == "follow Done") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'review submitted',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            }).catch(err => {
-
-            })
+        this.setState({ type: 'rate', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+        })
     }
 
     handleRate = (e, { rating, maxRating }) => {
@@ -183,24 +130,14 @@ export default class ProfilePage extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-        console.log(this.state)
     }
 
     submitpass = (e) => {
         e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/changepassword`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                if (res.data.msg == "Password changed") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'your password has been updated',
-                        showConfirmButton: false,
-                        timer: 3000
-                    })
-                }
-            }).catch(err => {
-
-            })
+        this.setState({ type: 'submitpass', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+        })
     }
 
     passwordOnChange = (e) => {
@@ -210,33 +147,70 @@ export default class ProfilePage extends Component {
     }
 
     verifyuser = (e) => {
-        e.preventDefault()
-        axios.post(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/isverified`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-            .then(res => {
-                console.log(res)
-                if (res.data.msg == "isverified status changed") {
-                    alert("user has been verified")
-                }
-            }).catch(err => {
-                console.log(err)
-            })
+        this.setState({ type: 'verifyuser', pageid:this.props.match.params.id},()=>{
+            let state = this.state
+            this.props.loadusertask(state)
+        })
     }
-
+    
     componentDidUpdate = () => {
-        console.log("update")
+        const self = this
+        // console.log("update")
         axios.get(`https://sei-bazaar-backend.herokuapp.com/users/${this.props.match.params.id}/allmsg`, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
             .then(res => {
-                console.log(res)
-                this.setState({
+                // console.log(res)
+                self.setState({
                     allmsg: res.data.result
                 })
             }).catch(err => console.log(err))
     }
 
+    success(result){
+        this.setState=({type:''})
+        Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: `${result}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+    }
+
+    error = (result) =>{
+        this.setState=({type:''})
+         Swal.fire({
+                    icon: 'error',
+                    title: `${result}`,
+                    showConfirmButton: true,
+                })
+    }
+
     render() {
+        if(this.props.user.firstname && this.state.loading == true && this.props.user._id == this.props.match.params.id){
+            console.log(this.props)            
+            const User = this.props.user
+            this.setState({
+                description: User.description, profileimg: User.profileimg, city: User.city, loading: false, userdata:User, firstname:User.firstname, lastname:User.lastname
+           })
+        }else if(this.props.error=="session expired"){
+            Swal.fire({
+                icon: 'error',
+                title: 'Session expired please Login again',
+                showConfirmButton: true,
+            })
+            window.location.replace("/home")
+            this.setState({ guest: true })
+        }else{
+            
+        }
+
+        const userres = this.props.userTask
         return (
             <div>
-
+                {userres== "submited"?
+                this.success(userres) : userres== "message sent"? this.success(userres) : userres== "follow Done"? this.success(userres) : userres== "Review submited"? this.success(userres) : userres== "Password changed"? this.success(userres) : userres== "submited"? this.success(userres) : null}
+                {userres== "session expired"?
+                this.error(userres) : userres== "error this.state type or not found"? this.error(userres) : userres== "item sold out!"? this.error(userres) : userres== "session expired"? this.error(userres):null }
                 <Modal
                     size="lg"
                     show={this.state.setshow}
@@ -245,7 +219,7 @@ export default class ProfilePage extends Component {
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
-                    {this.state.token.id === this.props.match.params.id ? <Modal.Header closeButton>
+                    {this.state.userdata.id === this.props.match.params.id ? <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
                             <Icon name="edit outline"></Icon>Edit Profile
           </Modal.Title>
@@ -282,7 +256,9 @@ export default class ProfilePage extends Component {
                                         <Form.Control placeholder="New Password" name="newpassword" type="password" rows="3" onChange={this.passwordOnChange} />
                                     </Form.Group>
                                     <Button onClick={this.submitpass} variant="success" type="submit" variant="dark">Change</Button>
-                                    <br /><br />
+                                    <br />
+                                    {this.props.userTaskLoading ? <div><Loader content='Loading' active inline='centered' /></div> : null}
+                                    <br />
                                 </Form>
                                 <Form method="post" onSubmit={this.submit}>
                                     <Form.Group controlId="exampleForm.ControlInput1">
@@ -290,7 +266,7 @@ export default class ProfilePage extends Component {
                                         <Form.Control value={this.state.city} name="city" placeholder="Jeddah.." onChange={this.onChange} />
                                     </Form.Group>
                                     <Form.Group controlId="exampleForm.ControlTextarea1">
-                                        <Form.Label>Description</Form.Label>
+                                        <Form.Label>Bio</Form.Label>
                                         <Form.Control value={this.state.description} name="description" as="textarea" rows="3" onChange={this.onChange} />
                                     </Form.Group>
                                     <br />
@@ -304,8 +280,8 @@ export default class ProfilePage extends Component {
                 <br />
                 <Container style={{ marginBottom: '-20px' }}>
                     <div style={{ marginLeft: '-15px' }}>
-                        {this.state.token.id === this.props.match.params.id ? <Button onClick={() => this.setState({ setshow: true })} style={{ marginLeft: '0px', marginRight: '10px', width: '135px' }} inline-block variant="dark"><Icon name="edit outline"></Icon>Edit Profile</Button> : null}
-                        {this.state.token.id !== this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ? <Button onClick={() => this.setState({ setshow: true })} style={{ marginLeft: '0px', marginRight: '10px', width: '135px' }} inline-block variant="dark"><Icon name="edit outline"></Icon>Edit Profile</Button> : null}
+                        {this.state.userdata.id !== this.props.match.params.id ?
                             <OverlayTrigger trigger="click" placement="bottom" overlay={<Popover id="popover-basic">
                                 <Popover.Title as="h3">Give a Rating</Popover.Title>
                                 <Popover.Content>
@@ -328,9 +304,10 @@ export default class ProfilePage extends Component {
                 <Container style={{ border: 'solid 2px black', backgroundColor: 'white' }}>
                     <Row style={{ marginTop: '5%' }}>
                         <Col sm={4}><Image style={{ border: 'solid 1px gray', display: 'block', margin: 'auto' }} width="82%" height="auto" src={this.state.profileimg == "" ? "https://i.imgur.com/3KR0iMp.jpg" : this.state.profileimg} thumbnail />
-                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.data.username}</h4>{this.state.data.isadmin === true ? <div><Badge style={{ marginLeft: '35px' }} variant="danger">Admin</Badge></div> : null}</Col>
+                            <h4 style={{ float: 'right', width: '90%', marginTop: '5px' }}>{this.state.userdata.username}</h4>{this.state.userdata.isadmin === true ? <div><Badge style={{ marginLeft: '35px' }} variant="danger">Admin</Badge></div> : null}</Col>
                         <Col sm={1}></Col>
                         <Col sm={6}>
+                        {this.props.userTaskLoading ? <div><Loader content='Loading' active inline='centered' /></div> : null}
                             <Row>
                                 <Container style={{ border: '1px gray solid', width: '100%', borderRadius: '5px', backgroundColor: '#f8f7f6' }}>
                                     <br />
@@ -344,10 +321,10 @@ export default class ProfilePage extends Component {
                                     }):null:null}</h5> */}
 
 
-                                    <h5>Member since: {this.state.data.createdAt !== undefined ? this.state.data.createdAt.slice(0, -14) : null}</h5>
-                                    <h5>{this.state.data.email}</h5>
-                                    <h5>{this.state.data.phonenumber}</h5>
-                                    <h5>Followers: {this.state.data.followers !== undefined ? this.state.data.followers.length : null}</h5>
+                                    <h5>Member since: {this.state.userdata.createdAt !== undefined ? this.state.userdata.createdAt.slice(0, -14) : null}</h5>
+                                    <h5>{this.state.userdata.email}</h5>
+                                    <h5>{this.state.userdata.phonenumber}</h5>
+                                    <h5>Followers: {this.state.userdata.followers !== undefined ? this.state.userdata.followers.length : null}</h5>
                                     <br />
                                 </Container>
                             </Row>
@@ -372,21 +349,22 @@ export default class ProfilePage extends Component {
                                             <Col lg={12} md={12}>
                                                 <Form method="post" onSubmit={this.chat}>
             {this.state.allmsg !== undefined ? this.state.allmsg.map((room) => {
-                return room.user1 == this.state.token.id || room.user2 == this.state.token.id ? room.msg.map((chat) => {
+                return room.user1 == this.state.userdata.id || room.user2 == this.state.userdata.id ? room.msg.map((chat) => {
                     return <div>
-                            {chat.from !== this.state.token.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}<a style={{color:'black'}} href={"/profile/"+chat.from}>{chat.from}</a></Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{"You"}{": "}{chat.content}</Segment> }
+                            {chat.from !== this.state.userdata.id ?<Segment style={{marginBottom:'10px', textAlign:'right', backgroundColor:'#38EF7D'}}>{chat.content}{" :"}<a style={{color:'black'}} href={"/profile/"+chat.from}>{chat.from}</a></Segment>:<Segment style={{marginBottom:'10px', textAlign:'left',backgroundColor:'#edf0f0', color:'black'}}>{"You"}{": "}{chat.content}</Segment> }
                     </div>      
                 }) : null
             }) : null}
                                                 
 
-                                                {this.state.token.id !== this.props.match.params.id ?
+                                                {this.state.userdata.id !== this.props.match.params.id ?
                                                     <Form.Group controlId="exampleForm.ControlTextarea1">
                                                         <Form.Label>Description</Form.Label>
                                                         <Form.Control name="msg" as="textarea" rows="3" onChange={this.activeChat} />
                                                         <br />
                                                     </Form.Group>:<h6 style={{textAlign:'center', marginTop:'30px'}}>This is your inbox. Click on a receiving Id and go to their profile to reply back</h6>}
-                                                    {this.state.token.id !== this.props.match.params.id ?
+                                                    {this.props.userTaskLoading ? <div><Loader content='Loading' active inline='centered' /></div> : null}
+                                                    {this.state.userdata.id !== this.props.match.params.id ?
                                                     <Button style={{ margin: '0 auto', width: '35%', display: 'block' }} onClick={this.chat} variant="success" type="submit">
                                                         Send </Button>:null}
                                                 </Form>
@@ -398,7 +376,7 @@ export default class ProfilePage extends Component {
 
 
                                 <br />
-                                {this.state.token.id === this.props.match.params.id ? <Button onClick={() => this.setState({ inboxShow: true })} style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Inbox</Button> : this.state.token.id ? <div style={{ margin: '0 auto' }}><Button onClick={this.follow} style={{ margin: '15px auto', width: '150px' }} variant="primary"><Icon name="add user"></Icon> Follow</Button><div style={{ marginLeft: '50px', display: 'inline-block' }}></div>
+                                {this.state.userdata.id === this.props.match.params.id ? <Button onClick={() => this.setState({ inboxShow: true })} style={{ margin: '15px auto', width: '150px' }} block variant="warning"><Icon name="envelope"></Icon>Inbox</Button> : this.state.userdata.id ? <div style={{ margin: '0 auto' }}><Button onClick={this.follow} style={{ margin: '15px auto', width: '150px' }} variant="primary"><Icon name="add user"></Icon> Follow</Button><div style={{ marginLeft: '50px', display: 'inline-block' }}></div>
                                     <Button onClick={() => this.setState({ inboxShow: true })} style={{ margin: '15px auto', width: '150px' }} variant="warning"><Icon name="envelope"></Icon>Message</Button></div>
                                     : null}
                             </Row>
@@ -407,9 +385,9 @@ export default class ProfilePage extends Component {
                     </Row>
                     <br />
                     <Container>
-                        <h4>Description:</h4>
+                        <h4>Bio:</h4>
                         {this.state.loading === true ? <div><Loader content='Loading' active inline='centered' /></div> : null}
-                        <p>{this.state.data.description}</p>
+                        <p>{this.state.userdata.description}</p>
                     </Container>
                     <br /><br />
                     <Tabs defaultActiveKey="posts" id="uncontrolled-tab-example">
@@ -417,7 +395,7 @@ export default class ProfilePage extends Component {
                             <br />
 
                             <Item.Group>
-                                {this.state.data.posts !== undefined ? this.state.data.posts.map((post) => {
+                                {this.state.userdata.posts !== undefined ? this.state.userdata.posts.map((post) => {
                                     return <Item>
                                         <Item.Image size='tiny' src={post.postimages[0]} />
 
@@ -433,16 +411,16 @@ export default class ProfilePage extends Component {
                                 }) : null}
                             </Item.Group>
                         </Tab>
-                        {this.state.token.id === this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ?
                             <Tab eventKey="orders" title="Previous Orders">
                                 <br />
                                 <Item.Group>
-                                    {this.state.data.purchesedorder !== undefined ? this.state.data.purchesedorder.map((order) => {
+                                    {this.state.userdata.purchesedorder !== undefined ? this.state.userdata.purchesedorder.map((order) => {
                                         return <Item>
                                             <Item.Image size='tiny' src={order.postimages[0]} />
-
+                                            
                                             <Item.Content>
-                                                <Item.Header as='a'>{order.title}</Item.Header>
+                                                <Item.Header href={"/post/" + order._id} as='a'>{order.title}</Item.Header>
                                                 <Item.Meta>{order.description}</Item.Meta>
                                                 <Item.Description>
                                                     {/* comments({post.comments.length}) */}
@@ -455,22 +433,22 @@ export default class ProfilePage extends Component {
                             </Tab> : null}
                         <Tab eventKey="ratings" title="Reviews">
                             <br />
-                            {this.state.data.Rating !== undefined ? this.state.data.Rating.map((review) => {
+                            {this.state.userdata.Rating !== undefined ? this.state.userdata.Rating.map((review) => {
                                 return <div >
                                     <a style={{ color: 'black', textDecoration: 'none' }} href={"/profile/" + review.userid} >
                                         <h4>By:{" "}{review.username}</h4></a>
-                                    <h5>{review.review}  {" "} <Rating icon='star' defaultRating={review.star} maxRating={5} /></h5>
+                                    <h5>{review.review}  {" "} <Rating icon='star' defaultRating={review.star} maxRating={5} disabled /></h5>
                                     <br />
                                 </div>
 
                             }) : null}
                         </Tab>
-                        {this.state.token.id === this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ?
                             <Tab eventKey="following" title="Following">
                                 <br />
                                 <h2>Followings:</h2>
                                 <br />
-                                {this.state.data.following !== undefined ? this.state.data.following.map((user) => {
+                                {this.state.userdata.following !== undefined ? this.state.userdata.following.map((user) => {
                                     return <Segment href={"/profile/" + user._id}>
                                         {user.username}
                                     </Segment>
@@ -483,18 +461,18 @@ export default class ProfilePage extends Component {
                                 </Divider>
                                 <h2>Followers:</h2>
                                 <br />
-                                {this.state.data.followers !== undefined ? this.state.data.followers.map((user) => {
+                                {this.state.userdata.followers !== undefined ? this.state.userdata.followers.map((user) => {
                                     return <Segment href={"/profile/" + user._id}>
                                         {user.username}
                                     </Segment>
                                 }) : null}
                             </Tab> : null}
-                        {this.state.token.id === this.props.match.params.id ?
+                        {this.state.userdata.id === this.props.match.params.id ?
                             <Tab eventKey="watchlater" title="Watch list">
                                 <br />
 
                                 <Item.Group>
-                                    {this.state.data.watchlater !== undefined ? this.state.data.watchlater.map((post) => {
+                                    {this.state.userdata.watchlater !== undefined ? this.state.userdata.watchlater.map((post) => {
                                         return <Item>
                                             <Item.Image size='tiny' src={post.postimages[0]} />
 
@@ -516,7 +494,7 @@ export default class ProfilePage extends Component {
                 <br />
 
                 <br />
-                {this.state.token.isadmin === true ? <Container>
+                {this.state.userdata.admin === true ? <Container>
                     <Row>
                         <Col>
                             <Button style={{ float: 'left', width: '150px', marginLeft: '30%' }} onClick={this.verifyuser} inline-block variant="success">Verify User</Button>
@@ -531,3 +509,18 @@ export default class ProfilePage extends Component {
         )
     }
 }
+const mapStateToProps = ({ isLoading, user, error, userTaskLoading, userTask }) => ({
+    isLoading,
+    user,
+    error,
+    userTaskLoading,
+    userTask
+ });
+
+ const mapDispatchToProps = dispatch => ({
+   loadUser: (pageid) => dispatch(loadUser(pageid)),
+   loadusertask: (pageid) => dispatch(loadusertask(pageid))
+ })
+   // bindActionCreators({ requestUserData }, dispatch);
+ 
+ export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);

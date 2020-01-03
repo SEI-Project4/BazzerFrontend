@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import jwt from 'jsonwebtoken'
-import axios from 'axios'
 import { Container } from 'react-bootstrap'
 import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Loader, Icon } from 'semantic-ui-react'
 import './PostStyle.css'
 import Dropzone from 'react-dropzone'
 import Swal from 'sweetalert2'
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { loadPost } from "../../actions";
 
 const imageMaxSize = 2132600 // bytes = 2MB
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
@@ -25,7 +26,7 @@ const options = [
   { text: 'Taif', value: 'Taif' },
 ]
 
-export default class CreatePost extends Component {
+class CreatePost extends Component {
   state = {
     postimages: [],
     city: '',
@@ -34,35 +35,14 @@ export default class CreatePost extends Component {
     city: '',
     value: 0,
     check: false,
-    token: localStorage.usertoken,
     title: '',
     session: true,
     submited:false,
+    type: "create",
   }
 
   componentDidMount = () => {
-
-    let self = this;
-
-    if (localStorage.usertoken) {
-      jwt.verify(localStorage.usertoken, 'secret', function (err, decoded) {
-        if (err) {
-          self.setState({ session: false })
-          Swal.fire({
-            position: 'top-end',
-            icon: 'error',
-            title: 'token expired',
-            showConfirmButton: false,
-            timer: 1500
-        })
-        } else {
-          var decoded = jwt.verify(localStorage.usertoken, 'secret')
-          console.log("decoded dot user")
-          console.log(decoded.user);
-          self.setState({ token: decoded, session: true })
-        }
-      });
-    }
+    
   }
 
 
@@ -84,10 +64,9 @@ export default class CreatePost extends Component {
   }
 
   submit = (e) => {
+    const state = this.state
+    console.log(state)
     e.preventDefault()
-    this.setState({
-      submited:true
-    })
     if (this.state.session == false) {
       alert("Your session has expired please login again")
     } else if (this.state.value == 0) {
@@ -104,31 +83,7 @@ export default class CreatePost extends Component {
       alert("please accept the terms and conditions")
     } else if (this.state.title == '') {
       alert("you need to state a title")
-    } else {
-      axios.post(`https://sei-bazaar-backend.herokuapp.com/posts`, this.state, { headers: { Authorization: `Bearer ${localStorage.usertoken}` } })
-        .then(res => {
-          if (res.data.msg == "created successfully") {
-            Swal.fire(
-              'Good job!',
-              'Your post have been created!. Please wait for adming approval',
-              'success'
-            )
-          
-            
-            this.setState({
-              success: true
-            })
-          }else{
-            this.setState({
-              submited:false
-            })
-            console.log(this.state)
-          }
-          window.location = "/home"
-        })
-
-        .catch(err => console.log(err))
-    }
+    } else {this.props.loadPost(state)}
   }
   handleChange = (e, { value }) => {
     this.setState({ value })
@@ -175,6 +130,7 @@ export default class CreatePost extends Component {
   render() {
 
     const { value } = this.state
+    
     return (
       <div>
         <br />
@@ -188,9 +144,7 @@ export default class CreatePost extends Component {
                     <section>
                       <div style={{ textAlign: 'center' }} {...getRootProps()}>
                         <input {...getInputProps()} />
-                        <br /><br /><br /><br /><br />
-                        
-                        <br />
+                        <br /><br /><br /><br /><br /><br/>
                         <h1 >Drag 'n' drop your images here, or Click to browse</h1>
                         <br />
                         <h5>Maximum 5 images each no bigger than 2MB</h5>
@@ -212,7 +166,12 @@ export default class CreatePost extends Component {
         </div>
         <Container>
           <br/>
-          {this.state.submited===true?<div><Loader content='Loading' active inline='centered' /></div>:null}
+          {this.props.postLoading===true?<div><Loader content='Loading' active inline='centered' /></div>:null}
+          {this.props.post==="Post has been created"?<div>{
+          Swal.fire({
+            icon: 'success',
+            title: 'Post has been created, Please wait for admin approval'
+          })}{window.location.replace("/home")}</div>:null}
         
           <br /><br /><br />
           <Form onSubmit={this.submit} method="POST">
@@ -289,3 +248,16 @@ export default class CreatePost extends Component {
     )
   }
 }
+const mapStateToProps = ({ postLoading, post, errorpost, user }) => ({
+  postLoading,
+  post,
+  errorpost, 
+  user,
+});
+
+const mapDispatchToProps = dispatch => ({
+ loadPost: (pageid) => dispatch(loadPost(pageid)),
+})
+ // bindActionCreators({ requestUserData }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePost);

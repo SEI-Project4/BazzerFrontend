@@ -1,18 +1,17 @@
 import React, { Component } from 'react'
-import jwt from 'jsonwebtoken'
 import './HomePage.css'
 import { Button, Divider, Input, Segment, Card, Icon, Image, Dropdown, Checkbox, Loader, Pagination } from 'semantic-ui-react'
 import { Container } from 'react-bootstrap'
-import Footer from '../Footer/Footer'
-import axios from 'axios'
-
+import { connect } from "react-redux";
+import { loadPost } from "../../actions";
+import { Link } from "react-router-dom";
 
 const locations = [
     { key: 1, text: 'Jeddah', value: 'Jeddah' }, { key: 2, text: 'Makkah', value: 'Makkah' }, { key: 3, text: 'Abha', value: 'Abha' }, { key: 4, text: 'Medina', value: 'Medina' }, { key: 5, text: 'Tabuk', value: 'Tabuk' }, { key: 6, text: 'Sakaka', value: 'Sakaka' }, { key: 7, text: 'Hail', value: 'Hail' }, { key: 8, text: 'Buraydah', value: 'Buraydah' }, { key: 9, text: 'Riyadh', value: 'Riyadh' }, { key: 10, text: 'Dammam', value: 'Dammam' }, { key: 11, text: 'Taif', value: 'Taif' }
 ]
 
 
-export default class HomePage extends Component {
+class HomePage extends Component {
     state = {
         token: "",
         advanced: false,
@@ -21,24 +20,11 @@ export default class HomePage extends Component {
         loading: true,
         cities :[],
     }
-
+    
     componentDidMount() {
-
-        if (localStorage.usertoken == true) {
-            console.log('user token');
-
-            var decoded = jwt.verify(localStorage.usertoken, 'secret')
-            console.log(decoded.user);
-            this.setState({ token: decoded })
-        } else { }
-
-        axios.get('https://sei-bazaar-backend.herokuapp.com/posts')
-            .then((res) => {
-                this.setState({
-                    data: res.data.result, loading: false
-                })
-            })
-            .catch(err => console.log(err))
+        if(!this.props.post[0]){
+            this.props.loadPost(this.props.match.params.id)
+        }
     }
 
     filterCity =(e,{value})=>{
@@ -55,13 +41,20 @@ export default class HomePage extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value.toLowerCase() })
     }
-    render() {
 
+    
+    render() {
+        if(this.props.post.length>0 && this.state.loading == true){           
+            this.setState({
+                data: this.props.post, loading: false
+            })
+        }
+        const post = this.props.post
         const lowercasedsearch = this.state.search.toLowerCase();
         const filteredItems = this.state.data.filter((item) => item.title.toLowerCase().includes(this.state.search));
         console.log(filteredItems)
         return (
-            <div>
+            <div style={{marginBottom:'70vh'}}>
                 <Container>
                     <br />
                     <Segment basic textAlign='center'>
@@ -113,18 +106,17 @@ export default class HomePage extends Component {
                         />
                     </Segment>
                     <br />
-                    {this.state.loading === true ? <div><Loader content='Loading Please Wait' active inline='centered' /></div> : null}
+                    {this.props.postLoading === true ? <div><Loader content='Loading Please Wait' active inline='centered' /></div> : null}
                 </Container>
                 <br /><br />
                 <div className="ui four column doubling stackable grid center aligned container">
                 
                 {this.state.cities.length==0?
                 filteredItems.map((post) => {
-                    return <div class="column">
-
-                    {post.isapproved===true?
-                    <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
-                    <Card style={{ margin: '0 auto' }} class="ui segment">
+                    return post.isapproved===true?
+                        <div class="column">
+                    <Link to={`/post/${post._id}`} style={{ textDecoration: 'none' }} title="View Post">
+                    <Card style={{ margin: '0 auto', minHeight: '450px' }} class="ui segment">
 
                         <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
                             label={{
@@ -150,21 +142,21 @@ export default class HomePage extends Component {
                             </Card.Meta>
                         </Card.Content>
                         <Card.Content extra>
-                            <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                        <Link to={"/profile/" + post.user} style={{ textDecoration: 'none' }} title="profile">
                                 <Icon name='user' />
                                 {post.username}
-                            </a>
+                        </Link>
                         </Card.Content>
                     </Card>
-                </a>:null}
-                        
+                </Link>    
                     </div>
-                }):filteredItems.map((post) => {
-                    return <a style={{ textDecoration: 'none' }} href={`/post/${post._id}`}>
+                    
+                :null}):filteredItems.map((post) => {
+                    return post.isapproved===true?<Link to={`/post/${post._id}`} style={{ textDecoration: 'none' }} title="View Post">
                         {this.state.cities.map((city)=>{
                             return post.city==city? <div class="column">
                                 
-                            <Card style={{ margin: '0 auto' }} class="ui segment">
+                            <Card style={{ margin: '0 auto', minHeight: '450px' }} class="ui segment">
 
                             <img style={{ maxHeight: '250px' }} src={post.postimages == null ? null : post.postimages[0]}
                                 label={{
@@ -190,33 +182,33 @@ export default class HomePage extends Component {
                                 </Card.Meta>
                             </Card.Content>
                             <Card.Content extra>
-                                <a style={{ textDecoration: 'none' }} href={"/profile/" + post.user}>
+                            <Link to={"/profile/" + post.user} style={{ textDecoration: 'none' }} title="View Profile">
                                     <Icon name='user' />
                                     {post.username}
-                                </a>
+                                </Link>
                             </Card.Content>
                         </Card></div>:null}
                         )}
                         
                             
-                        </a>
+                        </Link>
                     
-                })}
-                    
-                    <br />
+                :null})}
 
                 </div>
-                <br /><br /><br /><br /><br /><br /><br /><br /><br />
-                {/* <div style={{ textAlign: 'center' }}>
-                    <Pagination defaultActivePage={1}
-                        firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-                        lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-                        prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                        nextItem={{ content: <Icon name='angle right' />, icon: true }}
-                        totalPages={5} />
-                </div> */}
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         )
     }
 }
+const mapStateToProps = ({ postLoading, post, errorpost }) => ({
+    postLoading,
+    post,
+    errorpost, 
+ });
+ 
+ const mapDispatchToProps = dispatch => ({
+   loadPost: (pageid) => dispatch(loadPost(pageid)),
+ })
+   // bindActionCreators({ requestUserData }, dispatch);
+ 
+ export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

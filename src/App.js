@@ -12,14 +12,32 @@ import NavBar from './components/NavBar/NavBar'
 import Footer from './components/Footer/Footer'
 import Terms from './components/AboutUs/Terms'
 import Approve from './components/HomePage/Approve'
+import Startpage from './components/Startpage';
+import Page404 from './components/Page404/Page404'
+import Home from './Home'
+import { Provider } from 'react-redux'
+import configureStore from './store/store'
+
+const store = configureStore()
 
 export default class App extends Component {
   render() {
     return (
-      <div className="body">
+      <Provider store={store}>
+        <div className="body">
         <Router>
           <NavBar/>
           <Switch>
+
+          <Route
+            
+            path="/test"
+            render={props => (
+              <Home
+                {...props}
+              />
+            )}
+        />
         <Route
             
             path="/home"
@@ -34,6 +52,16 @@ export default class App extends Component {
             path="/profile/:id"
             render={props => (
               <ProfilePage 
+                
+                {...props}
+              />
+            )}
+        />
+        <Route
+            exact
+            path="/"
+            render={props => (
+              <Startpage
                 
                 {...props}
               />
@@ -86,9 +114,7 @@ export default class App extends Component {
               />
             )}
         />
-     </Switch>
-     
-     <Route
+         <Route
         exact
         path="/login"
         render={props => (
@@ -106,9 +132,15 @@ export default class App extends Component {
               />
             )}
         />
+<Route component={Page404}/>
+     </Switch>
+     
+    
+         
         <Footer/>
       </Router> 
       </div>
+      </Provider>
     )
   }
 }
